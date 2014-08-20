@@ -48,7 +48,6 @@ INCLUDE_PATH = \
     -Inetworklayer/message \
     -Inetworklayer/router \
     -Inodes \
-    -Inodes/inet \
     -Inodes/mobile \
     -Inodes/router \
     -Iworld
@@ -168,7 +167,6 @@ clean:
 	$(Q)-rm -f networklayer/message/*_m.cc networklayer/message/*_m.h
 	$(Q)-rm -f networklayer/router/*_m.cc networklayer/router/*_m.h
 	$(Q)-rm -f nodes/*_m.cc nodes/*_m.h
-	$(Q)-rm -f nodes/inet/*_m.cc nodes/inet/*_m.h
 	$(Q)-rm -f nodes/mobile/*_m.cc nodes/mobile/*_m.h
 	$(Q)-rm -f nodes/router/*_m.cc nodes/router/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
@@ -178,7 +176,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/mobile/*.cc applications/router/*.cc linklayer/*.cc linklayer/airframe/*.cc linklayer/radio/*.cc networklayer/*.cc networklayer/message/*.cc networklayer/router/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc nodes/router/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/mobile/*.cc applications/router/*.cc linklayer/*.cc linklayer/airframe/*.cc linklayer/radio/*.cc networklayer/*.cc networklayer/message/*.cc networklayer/router/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/applications/mobile/TbusMobileApplication.o: applications/mobile/TbusMobileApplication.cc \
