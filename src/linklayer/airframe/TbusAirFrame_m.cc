@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgc 4.4 from linklayer/message/TbusAirFrame.msg.
+// Generated file, do not edit! Created by opp_msgc 4.4 from linklayer/airframe/TbusAirFrame.msg.
 //
 
 // Disable warnings about unused variables, empty switch stmts, etc:

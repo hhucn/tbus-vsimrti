@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgc 4.4 from linklayer/message/TbusAirFrame.msg.
+// Generated file, do not edit! Created by opp_msgc 4.4 from linklayer/airframe/TbusAirFrame.msg.
 //
 
 #ifndef _TBUSAIRFRAME_M_H_
@@ -16,7 +16,7 @@
 
 
 /**
- * Class generated from <tt>linklayer/message/TbusAirFrame.msg</tt> by opp_msgc.
+ * Class generated from <tt>linklayer/airframe/TbusAirFrame.msg</tt> by opp_msgc.
  * <pre>
  * packet TbusAirFrame {
  *     bool clientMessage;
