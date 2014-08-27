@@ -69,24 +69,25 @@ void TbusRadio::handleSelfMessage(cMessage* msg) {
 
 void TbusRadio::handleUpperMessage(cMessage* msg) {
 	Enter_Method("handleUpperMessage()");
-	take(msg);
 
 	TbusAirFrame* airFrame = new TbusAirFrame();
+	drop(msg);
 	airFrame->encapsulate((cPacket*) msg);
 
 	airFrame->setClientMessage(true);
+	take(airFrame);
 
 	// TODO Calculate delay with position here
 
+	drop(airFrame);
 	sendToChannel(airFrame);
 }
 
 void TbusRadio::handleLowerMessage(cMessage* msg) {
 	Enter_Method("handleLowerMessage()");
-	take(msg);
 
 	cMessage* innerMsg = (cMessage*) ((cPacket*) msg)->decapsulate();
-	delete msg;
+	dropAndDelete(msg);
 
 	// TODO Calculate Delay with position here
 
@@ -95,6 +96,7 @@ void TbusRadio::handleLowerMessage(cMessage* msg) {
 }
 
 void TbusRadio::handleMessage(cMessage* msg) {
+	take (msg);
 	if (msg->isSelfMessage()) {
 		// Self message
 		handleSelfMessage(msg);

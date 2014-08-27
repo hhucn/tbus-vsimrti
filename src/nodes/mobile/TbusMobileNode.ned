@@ -16,35 +16,76 @@
 // 
 
 package tbus.nodes.mobile;
+
 import tbus.linklayer.radio.TbusRadio;
 import tbus.applications.mobile.TbusMobileApplication;
 
 import inet.base.NotificationBoard;
+import inet.transport.udp.UDP;
+import inet.networklayer.common.InterfaceTable;
+import inet.networklayer.ipv4.RoutingTable;
+import inet.nodes.inet.NetworkLayer;
 
 import federate.mob.VSimRTIMobility;
+import federate.msg.VSimRTIUnreliableApp;
 
 module TbusMobileNode
 {
     parameters:
-        @display("bgb=429,267");
-        
+        @display("bgb=741,506");
+
     gates:
         input radioIn @loose;
-        
+
     submodules:
         radio: TbusRadio {
-            @display("p=363,189");
+            @display("p=295,65");
         }
         mobility: VSimRTIMobility {
-            @display("p=31,29");
+            @display("p=58,32");
         }
         notificationBoard: NotificationBoard {
-            @display("p=77,228");
+            @display("p=58,220");
         }
-        app: TbusMobileApplication;
+        interfaceTable: InterfaceTable {
+            @display("p=58,150");
+        }
+        routingTable: RoutingTable {
+            parameters:
+                IPForward = true;
+                routerId = "";
+                routingFile = "";
+            	@display("p=58,89");
+        }
+        networkLayer: NetworkLayer {
+            parameters:
+                proxyARP = false;
+            	@display("p=295,136");
+            gates:
+                ifIn[1];
+                ifOut[1];
+        }
+        udp: UDP {
+            @display("p=295,209");
+        }
+        //        app: TbusMobileApplication;
+        urapp: VSimRTIUnreliableApp {
 
-    connections:
-        radio.upperInGate  <-- app.lowerOutGate;
-        radio.upperOutGate --> app.lowerInGate;
+            @display("p=295,291");
+        }
+    connections allowunconnected:
+        //        radio.upperInGate  <-- app.lowerOutGate;
+        //        radio.upperOutGate --> app.lowerInGate;
+        
+        // App <-> Transport
+        urapp.udpOut --> udp.appIn++;
+        urapp.udpIn <-- udp.appOut++;
+        // Transport <-> Network
+        udp.ipOut --> networkLayer.udpIn;
+        udp.ipIn <-- networkLayer.udpOut;
+        // Network <-> PHY (We skip MAC here)
+        networkLayer.ifOut[0] --> radio.upperInGate;
+        networkLayer.ifIn[0] <-- radio.upperOutGate;
+		// PHY <- Channel
         radio.radioIn <-- radioIn;
 }
