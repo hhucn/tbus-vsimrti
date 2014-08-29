@@ -18,9 +18,9 @@
 #ifndef TBUSROUTERNODE_H_
 #define TBUSROUTERNODE_H_
 
-#include <csimplemodule.h>
+#include <ccompoundmodule.h>
 
-class TbusRouterNode : public cSimpleModule {
+class TbusRouterNode : public cCompoundModule {
 	private:
 		int channelInGate;
 		int channelOutGate;

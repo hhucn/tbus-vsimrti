@@ -33,6 +33,7 @@ module TbusMobileNode
 {
     parameters:
         @display("bgb=741,506");
+        @class("TbusMobileNode");
 
     gates:
         input radioIn @loose;
@@ -88,4 +89,6 @@ module TbusMobileNode
         networkLayer.ifIn[0] <-- radio.upperOutGate;
 		// PHY <- Channel
         radio.radioIn <-- radioIn;
+        
+//        TODO: UDP-Pakete richtig durchreichen
 }

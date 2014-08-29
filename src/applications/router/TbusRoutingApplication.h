@@ -18,17 +18,14 @@
 #ifndef TbusRoutingApplication_H_
 #define TbusRoutingApplication_H_
 
-#include <csimplemodule.h>
-#include "TbusChannelControl.h"
+#include "UDPBasicApp.h"
 
-class TbusRoutingApplication : public cSimpleModule
+class TbusRoutingApplication : public UDPBasicApp
 {
 	private:
-//		TbusChannelControl* cc;
 		int lowerInputGate;
 		int lowerOutputGate;
 
-//		void sendMessage(cMessage* msg);
 	public:
 		TbusRoutingApplication();
 		virtual ~TbusRoutingApplication();

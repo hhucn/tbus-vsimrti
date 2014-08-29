@@ -30,6 +30,7 @@ import federate.msg.VSimRTIUnreliableApp;
 
 module TbusRouterNode {
     parameters:
+        @class("TbusRouterNode");
         @display("i=device/router");
         
     gates:

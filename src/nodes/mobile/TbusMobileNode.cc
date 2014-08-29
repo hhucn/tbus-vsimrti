@@ -16,6 +16,10 @@
 // 
 
 #include <TbusMobileNode.h>
+#include "InterfaceTableAccess.h"
+#include "IInterfaceTable.h"
+#include "InterfaceEntry.h"
+#include "IPv4InterfaceData.h"
 
 Define_Module(TbusMobileNode)
 
@@ -30,7 +34,28 @@ TbusMobileNode::~TbusMobileNode()
 }
 
 void TbusMobileNode::initialize(int stage) {
+	if (stage == 4) {
+		IInterfaceTable *ift = InterfaceTableAccess().get();
+		std::cout << "Iterating over " << ift->getNumInterfaces() << " interfaces..." << endl;
+		for (int i=0;i<ift->getNumInterfaces();i++) {
+			InterfaceEntry * ie = ift->getInterface(i);
+			std::cout << "Inspecting " << ie->detailedInfo() << std::endl;
+			if (ie->isLoopback())
+			   continue;
+			ipAddress = ie->ipv4Data()->getIPAddress();
+			break;
+		}
 
+		std::cout << "Node " << this << " assigned ip address " << ipAddress << endl;
+	}
+}
+
+int TbusMobileNode::numInitStages() const {
+	return 5;
+}
+
+const IPvXAddress TbusMobileNode::getIpAddress() const {
+	return ipAddress;
 }
 
 void TbusMobileNode::handleMessage(cMessage* msg) {

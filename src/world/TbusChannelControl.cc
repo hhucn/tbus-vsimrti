@@ -44,6 +44,9 @@ void TbusChannelControl::handleMessage(cMessage* msg) {
 			const char* hostName = message->getReceiverHostName();
 
 			for (HostList::iterator it = hosts.begin(); it != hosts.end(); ++it) {
+
+				//TODO: Cast host as MobileNode, access ipAddress and compare
+
 				HostEntry h = *it;
 
 				if (strcmp(hostName, h.host->getFullName()) == 0) {

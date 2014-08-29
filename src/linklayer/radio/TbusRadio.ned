@@ -16,19 +16,30 @@
 // 
 
 package tbus.linklayer.radio;
-import inet.linklayer.radio.PropagationModel;
+
+import tbus.linklayer.radio.TbusRadioPHY;
+import tbus.linklayer.radio.TbusRadioMAC;
 
 //
 // TODO auto-generated type
 //
-simple TbusRadio// extends PropagationModel
+module TbusRadio
 {
     parameters:
-        @class(TbusRadio);
         @display("i=block/ifcard");
-        
-	gates:
-	    input  upperInGate;
-	    output upperOutGate;
-	    input radioIn @labels("Airframe") @directIn;
+    gates:
+        input upperInGate;
+        output upperOutGate;
+        input radioIn @directIn;
+    submodules:
+        phy: TbusRadioPHY {
+            @display("p=50,145");
+        }
+        mac: TbusRadioMAC {
+            @display("p=50,58");
+        }
+	connections allowunconnected:
+	    upperInGate --> phy.upperInGate;
+	    upperOutGate <-- phy.upperOutGate;
+	    radioIn --> phy.radioIn;
 }

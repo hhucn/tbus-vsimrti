@@ -16,8 +16,7 @@
 // 
 
 #include <TbusRoutingApplication.h>
-#include "world/TbusChannelControl.h"
-#include "TbusAirFrame_m.h"
+#include "UDPControlInfo_m.h"
 
 Define_Module(TbusRoutingApplication);
 
@@ -40,20 +39,27 @@ void TbusRoutingApplication::initialize(int stage) {
 }
 
 void TbusRoutingApplication::handleMessage(cMessage* msg) {
-	// Once a message has been received, send one back to the sender
-	TbusMessage* message = dynamic_cast<TbusMessage*>(msg);
+	// Once a message has been received, send it back to the sender
 
-	ASSERT(message != NULL);
+	if (msg->getKind() == UDP_I_ERROR) {
+		delete msg;
 
-	std::cout << "Routing app received message from " << message->getSenderHostName() << std::endl;
+		EV << "Router discarded erroneous message." << endl;
+
+		return;
+	}
+
+	UDPControlInfo* controlInfo = check_and_cast<UDPControlInfo*>(((cPacket*) msg)->getControlInfo());
+
+	EV << "Routing app received message from " << controlInfo->getSrcAddr() << endl;
 
 	// Send a "pong" message back
-	TbusMessage* sendMessage = new TbusMessage();
-	sendMessage->setReceiverHostName(message->getSenderHostName());
-	sendMessage->setSenderHostName(this->getFullName());
+	IPvXAddress srcAddress = controlInfo->getSrcAddr();
+	int srcPort = controlInfo->getSrcPort();
+	controlInfo->setSrcAddr(controlInfo->getDestAddr());
+	controlInfo->setSrcPort(controlInfo->getDestPort());
+	controlInfo->setDestAddr(srcAddress);
+	controlInfo->setDestPort(srcPort);
 
-	// Delete the received message, we won't deliver it any further
-	delete msg;
-
-	send(sendMessage, lowerOutputGate);
+	send(msg, lowerOutputGate);
 }

@@ -18,14 +18,20 @@
 #ifndef TBUSMOBILENODE_H_
 #define TBUSMOBILENODE_H_
 
-#include "csimplemodule.h"
+#include "ccompoundmodule.h"
 #include "omnetpp.h"
+#include "IPvXAddress.h"
 
-class TbusMobileNode : public cSimpleModule {
+class TbusMobileNode : public cCompoundModule {
+	private:
+		IPvXAddress ipAddress;
 	public:
 		TbusMobileNode();
 		virtual ~TbusMobileNode();
 
+		const IPvXAddress getIpAddress() const;
+
+		int numInitStages() const;
 		void initialize(int stage);
 		void handleMessage(cMessage* msg);
 };
