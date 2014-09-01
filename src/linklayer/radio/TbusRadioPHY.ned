@@ -1,6 +1,6 @@
 //
 // (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-//
+// 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -17,32 +17,15 @@
 
 package tbus.linklayer.radio;
 
-import tbus.linklayer.radio.TbusRadioPHY;
-import tbus.linklayer.radio.TbusRadioMAC;
-import inet.base.NotificationBoard;
-
-module TbusRadio
-{
+//
+// TODO auto-generated type
+//
+simple TbusRadioPHY {
     parameters:
-        @display("i=block/ifcard");
-    gates:
-        input upperLayerIn;
-        output upperLayerOut;
-        input radioIn @directIn;
-    submodules:
-        phy: TbusRadioPHY {
-            @display("p=50,145");
-        }
-        mac: TbusRadioMAC {
-            @display("p=50,58");
-        }
-        notificationBoard: NotificationBoard {
-            @display("p=181,58");
-        }
-    connections:
-        upperLayerIn --> mac.upperLayerIn;
-        upperLayerOut <-- mac.upperLayerOut;
-        mac.lowerLayerIn <-- phy.upperOutGate;
-        mac.lowerLayerOut --> phy.upperInGate;
-        radioIn --> phy.radioIn;
+        @class("TbusRadioPHY");
+        
+	gates:
+	    input  upperInGate;
+	    output upperOutGate;
+	    input radioIn @directIn;
 }

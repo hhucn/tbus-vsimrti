@@ -33,6 +33,8 @@ public:
     void initialize(int stage);
     void handleMessage(cMessage* msg);
 
+    ChannelControl::HostRef registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate);
+
 //    void sendToChannel(cSimpleModule *srcRadioMod, HostRef srcHost, AirFrame *airFrame);
 
     void sendToRouter(TbusAirFrame* airFrame);

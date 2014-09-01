@@ -37,24 +37,31 @@ void TbusChannelControl::initialize(int stage) {
 	}
 }
 
+ChannelControl::HostRef TbusChannelControl::registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate) {
+	Enter_Method_Silent();
+	ChannelControl::registerHost(host, initialPos);
+
+	std::cout << "Registered Host: " << host << std::endl;
+}
+
 void TbusChannelControl::handleMessage(cMessage* msg) {
 	// Only handle router messages
 	if (msg->arrivedOn(routerInGate)) {
-		if (TbusMessage* message = dynamic_cast<TbusMessage*>(msg)) {
-			const char* hostName = message->getReceiverHostName();
-
-			for (HostList::iterator it = hosts.begin(); it != hosts.end(); ++it) {
-
-				//TODO: Cast host as MobileNode, access ipAddress and compare
-
-				HostEntry h = *it;
-
-				if (strcmp(hostName, h.host->getFullName()) == 0) {
-					sendToClient(message, &h);
-					return;
-				}
-			}
-		}
+//		if (TbusMessage* message = dynamic_cast<TbusMessage*>(msg)) {
+//			const char* hostName = message->getReceiverHostName();
+//
+//			for (HostList::iterator it = hosts.begin(); it != hosts.end(); ++it) {
+//
+//				//TODO: Cast host as MobileNode, access ipAddress and compare
+//
+//				HostEntry h = *it;
+//
+//				if (strcmp(hostName, h.host->getFullName()) == 0) {
+//					sendToClient(message, &h);
+//					return;
+//				}
+//			}
+//		}
 	}
 }
 
@@ -64,14 +71,14 @@ void TbusChannelControl::handleMessage(cMessage* msg) {
  */
 void TbusChannelControl::sendToRouter(TbusAirFrame* airFrame) {
 	Enter_Method("sendToRouter()");
-	take(airFrame);
-
-	TbusMessage* message = dynamic_cast<TbusMessage*>(airFrame->decapsulate());
-	delete airFrame;
-
-	ASSERT(message != NULL);
-
-	send(message, routerOutGate);
+//	take(airFrame);
+//
+//	TbusMessage* message = dynamic_cast<TbusMessage*>(airFrame->decapsulate());
+//	delete airFrame;
+//
+//	ASSERT(message != NULL);
+//
+//	send(message, routerOutGate);
 }
 
 /**
@@ -80,10 +87,10 @@ void TbusChannelControl::sendToRouter(TbusAirFrame* airFrame) {
  * @param client The client to send to
  */
 void TbusChannelControl::sendToClient(TbusMessage* message, HostRef client) {
-	TbusAirFrame* airFrame = new TbusAirFrame();
-	airFrame->encapsulate(message);
-
-	sendDirect(airFrame, client->radioInGate);
+//	TbusAirFrame* airFrame = new TbusAirFrame();
+//	airFrame->encapsulate(message);
+//
+//	sendDirect(airFrame, client->radioInGate);
 }
 
 /**
@@ -91,11 +98,11 @@ void TbusChannelControl::sendToClient(TbusMessage* message, HostRef client) {
  * @param msg The message to send
  */
 void TbusChannelControl::sendToChannel(cMessage* msg) {
-	if (TbusAirFrame* airFrame = dynamic_cast<TbusAirFrame*>(msg)) {
-		sendToRouter(airFrame);
-	} else {
-		std::cout << "ChannelControl received invalid message!" << std::endl;
-	}
+//	if (TbusAirFrame* airFrame = dynamic_cast<TbusAirFrame*>(msg)) {
+//		sendToRouter(airFrame);
+//	} else {
+//		std::cout << "ChannelControl received invalid message!" << std::endl;
+//	}
 }
 
 /**
