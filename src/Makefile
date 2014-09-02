@@ -70,6 +70,7 @@ OBJS = \
     $O/applications/mobile/TbusMobileApplication.o \
     $O/applications/router/TbusRoutingApplication.o \
     $O/linklayer/radio/TbusRadioPHY.o \
+    $O/linklayer/radio/TbusRadio.o \
     $O/linklayer/radio/TbusRadioMAC.o \
     $O/networklayer/router/TbusRouter.o \
     $O/nodes/mobile/TbusMobileNode.o \
@@ -203,6 +204,8 @@ $O/applications/router/TbusRoutingApplication.o: applications/router/TbusRouting
 	applications/router/TbusRoutingApplication.h
 $O/linklayer/airframe/TbusAirFrame_m.o: linklayer/airframe/TbusAirFrame_m.cc \
 	linklayer/airframe/TbusAirFrame_m.h
+$O/linklayer/radio/TbusRadio.o: linklayer/radio/TbusRadio.cc \
+	linklayer/radio/TbusRadio.h
 $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/INotifiable.h \

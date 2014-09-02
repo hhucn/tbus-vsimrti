@@ -44,7 +44,7 @@ void TbusRadioMAC::initialize() {
 	macAddress = MACAddress::generateAutoAddress();
 
 	// Erase all non-alnum chars
-	std::string name(getParentModule()->getFullName());
+	std::string name = getParentModule()->getFullName();
 	name.erase(std::remove_if(name.begin(), name.end(), (int(*)(int)) std::isalnum), name.end());
 
 	interfaceEntry->setName(name.c_str());

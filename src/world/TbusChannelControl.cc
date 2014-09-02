@@ -113,5 +113,5 @@ void TbusChannelControl::sendToChannel(cMessage* msg) {
 void TbusChannelControl::updateHostPosition(HostRef h, const Coord& pos) {
     ChannelControl::updateHostPosition(h, pos);
 
-    std::cout << "New Host Position (" << pos.x << "," << pos.y << ") for host " << h->host << std::endl;
+    std::cout << "New Host Position (" << pos.x << "," << pos.y << ") for host " << h->host->getFullName() << std::endl;
 }

@@ -1,6 +1,6 @@
 //
 // (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-//
+// 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,38 +15,18 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef TBUSRADIO_H_
-#define TBUSRADIO_H_
+#include <TbusRadio.h>
 
-#include "ChannelAccess.h"
-#include "TbusAirFrame_m.h"
-#include "Coord.h"
-#include "omnetpp.h"
+Define_Module(TbusRadio)
 
-class TbusRadioPHY : public ChannelAccess {
-private:
-	int uppergateIn;
-	int uppergateOut;
-	int radioIn;
+TbusRadio::TbusRadio()
+{
+	// TODO Auto-generated constructor stub
 
-//	const Coord getHostCoord();
+}
 
-protected:
-	void handleSelfMessage(cMessage* msg);
-	void handleUpperMessage(cMessage* msg);
-	void handleLowerMessage(cMessage* msg);
+TbusRadio::~TbusRadio()
+{
+	// TODO Auto-generated destructor stub
+}
 
-	void sendToChannel(TbusAirFrame* msg);
-
-public:
-    TbusRadioPHY();
-    virtual ~TbusRadioPHY();
-
-    void initialize(int stage);
-    void handleMessage(cMessage* msg);
-    void finish();
-
-    void receiveChangeNotification(int category, const cObject *details);
-};
-
-#endif /* TBUSRADIO_H_ */

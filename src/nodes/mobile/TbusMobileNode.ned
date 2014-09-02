@@ -29,8 +29,7 @@ import inet.nodes.inet.NetworkLayer;
 import federate.mob.VSimRTIMobility;
 import federate.msg.VSimRTIUnreliableApp;
 
-module TbusMobileNode
-{
+module TbusMobileNode {
     parameters:
         @node();
         @display("bgb=351,348");

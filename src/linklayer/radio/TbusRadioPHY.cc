@@ -41,9 +41,7 @@ void TbusRadioPHY::initialize(int stage) {
 		uppergateOut 	= findGate("upperOutGate");
 		radioIn 		= findGate("radioIn");
 
-		std::cout << "a" << std::endl;
 		nb->subscribe(this, NF_HOSTPOSITION_UPDATED);
-		std::cout << "b" << std::endl;
 	}
 }
 
@@ -51,13 +49,13 @@ void TbusRadioPHY::finish() {
 
 }
 
-/**
- * Get the hosts coordinates as assigned by the mobility module
- * @return The hosts coordinates
- */
-const Coord TbusRadioPHY::getHostCoord() {
-	return myHostRef->pos;
-}
+///**
+// * Get the hosts coordinates as assigned by the mobility module
+// * @return The hosts coordinates
+// */
+//const Coord TbusRadioPHY::getHostCoord() {
+//	return myHostRef->pos;
+//}
 
 void TbusRadioPHY::handleSelfMessage(cMessage* msg) {
 	// TODO Do a barrel roll
