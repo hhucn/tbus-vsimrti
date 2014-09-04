@@ -19,7 +19,6 @@ package tbus.linklayer.radio;
 
 import tbus.linklayer.radio.TbusRadioPHY;
 import tbus.linklayer.radio.TbusRadioMAC;
-import inet.base.NotificationBoard;
 
 module TbusRadio
 {
@@ -35,9 +34,6 @@ module TbusRadio
         }
         mac: TbusRadioMAC {
             @display("p=50,58");
-        }
-        notificationBoard: NotificationBoard {
-            @display("p=181,58");
         }
     connections:
         upperLayerIn --> mac.upperLayerIn;

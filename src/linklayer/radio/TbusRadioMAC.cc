@@ -39,7 +39,7 @@ void TbusRadioMAC::receiveChangeNotification(int category, const cObject* detail
 /**
  * Adds our TBus NIC to the interface table
  */
-void TbusRadioMAC::initialize() {
+void TbusRadioMAC::initialize(int stage) {
 	interfaceEntry = new InterfaceEntry();
 	macAddress = MACAddress::generateAutoAddress();
 

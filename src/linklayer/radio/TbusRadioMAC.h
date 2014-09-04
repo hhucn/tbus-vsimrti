@@ -32,7 +32,7 @@ class TbusRadioMAC : public cSimpleModule, public INotifiable {
 
 		void receiveChangeNotification(int category, const cObject* details);
 
-		void initialize();
+		void initialize(int stage);
 
 	private:
 		NotificationBoard* nb;

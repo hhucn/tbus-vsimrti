@@ -39,9 +39,11 @@ void TbusChannelControl::initialize(int stage) {
 
 ChannelControl::HostRef TbusChannelControl::registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate) {
 	Enter_Method_Silent();
-	ChannelControl::registerHost(host, initialPos);
+	ChannelControl::HostRef hostRef = ChannelControl::registerHost(host, initialPos);
 
 	std::cout << "Registered Host: " << host << std::endl;
+
+	return hostRef;
 }
 
 void TbusChannelControl::handleMessage(cMessage* msg) {

@@ -52,13 +52,6 @@ module TbusMobileNode {
         interfaceTable: InterfaceTable {
             @display("p=58,150");
         }
-        routingTable: RoutingTable {
-            parameters:
-                IPForward = true;
-                routerId = "";
-                routingFile = "";
-                @display("p=58,89");
-        }
         networkLayer: NetworkLayer {
             parameters:
                 proxyARP = false;
@@ -66,6 +59,13 @@ module TbusMobileNode {
             gates:
                 ifIn[1];
                 ifOut[1];
+        }
+        routingTable: RoutingTable {
+            parameters:
+                IPForward = true;
+                routerId = "";
+                routingFile = "";
+                @display("p=58,89");
         }
         radio: TbusRadio {
             @display("p=295,65");
