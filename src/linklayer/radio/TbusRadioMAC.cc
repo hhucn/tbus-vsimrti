@@ -60,7 +60,10 @@ void TbusRadioMAC::initialize(int stage) {
 	}
 
 	nb = NotificationBoardAccess().getIfExists();
-	notifDetails.setInterfaceEntry(interfaceEntry);
 	nb->subscribe(this, NF_INTERFACE_CREATED);
 	nb->subscribe(this, NF_SUBSCRIBERLIST_CHANGED);
+}
+
+void TbusRadioMAC::handleMessage(cMessage* msg) {
+	std::cout << "TbusRadioMAC received: " << msg << std::endl;
 }

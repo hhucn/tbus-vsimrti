@@ -213,7 +213,6 @@ $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
 	$(INETMANET_PROJ)/src/base/NotificationBoard.h \
 	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
 	$(INETMANET_PROJ)/src/linklayer/contract/MACAddress.h \
-	$(INETMANET_PROJ)/src/linklayer/contract/TxNotifDetails.h \
 	$(INETMANET_PROJ)/src/networklayer/common/IInterfaceTable.h \
 	$(INETMANET_PROJ)/src/networklayer/common/InterfaceEntry.h \
 	$(INETMANET_PROJ)/src/networklayer/common/InterfaceTableAccess.h \

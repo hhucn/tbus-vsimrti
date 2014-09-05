@@ -23,7 +23,6 @@
 #include "omnetpp.h"
 #include "INotifiable.h"
 #include "NotificationBoard.h"
-#include "TxNotifDetails.h"
 
 class TbusRadioMAC : public cSimpleModule, public INotifiable {
 	public:
@@ -34,9 +33,10 @@ class TbusRadioMAC : public cSimpleModule, public INotifiable {
 
 		void initialize(int stage);
 
+		void handleMessage(cMessage* msg);
+
 	private:
 		NotificationBoard* nb;
-		TxNotifDetails notifDetails;
 		InterfaceEntry* interfaceEntry;
 		MACAddress macAddress;
 };

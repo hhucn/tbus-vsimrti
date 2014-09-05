@@ -28,22 +28,27 @@ import inet.nodes.inet.NetworkLayer;
 
 import federate.msg.VSimRTIUnreliableApp;
 
-module TbusRouterNode {
+module TbusRouterNode
+{
     parameters:
         @node();
         @class("TbusRouterNode");
-        @display("i=device/router");
-        
+        @display("i=device/router;bgb=468,380");
+
     gates:
         input channelInGate;
         output channelOutGate;
         input inetInGate @loose;
         output inetOutGate @loose;
-        
-	submodules:
-	    routingApp: TbusRoutingApplication;
-	    router: TbusRouter;
-	            notificationBoard: NotificationBoard {
+
+    submodules:
+//        routingApp: TbusRoutingApplication {
+//            @display("p=382,28");
+//        }
+        router: TbusRouter {
+            @display("p=319,113");
+        }
+        notificationBoard: NotificationBoard {
             @display("p=58,220");
         }
         interfaceTable: InterfaceTable {
@@ -54,40 +59,40 @@ module TbusRouterNode {
                 IPForward = true;
                 routerId = "";
                 routingFile = "";
-            	@display("p=58,89");
+                @display("p=58,89");
         }
         networkLayer: NetworkLayer {
             parameters:
                 proxyARP = false;
-            	@display("p=295,136");
+                @display("p=296,171");
             gates:
                 ifIn[1];
                 ifOut[1];
         }
         udp: UDP {
-            @display("p=295,209");
+            @display("p=296,244");
         }
         //        app: TbusMobileApplication;
         urapp: VSimRTIUnreliableApp {
 
-            @display("p=295,291");
+            @display("p=296,326");
         }
-	    
-	connections allowunconnected:
-	    routingApp.lowerOutGate --> router.upperInGate;
-	    routingApp.lowerInGate  <-- router.upperOutGate;
-	    
-//	    router.channelInGate <-- channelInGate;
-//	    router.channelOutGate --> channelOutGate;
-		router.channelInGate <-- networkLayer.ifOut[0];
-		router.channelOutGate --> networkLayer.ifIn[0];
-		
-		networkLayer.udpIn <-- udp.ipOut;
-		networkLayer.udpOut --> udp.ipIn;
-		
-		udp.appIn++ <-- urapp.udpOut;
-		udp.appOut++ --> urapp.udpIn;
-	    
-	    router.inetInGate <-- inetInGate;
-	    router.inetOutGate --> inetOutGate;
+
+    connections allowunconnected:
+//        routingApp.lowerOutGate --> router.upperInGate;
+//        routingApp.lowerInGate <-- router.upperOutGate;
+
+        //	    router.channelInGate <-- channelInGate;
+        //	    router.channelOutGate --> channelOutGate;
+        channelOutGate <-- networkLayer.ifOut[0];
+        channelInGate --> networkLayer.ifIn[0];
+
+        networkLayer.udpIn <-- udp.ipOut;
+        networkLayer.udpOut --> udp.ipIn;
+
+        udp.appIn++ <-- urapp.udpOut;
+        udp.appOut++ --> urapp.udpIn;
+
+        router.inetInGate <-- inetInGate;
+        router.inetOutGate --> inetOutGate;
 }
