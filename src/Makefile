@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libtbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/util -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -I../../inetmanet/src/applications/udpapp -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
+#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/util -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
 #
 
 # Name of target to be created (-o option)
@@ -27,8 +27,8 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/linklayer/radio/errormodel \
     -I../../inetmanet/src/transport/tcp \
     -I../../inetmanet/src/util/headerserializers \
-    -I../../inetmanet/src/networklayer/rsvp_te \
     -I../../inetmanet/src/transport/udp \
+    -I../../inetmanet/src/networklayer/rsvp_te \
     -I../../inetmanet/src/networklayer/ipv4 \
     -I../../inetmanet/src/networklayer/icmpv6 \
     -I../../inetmanet/src/base \
@@ -37,17 +37,9 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/networklayer/manetrouting/base \
     -I../../inetmanet/src/networklayer/mpls \
     -I../../inetmanet/src/linklayer/contract \
-    -I../../inetmanet/src/applications/udpapp \
     -I. \
-    -Iapplications \
-    -Iapplications/mobile \
-    -Iapplications/router \
     -Ilinklayer \
-    -Ilinklayer/airframe \
     -Ilinklayer/radio \
-    -Inetworklayer \
-    -Inetworklayer/message \
-    -Inetworklayer/router \
     -Inodes \
     -Inodes/mobile \
     -Inodes/router \
@@ -67,22 +59,15 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
-    $O/applications/mobile/TbusMobileApplication.o \
-    $O/applications/router/TbusRoutingApplication.o \
     $O/linklayer/radio/TbusRadioPHY.o \
     $O/linklayer/radio/TbusRadio.o \
     $O/linklayer/radio/TbusRadioMAC.o \
-    $O/networklayer/router/TbusRouter.o \
     $O/nodes/mobile/TbusMobileNode.o \
     $O/nodes/router/TbusRouterNode.o \
-    $O/world/TbusChannelControl.o \
-    $O/linklayer/airframe/TbusAirFrame_m.o \
-    $O/networklayer/message/TbusMessage_m.o
+    $O/world/TbusChannelControl.o
 
 # Message files
-MSGFILES = \
-    linklayer/airframe/TbusAirFrame.msg \
-    networklayer/message/TbusMessage.msg
+MSGFILES =
 
 # Other makefile variables (-K)
 INETMANET_PROJ=../../inetmanet
@@ -160,15 +145,8 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f tbus-vsimrti tbus-vsimrti.exe libtbus-vsimrti.so libtbus-vsimrti.a libtbus-vsimrti.dll libtbus-vsimrti.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
-	$(Q)-rm -f applications/*_m.cc applications/*_m.h
-	$(Q)-rm -f applications/mobile/*_m.cc applications/mobile/*_m.h
-	$(Q)-rm -f applications/router/*_m.cc applications/router/*_m.h
 	$(Q)-rm -f linklayer/*_m.cc linklayer/*_m.h
-	$(Q)-rm -f linklayer/airframe/*_m.cc linklayer/airframe/*_m.h
 	$(Q)-rm -f linklayer/radio/*_m.cc linklayer/radio/*_m.h
-	$(Q)-rm -f networklayer/*_m.cc networklayer/*_m.h
-	$(Q)-rm -f networklayer/message/*_m.cc networklayer/message/*_m.h
-	$(Q)-rm -f networklayer/router/*_m.cc networklayer/router/*_m.h
 	$(Q)-rm -f nodes/*_m.cc nodes/*_m.h
 	$(Q)-rm -f nodes/mobile/*_m.cc nodes/mobile/*_m.h
 	$(Q)-rm -f nodes/router/*_m.cc nodes/router/*_m.h
@@ -179,31 +157,9 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc applications/*.cc applications/mobile/*.cc applications/router/*.cc linklayer/*.cc linklayer/airframe/*.cc linklayer/radio/*.cc networklayer/*.cc networklayer/message/*.cc networklayer/router/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/applications/mobile/TbusMobileApplication.o: applications/mobile/TbusMobileApplication.cc \
-	$(INETMANET_PROJ)/src/base/Coord.h \
-	$(INETMANET_PROJ)/src/base/INETDefs.h \
-	$(INETMANET_PROJ)/src/linklayer/mfcore/AirFrame_m.h \
-	$(INETMANET_PROJ)/src/linklayer/mfcore/ModulationType.h \
-	$(INETMANET_PROJ)/src/util/FWMath.h \
-	$(INETMANET_PROJ)/src/world/ChannelControl.h \
-	applications/mobile/TbusMobileApplication.h \
-	linklayer/airframe/TbusAirFrame_m.h \
-	networklayer/message/TbusMessage_m.h \
-	world/TbusChannelControl.h
-$O/applications/router/TbusRoutingApplication.o: applications/router/TbusRoutingApplication.cc \
-	$(INETMANET_PROJ)/src/applications/udpapp/UDPAppBase.h \
-	$(INETMANET_PROJ)/src/applications/udpapp/UDPBasicApp.h \
-	$(INETMANET_PROJ)/src/base/INETDefs.h \
-	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
-	$(INETMANET_PROJ)/src/networklayer/contract/IPv6Address.h \
-	$(INETMANET_PROJ)/src/networklayer/contract/IPvXAddress.h \
-	$(INETMANET_PROJ)/src/transport/contract/UDPControlInfo_m.h \
-	applications/router/TbusRoutingApplication.h
-$O/linklayer/airframe/TbusAirFrame_m.o: linklayer/airframe/TbusAirFrame_m.cc \
-	linklayer/airframe/TbusAirFrame_m.h
 $O/linklayer/radio/TbusRadio.o: linklayer/radio/TbusRadio.cc \
 	linklayer/radio/TbusRadio.h
 $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
@@ -232,14 +188,8 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
-	linklayer/airframe/TbusAirFrame_m.h \
 	linklayer/radio/TbusRadioPHY.h \
-	networklayer/message/TbusMessage_m.h \
 	world/TbusChannelControl.h
-$O/networklayer/message/TbusMessage_m.o: networklayer/message/TbusMessage_m.cc \
-	networklayer/message/TbusMessage_m.h
-$O/networklayer/router/TbusRouter.o: networklayer/router/TbusRouter.cc \
-	networklayer/router/TbusRouter.h
 $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
@@ -263,7 +213,5 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/linklayer/mfcore/ModulationType.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
-	linklayer/airframe/TbusAirFrame_m.h \
-	networklayer/message/TbusMessage_m.h \
 	world/TbusChannelControl.h
 

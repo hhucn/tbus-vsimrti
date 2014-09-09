@@ -19,8 +19,6 @@
 #define TBUSCHANNELCONTROL_H_
 
 #include "ChannelControl.h"
-#include "TbusAirFrame_m.h"
-#include "TbusMessage_m.h"
 
 class TbusChannelControl : public ChannelControl {
 private:
@@ -37,8 +35,8 @@ public:
 
 //    void sendToChannel(cSimpleModule *srcRadioMod, HostRef srcHost, AirFrame *airFrame);
 
-    void sendToRouter(TbusAirFrame* airFrame);
-    void sendToClient(TbusMessage* message, HostRef Client);
+//    void sendToRouter(TbusAirFrame* airFrame);
+//    void sendToClient(TbusMessage* message, HostRef Client);
     void sendToChannel(cMessage* msg);
 
     void updateHostPosition(HostRef h, const Coord& pos);

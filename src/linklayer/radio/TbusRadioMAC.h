@@ -39,6 +39,9 @@ class TbusRadioMAC : public cSimpleModule, public INotifiable {
 		NotificationBoard* nb;
 		InterfaceEntry* interfaceEntry;
 		MACAddress macAddress;
+
+		int upperLayerIn, upperLayerOut;
+		int lowerLayerIn, lowerLayerOut;
 };
 
 #endif /* TBUSRADIOMAC_H_ */

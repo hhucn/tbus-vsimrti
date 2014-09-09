@@ -16,6 +16,7 @@
 // 
 
 #include "TbusChannelControl.h"
+#include "ChannelControl.h"
 #include "TbusRadioPHY.h"
 
 Define_Module(TbusRadioPHY);
@@ -42,6 +43,8 @@ void TbusRadioPHY::initialize(int stage) {
 		radioIn 		= findGate("radioIn");
 
 		nb->subscribe(this, NF_HOSTPOSITION_UPDATED);
+
+		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
 	}
 }
 
@@ -65,34 +68,22 @@ void TbusRadioPHY::handleUpperMessage(cMessage* msg) {
 	Enter_Method("handleUpperMessage()");
 
 	std::cout << "TbusRadio received message: " << msg << endl;
-
-//	TbusAirFrame* airFrame = new TbusAirFrame();
-//	drop(msg);
-//	airFrame->encapsulate((cPacket*) msg);
-//
-//	airFrame->setClientMessage(true);
-//	take(airFrame);
 //
 //	// TODO Calculate delay with position here
 //
-//	drop(airFrame);
-//	sendToChannel(airFrame);
+	sendToChannel(msg);
 }
 
 void TbusRadioPHY::handleLowerMessage(cMessage* msg) {
 	Enter_Method("handleLowerMessage()");
 
-//	cMessage* innerMsg = (cMessage*) ((cPacket*) msg)->decapsulate();
-//	dropAndDelete(msg);
 //
 //	// TODO Calculate Delay with position here
 //
-//	// Send to the upper layer
-//	send(innerMsg, uppergateOut);
+	send(msg, uppergateOut);
 }
 
 void TbusRadioPHY::handleMessage(cMessage* msg) {
-	take (msg);
 	std::cout << "call1" << endl;
 	if (msg->isSelfMessage()) {
 		// Self message
@@ -106,10 +97,8 @@ void TbusRadioPHY::handleMessage(cMessage* msg) {
 	}
 }
 
-void TbusRadioPHY::sendToChannel(TbusAirFrame* msg) {
-//	TbusChannelControl* tbusCc = static_cast<TbusChannelControl*>(cc);
-//
-//	tbusCc->sendToChannel(msg);
+void TbusRadioPHY::sendToChannel(cMessage* msg) {
+	tbusCC->sendToChannel(msg);
 }
 
 void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {

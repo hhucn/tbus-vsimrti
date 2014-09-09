@@ -71,29 +71,29 @@ void TbusChannelControl::handleMessage(cMessage* msg) {
  * Sends the AirFrame to the routers input gate
  * @param airFrame The AirFrame to send
  */
-void TbusChannelControl::sendToRouter(TbusAirFrame* airFrame) {
-	Enter_Method("sendToRouter()");
-//	take(airFrame);
-//
-//	TbusMessage* message = dynamic_cast<TbusMessage*>(airFrame->decapsulate());
-//	delete airFrame;
-//
-//	ASSERT(message != NULL);
-//
-//	send(message, routerOutGate);
-}
+//void TbusChannelControl::sendToRouter(TbusAirFrame* airFrame) {
+//	Enter_Method("sendToRouter()");
+////	take(airFrame);
+////
+////	TbusMessage* message = dynamic_cast<TbusMessage*>(airFrame->decapsulate());
+////	delete airFrame;
+////
+////	ASSERT(message != NULL);
+////
+////	send(message, routerOutGate);
+//}
 
 /**
  * Sends the AirFrame to the given clients radio input gate
  * @param airFrame The AirFrame to send
  * @param client The client to send to
  */
-void TbusChannelControl::sendToClient(TbusMessage* message, HostRef client) {
-//	TbusAirFrame* airFrame = new TbusAirFrame();
-//	airFrame->encapsulate(message);
-//
-//	sendDirect(airFrame, client->radioInGate);
-}
+//void TbusChannelControl::sendToClient(TbusMessage* message, HostRef client) {
+////	TbusAirFrame* airFrame = new TbusAirFrame();
+////	airFrame->encapsulate(message);
+////
+////	sendDirect(airFrame, client->radioInGate);
+//}
 
 /**
  * Sends the message to the corresponding receiver

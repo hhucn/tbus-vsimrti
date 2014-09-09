@@ -19,7 +19,6 @@
 #define TBUSRADIO_H_
 
 #include "ChannelAccess.h"
-#include "TbusAirFrame_m.h"
 #include "Coord.h"
 #include "omnetpp.h"
 
@@ -29,6 +28,8 @@ private:
 	int uppergateOut;
 	int radioIn;
 
+	TbusChannelControl* tbusCC;
+
 //	const Coord getHostCoord();
 
 protected:
@@ -36,7 +37,7 @@ protected:
 	void handleUpperMessage(cMessage* msg);
 	void handleLowerMessage(cMessage* msg);
 
-	void sendToChannel(TbusAirFrame* msg);
+	void sendToChannel(cMessage* msg);
 
 public:
     TbusRadioPHY();

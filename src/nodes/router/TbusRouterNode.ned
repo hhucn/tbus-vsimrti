@@ -17,8 +17,8 @@
 
 package tbus.nodes.router;
 
-import tbus.applications.router.TbusRoutingApplication;
-import tbus.networklayer.router.TbusRouter;
+//import tbus.applications.router.TbusRoutingApplication;
+//import tbus.networklayer.router.TbusRouter;
 
 import inet.base.NotificationBoard;
 import inet.transport.udp.UDP;
@@ -45,9 +45,9 @@ module TbusRouterNode
 //        routingApp: TbusRoutingApplication {
 //            @display("p=382,28");
 //        }
-        router: TbusRouter {
-            @display("p=319,113");
-        }
+//        router: TbusRouter {
+//            @display("p=319,113");
+//        }
         notificationBoard: NotificationBoard {
             @display("p=58,220");
         }
@@ -93,6 +93,6 @@ module TbusRouterNode
         udp.appIn++ <-- urapp.udpOut;
         udp.appOut++ --> urapp.udpIn;
 
-        router.inetInGate <-- inetInGate;
-        router.inetOutGate --> inetOutGate;
+//        router.inetInGate <-- inetInGate;
+//        router.inetOutGate --> inetOutGate;
 }
