@@ -38,8 +38,8 @@ void TbusRadioPHY::initialize(int stage) {
 	ChannelAccess::initialize(stage);
 
 	if (stage == 0) {
-		uppergateIn 	= findGate("upperInGate");
-		uppergateOut 	= findGate("upperOutGate");
+		upperLayerIn 	= findGate("upperLayerIn");
+		upperLayerOut 	= findGate("upperLayerOut");
 		radioIn 		= findGate("radioIn");
 
 		nb->subscribe(this, NF_HOSTPOSITION_UPDATED);
@@ -66,8 +66,6 @@ void TbusRadioPHY::handleSelfMessage(cMessage* msg) {
 
 void TbusRadioPHY::handleUpperMessage(cMessage* msg) {
 	Enter_Method("handleUpperMessage()");
-
-	std::cout << "TbusRadio received message: " << msg << endl;
 //
 //	// TODO Calculate delay with position here
 //
@@ -76,19 +74,18 @@ void TbusRadioPHY::handleUpperMessage(cMessage* msg) {
 
 void TbusRadioPHY::handleLowerMessage(cMessage* msg) {
 	Enter_Method("handleLowerMessage()");
-
 //
 //	// TODO Calculate Delay with position here
 //
-	send(msg, uppergateOut);
+	send(msg, upperLayerOut);
 }
 
 void TbusRadioPHY::handleMessage(cMessage* msg) {
-	std::cout << "call1" << endl;
+	EV << "TbusRadioPHY received message on " << msg->getArrivalGate()->getName() << endl;
 	if (msg->isSelfMessage()) {
 		// Self message
 		handleSelfMessage(msg);
-	} else if (msg->arrivedOn("upperInGate")) {
+	} else if (msg->arrivedOn(upperLayerIn)) {
 		// Message from upper layer
 		handleUpperMessage(msg);
 	} else {
@@ -104,6 +101,6 @@ void TbusRadioPHY::sendToChannel(cMessage* msg) {
 void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {
 	if (category == NF_HOSTPOSITION_UPDATED) {
 		// TODO: Update queues for host position
-		std::cout << "TbusRadio receive change notification!" << std::endl;
+		EV << "TbusRadio receive change notification!" << std::endl;
 	}
 }

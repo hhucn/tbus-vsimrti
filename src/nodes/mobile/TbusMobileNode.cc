@@ -36,17 +36,17 @@ TbusMobileNode::~TbusMobileNode()
 void TbusMobileNode::initialize(int stage) {
 	if (stage == 4) {
 		IInterfaceTable *ift = InterfaceTableAccess().get();
-		std::cout << "Iterating over " << ift->getNumInterfaces() << " interfaces..." << endl;
+
 		for (int i=0;i<ift->getNumInterfaces();i++) {
 			InterfaceEntry * ie = ift->getInterface(i);
-			std::cout << "Inspecting " << ie->detailedInfo() << std::endl;
+
 			if (ie->isLoopback())
 			   continue;
 			ipAddress = ie->ipv4Data()->getIPAddress();
 			break;
 		}
 
-		std::cout << "Node " << this << " assigned ip address " << ipAddress << endl;
+		EV << "Node " << this << " assigned ip address " << ipAddress << endl;
 	}
 }
 

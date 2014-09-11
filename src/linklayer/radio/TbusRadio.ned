@@ -38,7 +38,7 @@ module TbusRadio
     connections:
         upperLayerIn --> mac.upperLayerIn;
         upperLayerOut <-- mac.upperLayerOut;
-        mac.lowerLayerIn <-- phy.upperOutGate;
-        mac.lowerLayerOut --> phy.upperInGate;
+        mac.lowerLayerIn <-- phy.upperLayerOut;
+        mac.lowerLayerOut --> phy.upperLayerIn;
         radioIn --> phy.radioIn;
 }

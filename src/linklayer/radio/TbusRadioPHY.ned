@@ -25,7 +25,7 @@ simple TbusRadioPHY {
         @class("TbusRadioPHY");
         
 	gates:
-	    input  upperInGate;
-	    output upperOutGate;
+	    input  upperLayerIn;
+	    output upperLayerOut;
 	    input radioIn @directIn;
 }

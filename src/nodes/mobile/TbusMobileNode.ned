@@ -18,7 +18,6 @@
 package tbus.nodes.mobile;
 
 import tbus.linklayer.radio.TbusRadio;
-import tbus.applications.mobile.TbusMobileApplication;
 
 import inet.base.NotificationBoard;
 import inet.transport.udp.UDP;

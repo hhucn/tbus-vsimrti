@@ -33,7 +33,7 @@ TbusRadioMAC::~TbusRadioMAC() {
 }
 
 void TbusRadioMAC::receiveChangeNotification(int category, const cObject* details) {
-	std::cout << "Interface created!" << std::endl;
+	EV << "Interface created!" << std::endl;
 }
 
 /**

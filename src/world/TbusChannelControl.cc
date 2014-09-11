@@ -18,8 +18,6 @@
 #include "TbusChannelControl.h"
 #include "omnetpp.h"
 
-#define coreEV (ev.isDisabled()||!coreDebug) ? ev : ev << "TbusChannelControl: "
-
 Define_Module(TbusChannelControl);
 
 TbusChannelControl::TbusChannelControl() {
@@ -41,7 +39,7 @@ ChannelControl::HostRef TbusChannelControl::registerHost(cModule *host, const Co
 	Enter_Method_Silent();
 	ChannelControl::HostRef hostRef = ChannelControl::registerHost(host, initialPos);
 
-	std::cout << "Registered Host: " << host << std::endl;
+	EV << "Registered Host: " << host << std::endl;
 
 	return hostRef;
 }
@@ -100,6 +98,7 @@ void TbusChannelControl::handleMessage(cMessage* msg) {
  * @param msg The message to send
  */
 void TbusChannelControl::sendToChannel(cMessage* msg) {
+	delete msg;
 //	if (TbusAirFrame* airFrame = dynamic_cast<TbusAirFrame*>(msg)) {
 //		sendToRouter(airFrame);
 //	} else {
@@ -115,5 +114,5 @@ void TbusChannelControl::sendToChannel(cMessage* msg) {
 void TbusChannelControl::updateHostPosition(HostRef h, const Coord& pos) {
     ChannelControl::updateHostPosition(h, pos);
 
-    std::cout << "New Host Position (" << pos.x << "," << pos.y << ") for host " << h->host->getFullName() << std::endl;
+    EV << "New Host Position (" << pos.x << "," << pos.y << ") for host " << h->host->getFullName() << std::endl;
 }

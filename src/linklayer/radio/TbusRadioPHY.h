@@ -24,8 +24,8 @@
 
 class TbusRadioPHY : public ChannelAccess {
 private:
-	int uppergateIn;
-	int uppergateOut;
+	int upperLayerIn;
+	int upperLayerOut;
 	int radioIn;
 
 	TbusChannelControl* tbusCC;
