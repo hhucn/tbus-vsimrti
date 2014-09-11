@@ -20,11 +20,15 @@
 #include "InterfaceTableAccess.h"
 #include "INETDefs.h"
 #include "opp_utils.h"
+#include "IPAddress.h"
+#include "IPv4InterfaceData.h"
 #include <string.h>
 #include <algorithm>
 #include <locale>
 
 Define_Module(TbusRadioMAC);
+
+int TbusRadioMAC::ipByte = 0;
 
 TbusRadioMAC::TbusRadioMAC() {
 }
@@ -55,14 +59,22 @@ void TbusRadioMAC::initialize(int stage) {
 	interfaceEntry->setBroadcast(true);
 
 	interfaceEntry->setDown(false);
-	interfaceEntry->setDatarate(12.0);
 
 	interfaceEntry->setMtu(1500);
+	interfaceEntry->setDatarate(12.0);
 
 	IInterfaceTable* interfaceTable = InterfaceTableAccess().getIfExists();
 	if (interfaceTable) {
 		interfaceTable->addInterface(interfaceEntry, this);
 	}
+
+	IPv4InterfaceData* interfaceData = new IPv4InterfaceData();
+	interfaceEntry->setIPv4Data(interfaceData);
+
+	interfaceData->setMetric((int) ceil(2e9/interfaceEntry->getDatarate()));
+
+	interfaceData->setIPAddress(IPAddress(192, 168, 0, ++TbusRadioMAC::ipByte));
+	interfaceData->setNetmask(IPAddress("255.255.255.0"));
 
 	nb = NotificationBoardAccess().getIfExists();
 	nb->subscribe(this, NF_INTERFACE_CREATED);

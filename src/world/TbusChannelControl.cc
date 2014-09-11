@@ -45,65 +45,29 @@ ChannelControl::HostRef TbusChannelControl::registerHost(cModule *host, const Co
 }
 
 void TbusChannelControl::handleMessage(cMessage* msg) {
-	// Only handle router messages
-	if (msg->arrivedOn(routerInGate)) {
-//		if (TbusMessage* message = dynamic_cast<TbusMessage*>(msg)) {
-//			const char* hostName = message->getReceiverHostName();
-//
-//			for (HostList::iterator it = hosts.begin(); it != hosts.end(); ++it) {
-//
-//				//TODO: Cast host as MobileNode, access ipAddress and compare
-//
-//				HostEntry h = *it;
-//
-//				if (strcmp(hostName, h.host->getFullName()) == 0) {
-//					sendToClient(message, &h);
-//					return;
-//				}
-//			}
-//		}
-	}
+	// TODO: Handle router messages
 }
-
-/**
- * Sends the AirFrame to the routers input gate
- * @param airFrame The AirFrame to send
- */
-//void TbusChannelControl::sendToRouter(TbusAirFrame* airFrame) {
-//	Enter_Method("sendToRouter()");
-////	take(airFrame);
-////
-////	TbusMessage* message = dynamic_cast<TbusMessage*>(airFrame->decapsulate());
-////	delete airFrame;
-////
-////	ASSERT(message != NULL);
-////
-////	send(message, routerOutGate);
-//}
-
-/**
- * Sends the AirFrame to the given clients radio input gate
- * @param airFrame The AirFrame to send
- * @param client The client to send to
- */
-//void TbusChannelControl::sendToClient(TbusMessage* message, HostRef client) {
-////	TbusAirFrame* airFrame = new TbusAirFrame();
-////	airFrame->encapsulate(message);
-////
-////	sendDirect(airFrame, client->radioInGate);
-//}
 
 /**
  * Sends the message to the corresponding receiver
  * @param msg The message to send
  */
-void TbusChannelControl::sendToChannel(cMessage* msg) {
+void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
+	Enter_Method_Silent();
+	take(msg);
+
+		EV << "Sending message from " << msg->getSenderModule() << std::endl;
+
+	for (HostList::iterator it = hosts.begin(); it != hosts.end(); ++it) {
+		if (strcmp(h->host->getFullName(), it->host->getFullName()) != 0) {
+			sendDirect(msg->dup(), it->radioInGate);
+		}
+	}
+
+	//TODO/DISCUSSION: Send the message to router?
+
+	drop(msg);
 	delete msg;
-//	if (TbusAirFrame* airFrame = dynamic_cast<TbusAirFrame*>(msg)) {
-//		sendToRouter(airFrame);
-//	} else {
-//		std::cout << "ChannelControl received invalid message!" << std::endl;
-//	}
 }
 
 /**

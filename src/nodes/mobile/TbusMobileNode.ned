@@ -32,7 +32,6 @@ module TbusMobileNode {
     parameters:
         @node();
         @display("bgb=351,348");
-        @class("TbusMobileNode");
 
     gates:
         input radioIn @directIn;

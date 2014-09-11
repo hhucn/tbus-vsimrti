@@ -30,8 +30,6 @@ private:
 
 	TbusChannelControl* tbusCC;
 
-//	const Coord getHostCoord();
-
 protected:
 	void handleSelfMessage(cMessage* msg);
 	void handleUpperMessage(cMessage* msg);

@@ -40,6 +40,9 @@ class TbusRadioMAC : public cSimpleModule, public INotifiable {
 		InterfaceEntry* interfaceEntry;
 		MACAddress macAddress;
 
+		// Last IP address byte
+		static int ipByte;
+
 		int upperLayerIn, upperLayerOut;
 		int lowerLayerIn, lowerLayerOut;
 };

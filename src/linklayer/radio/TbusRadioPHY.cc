@@ -52,14 +52,6 @@ void TbusRadioPHY::finish() {
 
 }
 
-///**
-// * Get the hosts coordinates as assigned by the mobility module
-// * @return The hosts coordinates
-// */
-//const Coord TbusRadioPHY::getHostCoord() {
-//	return myHostRef->pos;
-//}
-
 void TbusRadioPHY::handleSelfMessage(cMessage* msg) {
 	// TODO Do a barrel roll
 }
@@ -95,7 +87,7 @@ void TbusRadioPHY::handleMessage(cMessage* msg) {
 }
 
 void TbusRadioPHY::sendToChannel(cMessage* msg) {
-	tbusCC->sendToChannel(msg);
+	tbusCC->sendToChannel(msg, myHostRef);
 }
 
 void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {

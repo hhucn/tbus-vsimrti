@@ -58,13 +58,7 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = \
-    $O/linklayer/radio/TbusRadioPHY.o \
-    $O/linklayer/radio/TbusRadio.o \
-    $O/linklayer/radio/TbusRadioMAC.o \
-    $O/nodes/mobile/TbusMobileNode.o \
-    $O/nodes/router/TbusRouterNode.o \
-    $O/world/TbusChannelControl.o
+OBJS = $O/linklayer/radio/TbusRadioPHY.o $O/linklayer/radio/TbusRadio.o $O/linklayer/radio/TbusRadioMAC.o $O/nodes/router/TbusRouterNode.o $O/world/TbusChannelControl.o
 
 # Message files
 MSGFILES =
@@ -173,6 +167,8 @@ $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
 	$(INETMANET_PROJ)/src/networklayer/common/InterfaceEntry.h \
 	$(INETMANET_PROJ)/src/networklayer/common/InterfaceTableAccess.h \
 	$(INETMANET_PROJ)/src/networklayer/common/InterfaceToken.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPv4InterfaceData.h \
 	$(INETMANET_PROJ)/src/util/opp_utils.h \
 	linklayer/radio/TbusRadioMAC.h
 $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
@@ -190,28 +186,20 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	linklayer/radio/TbusRadioPHY.h \
 	world/TbusChannelControl.h
-$O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
-	$(INETMANET_PROJ)/src/base/INETDefs.h \
-	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
-	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
-	$(INETMANET_PROJ)/src/linklayer/contract/MACAddress.h \
-	$(INETMANET_PROJ)/src/networklayer/common/IInterfaceTable.h \
-	$(INETMANET_PROJ)/src/networklayer/common/InterfaceEntry.h \
-	$(INETMANET_PROJ)/src/networklayer/common/InterfaceTableAccess.h \
-	$(INETMANET_PROJ)/src/networklayer/common/InterfaceToken.h \
-	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
-	$(INETMANET_PROJ)/src/networklayer/contract/IPv6Address.h \
-	$(INETMANET_PROJ)/src/networklayer/contract/IPvXAddress.h \
-	$(INETMANET_PROJ)/src/networklayer/ipv4/IPv4InterfaceData.h \
-	nodes/mobile/TbusMobileNode.h
 $O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
 	nodes/router/TbusRouterNode.h
 $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
+	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/INotifiable.h \
+	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
+	$(INETMANET_PROJ)/src/base/NotificationBoard.h \
+	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
 	$(INETMANET_PROJ)/src/linklayer/mfcore/AirFrame_m.h \
 	$(INETMANET_PROJ)/src/linklayer/mfcore/ModulationType.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
+	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	world/TbusChannelControl.h
 
