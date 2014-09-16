@@ -41,8 +41,8 @@ module TbusMobileNode {
             @display("p=58,220");
         }
         urapp: VSimRTIUnreliableApp {
-
             @display("p=295,291");
+            maxProcDelay = 0;
         }
         udp: UDP {
             @display("p=295,209");
@@ -52,17 +52,16 @@ module TbusMobileNode {
         }
         networkLayer: NetworkLayer {
             parameters:
-                proxyARP = false;
+                proxyARP = true;
+                arp.globalARP = false;
+                ip.forceBroadcast = false;
+                ip.procDelay = 0s;
                 @display("p=295,136");
             gates:
                 ifIn[1];
                 ifOut[1];
         }
         routingTable: RoutingTable {
-            parameters:
-                IPForward = true;
-                routerId = "";
-                routingFile = "";
                 @display("p=58,89");
         }
         radio: TbusRadio {

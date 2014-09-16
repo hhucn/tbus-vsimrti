@@ -49,7 +49,6 @@ void TbusRadioPHY::initialize(int stage) {
 }
 
 void TbusRadioPHY::finish() {
-
 }
 
 void TbusRadioPHY::handleSelfMessage(cMessage* msg) {

@@ -168,7 +168,12 @@ $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
 	$(INETMANET_PROJ)/src/networklayer/common/InterfaceTableAccess.h \
 	$(INETMANET_PROJ)/src/networklayer/common/InterfaceToken.h \
 	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPProtocolId_m.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPRoute.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPRouteRule.h \
 	$(INETMANET_PROJ)/src/networklayer/ipv4/IPv4InterfaceData.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IRoutingTable.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/RoutingTableAccess.h \
 	$(INETMANET_PROJ)/src/util/opp_utils.h \
 	linklayer/radio/TbusRadioMAC.h
 $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \

@@ -22,6 +22,9 @@
 #include "opp_utils.h"
 #include "IPAddress.h"
 #include "IPv4InterfaceData.h"
+#include "RoutingTableAccess.h"
+#include "IRoutingTable.h"
+#include "IPRoute.h"
 #include <string.h>
 #include <algorithm>
 #include <locale>
@@ -44,49 +47,59 @@ void TbusRadioMAC::receiveChangeNotification(int category, const cObject* detail
  * Adds our TBus NIC to the interface table
  */
 void TbusRadioMAC::initialize(int stage) {
-	interfaceEntry = new InterfaceEntry();
-	macAddress = MACAddress::generateAutoAddress();
+	if (stage == 0) {
+		interfaceEntry = new InterfaceEntry();
+		macAddress = MACAddress::generateAutoAddress();
 
-	// Erase all non-alnum chars
-//	std::string name = getParentModule()->getFullName();
-//	name.erase(std::remove_if(name.begin(), name.end(), (int(*)(int)) std::isalnum), name.end());
+		interfaceEntry->setName("tbus0");
+		interfaceEntry->setMACAddress(macAddress);
+		interfaceEntry->setInterfaceToken(macAddress.formInterfaceIdentifier());
 
-	interfaceEntry->setName("tbus0");//name.c_str());
-	interfaceEntry->setMACAddress(macAddress);
-	interfaceEntry->setInterfaceToken(macAddress.formInterfaceIdentifier());
+		interfaceEntry->setMulticast(true);
+		interfaceEntry->setBroadcast(true);
 
-	interfaceEntry->setMulticast(true);
-	interfaceEntry->setBroadcast(true);
+		interfaceEntry->setDown(false);
 
-	interfaceEntry->setDown(false);
+		interfaceEntry->setMtu(1500);
+		interfaceEntry->setDatarate(100.0);
 
-	interfaceEntry->setMtu(1500);
-	interfaceEntry->setDatarate(12.0);
+		IInterfaceTable* interfaceTable = InterfaceTableAccess().getIfExists();
+		if (interfaceTable) {
+			interfaceTable->addInterface(interfaceEntry, this);
+		}
 
-	IInterfaceTable* interfaceTable = InterfaceTableAccess().getIfExists();
-	if (interfaceTable) {
-		interfaceTable->addInterface(interfaceEntry, this);
+		nb = NotificationBoardAccess().getIfExists();
+		nb->subscribe(this, NF_INTERFACE_CREATED);
+		nb->subscribe(this, NF_SUBSCRIBERLIST_CHANGED);
+
+		upperLayerIn = findGate("upperLayerIn");
+		upperLayerOut = findGate("upperLayerOut");
+		lowerLayerIn = findGate("lowerLayerIn");
+		lowerLayerOut = findGate("lowerLayerOut");
+	} else if (stage == 2) {
+		// Set IP Address
+		interfaceEntry->ipv4Data()->setIPAddress(IPAddress(192, 168, 0, ++TbusRadioMAC::ipByte));
+		interfaceEntry->ipv4Data()->setNetmask(IPAddress::ALLONES_ADDRESS);
+
+		// Add default route
+		IRoutingTable* routingTable = RoutingTableAccess().getIfExists();
+		if (routingTable) {
+			IPRoute* route = new IPRoute();
+			route->setHost(IPAddress(192, 168, 0, 0));
+			route->setNetmask(IPAddress(255, 255, 255, 0));
+			route->setInterface(interfaceEntry);
+			route->setSource(IPRoute::MANUAL);
+
+			routingTable->addRoute(route);
+		}
+
+		EV << "Interface "<< this->getParentModule()->getFullName() << " now has IP address " << interfaceEntry->ipv4Data()->getIPAddress() << endl;
 	}
-
-	IPv4InterfaceData* interfaceData = new IPv4InterfaceData();
-	interfaceEntry->setIPv4Data(interfaceData);
-
-	interfaceData->setMetric((int) ceil(2e9/interfaceEntry->getDatarate()));
-
-	interfaceData->setIPAddress(IPAddress(192, 168, 0, ++TbusRadioMAC::ipByte));
-	interfaceData->setNetmask(IPAddress("255.255.255.0"));
-
-	nb = NotificationBoardAccess().getIfExists();
-	nb->subscribe(this, NF_INTERFACE_CREATED);
-	nb->subscribe(this, NF_SUBSCRIBERLIST_CHANGED);
-
-	upperLayerIn = findGate("upperLayerIn");
-	upperLayerOut = findGate("upperLayerOut");
-	lowerLayerIn = findGate("lowerLayerIn");
-	lowerLayerOut = findGate("lowerLayerOut");
 }
 
 void TbusRadioMAC::handleMessage(cMessage* msg) {
+	std::cout << "TbusRadioMAC handles Message of class " << msg->getClassName() << endl;
+
 	if (msg->arrivedOn(upperLayerIn)) {
 		send(msg, lowerLayerOut);
 	} else if (msg->arrivedOn(lowerLayerIn)) {
