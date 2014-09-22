@@ -20,11 +20,14 @@
 
 #include "ChannelControl.h"
 #include "ChannelAccess.h"
+#include "IPAddress.h"
 
 class TbusChannelControl : public ChannelControl {
 private:
 	int routerInGate;
 	int routerOutGate;
+
+	std::map<IPAddress, ChannelControl::HostRef> hostMap;
 public:
     TbusChannelControl();
     virtual ~TbusChannelControl();
@@ -33,6 +36,7 @@ public:
     void handleMessage(cMessage* msg);
 
     ChannelControl::HostRef registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate);
+    void registerIP(ChannelControl::HostRef hostRef);
 
 //    void sendToChannel(cSimpleModule *srcRadioMod, HostRef srcHost, AirFrame *airFrame);
 

@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libtbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/util -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
+#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/world -I../../inetmanet/src/transport/contract -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/util -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
 #
 
 # Name of target to be created (-o option)
@@ -12,8 +12,8 @@ TARGET = libtbus-vsimrti$(SHARED_LIB_SUFFIX)
 INCLUDE_PATH = \
     -I../../inetmanet/src/networklayer/arp \
     -I../../inetmanet/src/transport/sctp \
-    -I../../inetmanet/src/transport/contract \
     -I../../inetmanet/src/world \
+    -I../../inetmanet/src/transport/contract \
     -I../../inetmanet/src/linklayer/mfcore \
     -I../../inetmanet/src/linklayer/ethernet \
     -I../../inetmanet/src/util \
@@ -186,6 +186,7 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
 	$(INETMANET_PROJ)/src/linklayer/mfcore/AirFrame_m.h \
 	$(INETMANET_PROJ)/src/linklayer/mfcore/ModulationType.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
@@ -201,8 +202,19 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
 	$(INETMANET_PROJ)/src/base/NotificationBoard.h \
 	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
+	$(INETMANET_PROJ)/src/linklayer/contract/MACAddress.h \
 	$(INETMANET_PROJ)/src/linklayer/mfcore/AirFrame_m.h \
 	$(INETMANET_PROJ)/src/linklayer/mfcore/ModulationType.h \
+	$(INETMANET_PROJ)/src/networklayer/common/IInterfaceTable.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceEntry.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceToken.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPAddressResolver.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPProtocolId_m.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPv6Address.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPvXAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPDatagram_m.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPv4InterfaceData.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \

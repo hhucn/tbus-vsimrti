@@ -17,6 +17,12 @@
 
 #include "TbusChannelControl.h"
 #include "omnetpp.h"
+#include "IPAddressResolver.h"
+#include "IInterfaceTable.h"
+#include "InterfaceEntry.h"
+#include "IPv4InterfaceData.h"
+#include "IPDatagram_m.h"
+#include <map>
 
 Define_Module(TbusChannelControl);
 
@@ -44,6 +50,25 @@ ChannelControl::HostRef TbusChannelControl::registerHost(cModule *host, const Co
 	return hostRef;
 }
 
+void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
+	IInterfaceTable* interfaceTable = IPAddressResolver().interfaceTableOf(hostRef->host);
+	InterfaceEntry* ie = NULL;
+
+	for (int i = 0; i < interfaceTable->getNumInterfaces(); i++) {
+		ie = interfaceTable->getInterface(i);
+
+		if (!ie->isLoopback()) {
+			break;
+		}
+	}
+
+	ASSERT2(ie != NULL, "No non-loopback interface found!");
+
+	hostMap.insert(std::pair<IPAddress, ChannelControl::HostRef>(ie->ipv4Data()->getIPAddress(), hostRef));
+
+	EV << "Registered " << hostRef->host->getFullName() << " with address " << ie->ipv4Data()->getIPAddress() << endl;
+}
+
 void TbusChannelControl::handleMessage(cMessage* msg) {
 	// TODO: Handle router messages
 }
@@ -56,13 +81,35 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 	Enter_Method_Silent();
 	take(msg);
 
+	IPDatagram* packet = check_and_cast<IPDatagram*>(msg);
+
+	if (packet) {
+		IPAddress ip = packet->getDestAddress();
+
+		if (ip == IPAddress::ALLONES_ADDRESS) {
+			// Broadcast
+			EV << "Broadcasting message " << msg->getFullName() << endl;
+
+			for (HostList::iterator it = hosts.begin(); it != hosts.end(); ++it) {
+				if (strcmp(h->host->getFullName(), it->host->getFullName()) != 0) {
+					sendDirect(msg->dup(), it->radioInGate);
+				}
+			}
+		} else {
+			// We suppose unicast here
+			EV << "Unicasting message " << msg->getFullName() << endl;
+
+			ChannelControl::HostRef destinationHost = hostMap.find(ip)->second;
+
+			sendDirect(msg->dup(), destinationHost->radioInGate);
+		}
+	} else {
+		opp_error("Tbus Channel Control received non-IPDatagram packet!");
+	}
+
 		EV << "Sending message from " << msg->getSenderModule() << std::endl;
 
-	for (HostList::iterator it = hosts.begin(); it != hosts.end(); ++it) {
-		if (strcmp(h->host->getFullName(), it->host->getFullName()) != 0) {
-			sendDirect(msg->dup(), it->radioInGate);
-		}
-	}
+
 
 	//TODO/DISCUSSION: Send the message to router?
 

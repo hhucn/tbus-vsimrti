@@ -45,6 +45,9 @@ void TbusRadioPHY::initialize(int stage) {
 		nb->subscribe(this, NF_HOSTPOSITION_UPDATED);
 
 		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
+	} else if (stage == 2) {
+		// Register ip address at channel control
+		tbusCC->registerIP(myHostRef);
 	}
 }
 

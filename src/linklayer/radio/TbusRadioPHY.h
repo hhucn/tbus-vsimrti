@@ -42,6 +42,7 @@ public:
     virtual ~TbusRadioPHY();
 
     void initialize(int stage);
+    int numInitStages() const { return 3; }
     void handleMessage(cMessage* msg);
     void finish();
 
