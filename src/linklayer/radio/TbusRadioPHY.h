@@ -21,6 +21,7 @@
 #include "ChannelAccess.h"
 #include "Coord.h"
 #include "omnetpp.h"
+#include "TbusQueueControl.h"
 
 class TbusRadioPHY : public ChannelAccess {
 private:
@@ -29,6 +30,7 @@ private:
 	int radioIn;
 
 	TbusChannelControl* tbusCC;
+	TbusQueueControl* queueControl;
 
 protected:
 	void handleSelfMessage(cMessage* msg);

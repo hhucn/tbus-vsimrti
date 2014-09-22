@@ -15,22 +15,36 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSQUEUECONTROL_H_
+#define TBUSQUEUECONTROL_H_
 
-//
-// TODO auto-generated type
-//
-simple TbusRadioPHY {
-    parameters:
-        @class("TbusRadioPHY");
-        
-	gates:
-	    input  upperLayerIn;
-	    output upperLayerOut;
-	    input radioIn @directIn;
-	    
-	    inout cdrqControl;
-	    inout crrqControl;
-	    inout crsqControl;
-	    inout cdsqControl;
-}
+#include <csimplemodule.h>
+
+#include "CDRQ.h"
+#include "CRRQ.h"
+#include "CRSQ.h"
+#include "CDSQ.h"
+#include "Coord.h"
+
+class TbusQueueControl : public cSimpleModule {
+	private:
+		projekt::CDRQ* cdrq;
+		projekt::CRRQ* crrq;
+		projekt::CRSQ* crsq;
+		projekt::CDSQ* cdsq;
+
+		int cdrqControl;
+		int crrqControl;
+		int crsqControl;
+		int cdsqControl;
+
+	public:
+		TbusQueueControl();
+		virtual ~TbusQueueControl();
+
+		void updateQueues(const Coord& newCoords);
+
+		void initialize();
+};
+
+#endif /* TBUSQUEUECONTROL_H_ */

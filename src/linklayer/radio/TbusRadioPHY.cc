@@ -18,6 +18,10 @@
 #include "TbusChannelControl.h"
 #include "ChannelControl.h"
 #include "TbusRadioPHY.h"
+#include "Datarate.h"
+#include "Bbdelay.h"
+#include "ModuleAccess.h"
+#include "TbusQueueControl.h"
 
 Define_Module(TbusRadioPHY);
 
@@ -45,6 +49,8 @@ void TbusRadioPHY::initialize(int stage) {
 		nb->subscribe(this, NF_HOSTPOSITION_UPDATED);
 
 		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
+		cModule* parent = this->getParentModule();
+		queueControl = ModuleAccess<TbusQueueControl>("queueControl").get();
 	} else if (stage == 2) {
 		// Register ip address at channel control
 		tbusCC->registerIP(myHostRef);
@@ -95,6 +101,7 @@ void TbusRadioPHY::sendToChannel(cMessage* msg) {
 void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {
 	if (category == NF_HOSTPOSITION_UPDATED) {
 		// TODO: Update queues for host position
+		queueControl->updateQueues(this->getMyPosition());
 		EV << "TbusRadio receive change notification!" << std::endl;
 	}
 }

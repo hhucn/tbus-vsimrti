@@ -22,12 +22,16 @@
 #include "ChannelAccess.h"
 #include "IPAddress.h"
 
+class TbusRadioPHY;
+
 class TbusChannelControl : public ChannelControl {
 private:
 	int routerInGate;
 	int routerOutGate;
 
 	std::map<IPAddress, ChannelControl::HostRef> hostMap;
+
+	typedef std::pair<IPAddress, ChannelControl::HostRef> ip2host;
 public:
     TbusChannelControl();
     virtual ~TbusChannelControl();
@@ -38,10 +42,6 @@ public:
     ChannelControl::HostRef registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate);
     void registerIP(ChannelControl::HostRef hostRef);
 
-//    void sendToChannel(cSimpleModule *srcRadioMod, HostRef srcHost, AirFrame *airFrame);
-
-//    void sendToRouter(TbusAirFrame* airFrame);
-//    void sendToClient(TbusMessage* message, HostRef Client);
     void sendToChannel(cMessage* msg, HostRef h);
 
     void updateHostPosition(HostRef h, const Coord& pos);

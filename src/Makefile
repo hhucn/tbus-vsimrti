@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libtbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/world -I../../inetmanet/src/transport/contract -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/util -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
+#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/world -I../../inetmanet/src/transport/contract -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/util -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
 #
 
 # Name of target to be created (-o option)
@@ -16,8 +16,8 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/transport/contract \
     -I../../inetmanet/src/linklayer/mfcore \
     -I../../inetmanet/src/linklayer/ethernet \
-    -I../../inetmanet/src/util \
     -I../../inetmanet/src/networklayer/ted \
+    -I../../inetmanet/src/util \
     -I../../inetmanet/src/linklayer/ieee80211/mac \
     -I../../inetmanet/src/networklayer/queue \
     -I../../inetmanet/src/networklayer/common \
@@ -27,8 +27,8 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/linklayer/radio/errormodel \
     -I../../inetmanet/src/transport/tcp \
     -I../../inetmanet/src/util/headerserializers \
-    -I../../inetmanet/src/transport/udp \
     -I../../inetmanet/src/networklayer/rsvp_te \
+    -I../../inetmanet/src/transport/udp \
     -I../../inetmanet/src/networklayer/ipv4 \
     -I../../inetmanet/src/networklayer/icmpv6 \
     -I../../inetmanet/src/base \
@@ -43,6 +43,17 @@ INCLUDE_PATH = \
     -Inodes \
     -Inodes/mobile \
     -Inodes/router \
+    -Iqueues \
+    -Iqueues/helper \
+    -Iqueues/interfaces \
+    -Iqueues/logfiles \
+    -Iqueues/message \
+    -Iqueues/ned \
+    -Iqueues/network \
+    -Iqueues/nodes \
+    -Iqueues/queues_download \
+    -Iqueues/queues_upload \
+    -Iqueues/router \
     -Iworld
 
 # Additional object and library files to link with
@@ -58,10 +69,38 @@ PROJECTRELATIVE_PATH = src
 O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
-OBJS = $O/linklayer/radio/TbusRadioPHY.o $O/linklayer/radio/TbusRadio.o $O/linklayer/radio/TbusRadioMAC.o $O/nodes/router/TbusRouterNode.o $O/world/TbusChannelControl.o
+OBJS = \
+    $O/linklayer/radio/TbusRadioPHY.o \
+    $O/linklayer/radio/TbusQueueControl.o \
+    $O/linklayer/radio/TbusRadio.o \
+    $O/linklayer/radio/TbusRadioMAC.o \
+    $O/nodes/router/TbusRouterNode.o \
+    $O/queues/helper/Localtime.o \
+    $O/queues/logfiles/LogPackets.o \
+    $O/queues/logfiles/LogCDF.o \
+    $O/queues/logfiles/LogDatarate.o \
+    $O/queues/logfiles/LogFileWriter.o \
+    $O/queues/logfiles/LogFileReader.o \
+    $O/queues/logfiles/LogBbdelay.o \
+    $O/queues/network/Datarate.o \
+    $O/queues/network/Bbdelay.o \
+    $O/queues/nodes/MobileNode.o \
+    $O/queues/nodes/InternetNode.o \
+    $O/queues/queues_download/CDRQ.o \
+    $O/queues/queues_download/CRRQ.o \
+    $O/queues/queues_upload/CRSQ.o \
+    $O/queues/queues_upload/CDSQ.o \
+    $O/queues/router/Router.o \
+    $O/queues/router/Queue.o \
+    $O/queues/router/Routing.o \
+    $O/world/TbusChannelControl.o \
+    $O/queues/message/MyPacket_m.o \
+    $O/queues/message/SendHeadAndDeletePacket_m.o
 
 # Message files
-MSGFILES =
+MSGFILES = \
+    queues/message/MyPacket.msg \
+    queues/message/SendHeadAndDeletePacket.msg
 
 # Other makefile variables (-K)
 INETMANET_PROJ=../../inetmanet
@@ -144,6 +183,17 @@ clean:
 	$(Q)-rm -f nodes/*_m.cc nodes/*_m.h
 	$(Q)-rm -f nodes/mobile/*_m.cc nodes/mobile/*_m.h
 	$(Q)-rm -f nodes/router/*_m.cc nodes/router/*_m.h
+	$(Q)-rm -f queues/*_m.cc queues/*_m.h
+	$(Q)-rm -f queues/helper/*_m.cc queues/helper/*_m.h
+	$(Q)-rm -f queues/interfaces/*_m.cc queues/interfaces/*_m.h
+	$(Q)-rm -f queues/logfiles/*_m.cc queues/logfiles/*_m.h
+	$(Q)-rm -f queues/message/*_m.cc queues/message/*_m.h
+	$(Q)-rm -f queues/ned/*_m.cc queues/ned/*_m.h
+	$(Q)-rm -f queues/network/*_m.cc queues/network/*_m.h
+	$(Q)-rm -f queues/nodes/*_m.cc queues/nodes/*_m.h
+	$(Q)-rm -f queues/queues_download/*_m.cc queues/queues_download/*_m.h
+	$(Q)-rm -f queues/queues_upload/*_m.cc queues/queues_upload/*_m.h
+	$(Q)-rm -f queues/router/*_m.cc queues/router/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
 
 cleanall: clean
@@ -151,9 +201,29 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/helper/*.cc queues/interfaces/*.cc queues/logfiles/*.cc queues/message/*.cc queues/ned/*.cc queues/network/*.cc queues/nodes/*.cc queues/queues_download/*.cc queues/queues_upload/*.cc queues/router/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/linklayer/radio/TbusQueueControl.o: linklayer/radio/TbusQueueControl.cc \
+	$(INETMANET_PROJ)/src/base/Coord.h \
+	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
+	$(INETMANET_PROJ)/src/util/FWMath.h \
+	linklayer/radio/TbusQueueControl.h \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IBbdelayQueue.h \
+	queues/interfaces/IDatarateQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/queues_download/CDRQ.h \
+	queues/queues_download/CRRQ.h \
+	queues/queues_upload/CDSQ.h \
+	queues/queues_upload/CRSQ.h
 $O/linklayer/radio/TbusRadio.o: linklayer/radio/TbusRadio.cc \
 	linklayer/radio/TbusRadio.h
 $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
@@ -190,10 +260,149 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	linklayer/radio/TbusQueueControl.h \
 	linklayer/radio/TbusRadioPHY.h \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IBbdelayQueue.h \
+	queues/interfaces/IDatarateQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/queues_download/CDRQ.h \
+	queues/queues_download/CRRQ.h \
+	queues/queues_upload/CDSQ.h \
+	queues/queues_upload/CRSQ.h \
 	world/TbusChannelControl.h
 $O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
 	nodes/router/TbusRouterNode.h
+$O/queues/helper/Localtime.o: queues/helper/Localtime.cc \
+	queues/helper/Localtime.h
+$O/queues/logfiles/LogBbdelay.o: queues/logfiles/LogBbdelay.cc \
+	queues/logfiles/LogBbdelay.h
+$O/queues/logfiles/LogCDF.o: queues/logfiles/LogCDF.cc \
+	queues/logfiles/LogCDF.h
+$O/queues/logfiles/LogDatarate.o: queues/logfiles/LogDatarate.cc \
+	queues/logfiles/LogDatarate.h
+$O/queues/logfiles/LogFileReader.o: queues/logfiles/LogFileReader.cc \
+	queues/helper/Preamble.h \
+	queues/logfiles/LogBbdelay.h \
+	queues/logfiles/LogDatarate.h \
+	queues/logfiles/LogFileReader.h \
+	queues/logfiles/LogPackets.h
+$O/queues/logfiles/LogFileWriter.o: queues/logfiles/LogFileWriter.cc \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h
+$O/queues/logfiles/LogPackets.o: queues/logfiles/LogPackets.cc \
+	queues/logfiles/LogPackets.h
+$O/queues/message/MyPacket_m.o: queues/message/MyPacket_m.cc \
+	queues/message/MyPacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h
+$O/queues/message/SendHeadAndDeletePacket_m.o: queues/message/SendHeadAndDeletePacket_m.cc \
+	queues/message/SendHeadAndDeletePacket_m.h
+$O/queues/network/Bbdelay.o: queues/network/Bbdelay.cc \
+	queues/network/Bbdelay.h
+$O/queues/network/Datarate.o: queues/network/Datarate.cc \
+	queues/network/Datarate.h
+$O/queues/nodes/InternetNode.o: queues/nodes/InternetNode.cc \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/logfiles/LogBbdelay.h \
+	queues/logfiles/LogCDF.h \
+	queues/logfiles/LogDatarate.h \
+	queues/logfiles/LogFileReader.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/logfiles/LogPackets.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/nodes/InternetNode.h
+$O/queues/nodes/MobileNode.o: queues/nodes/MobileNode.cc \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IBbdelayQueue.h \
+	queues/interfaces/IDatarateQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogBbdelay.h \
+	queues/logfiles/LogCDF.h \
+	queues/logfiles/LogDatarate.h \
+	queues/logfiles/LogFileReader.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/logfiles/LogPackets.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/nodes/InternetNode.h \
+	queues/nodes/MobileNode.h \
+	queues/queues_download/CDRQ.h \
+	queues/queues_download/CRRQ.h \
+	queues/queues_upload/CDSQ.h \
+	queues/queues_upload/CRSQ.h
+$O/queues/queues_download/CDRQ.o: queues/queues_download/CDRQ.cc \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IBbdelayQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/queues_download/CDRQ.h
+$O/queues/queues_download/CRRQ.o: queues/queues_download/CRRQ.cc \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IDatarateQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/queues_download/CRRQ.h
+$O/queues/queues_upload/CDSQ.o: queues/queues_upload/CDSQ.cc \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IBbdelayQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/queues_upload/CDSQ.h
+$O/queues/queues_upload/CRSQ.o: queues/queues_upload/CRSQ.cc \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IDatarateQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/queues_upload/CRSQ.h
+$O/queues/router/Queue.o: queues/router/Queue.cc \
+	queues/router/Queue.h
+$O/queues/router/Router.o: queues/router/Router.cc \
+	queues/router/Router.h
+$O/queues/router/Routing.o: queues/router/Routing.cc \
+	queues/helper/Preamble.h \
+	queues/message/MyPacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/router/Routing.h
 $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \
@@ -218,5 +427,21 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	linklayer/radio/TbusQueueControl.h \
+	linklayer/radio/TbusRadioPHY.h \
+	queues/helper/Localtime.h \
+	queues/helper/Preamble.h \
+	queues/interfaces/IBbdelayQueue.h \
+	queues/interfaces/IDatarateQueue.h \
+	queues/interfaces/IQueue.h \
+	queues/logfiles/LogFileWriter.h \
+	queues/message/MyPacket_m.h \
+	queues/message/SendHeadAndDeletePacket_m.h \
+	queues/network/Bbdelay.h \
+	queues/network/Datarate.h \
+	queues/queues_download/CDRQ.h \
+	queues/queues_download/CRRQ.h \
+	queues/queues_upload/CDSQ.h \
+	queues/queues_upload/CRSQ.h \
 	world/TbusChannelControl.h
 

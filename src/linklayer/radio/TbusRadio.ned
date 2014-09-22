@@ -19,6 +19,10 @@ package tbus.linklayer.radio;
 
 import tbus.linklayer.radio.TbusRadioPHY;
 import tbus.linklayer.radio.TbusRadioMAC;
+import tbus.queues.ned.CDRQ;
+import tbus.queues.ned.CDSQ;
+import tbus.queues.ned.CRRQ;
+import tbus.queues.ned.CRSQ;
 
 module TbusRadio
 {
@@ -30,15 +34,37 @@ module TbusRadio
         input radioIn @directIn;
     submodules:
         phy: TbusRadioPHY {
-            @display("p=50,145");
+            @display("p=278,248");
         }
         mac: TbusRadioMAC {
-            @display("p=50,58");
+            @display("p=278,63");
+        }
+        cdrq: CDRQ {
+            @display("p=172,209");
+        }
+        cdsq: CDSQ {
+            @display("p=389,209");
+        }
+        crrq: CRRQ {
+            @display("p=172,102");
+        }
+        crsq: CRSQ {
+            @display("p=389,102");
         }
     connections:
         upperLayerIn --> mac.upperLayerIn;
         upperLayerOut <-- mac.upperLayerOut;
-        mac.lowerLayerIn <-- phy.upperLayerOut;
-        mac.lowerLayerOut --> phy.upperLayerIn;
+
+        mac.lowerLayerIn <-- crrq.out;
+        mac.lowerLayerOut --> crsq.in;
+
+        crrq.in <-- cdrq.out;
+        crsq.out --> cdsq.in;
+
+        cdrq.in <-- phy.upperLayerOut;
+        cdsq.out --> phy.upperLayerIn;
+
+        //        mac.lowerLayerIn <-- phy.upperLayerOut;
+        //        mac.lowerLayerOut --> phy.upperLayerIn;
         radioIn --> phy.radioIn;
 }

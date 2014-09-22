@@ -22,6 +22,7 @@
 #include "InterfaceEntry.h"
 #include "IPv4InterfaceData.h"
 #include "IPDatagram_m.h"
+#include "TbusRadioPHY.h"
 #include <map>
 
 Define_Module(TbusChannelControl);
@@ -64,7 +65,7 @@ void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
 
 	ASSERT2(ie != NULL, "No non-loopback interface found!");
 
-	hostMap.insert(std::pair<IPAddress, ChannelControl::HostRef>(ie->ipv4Data()->getIPAddress(), hostRef));
+	hostMap.insert(ip2host(ie->ipv4Data()->getIPAddress(), hostRef));
 
 	EV << "Registered " << hostRef->host->getFullName() << " with address " << ie->ipv4Data()->getIPAddress() << endl;
 }
