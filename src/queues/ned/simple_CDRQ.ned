@@ -3,14 +3,16 @@
 //@date 22.12.2013
 //Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
 //
+//
+// Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+//
 
 package tbus.queues.ned;
 
 // Client Delay Receive Queue
 // Queue for simulating download backbone delay. Contains in and outgate, as well as extra gate for control message
 // Signals are included, but will not be collected
-simple CDRQ
-{
+simple CDRQ {
     // all parameters
 	parameters:
 		@display("i=block/queue");    // displaying as queue
@@ -21,11 +23,6 @@ simple CDRQ
         //# alternativ: collecting stats
         // will display signal 'CDRQ_bbdelay' as histogram and vector, with no interpolation
 		@statistic[bbdelay]		(title="CDRQ bb delay";	source="CDRQ_bbdelay"; unit="simtime_t"; record=histogram,vector; interpolationmode=none);
-		
-		//# attributes
-		bool writingLogFileNode             = default(false);   // when true, logfiles for behaviour of node should be collected
-        bool writingLogFileQueue            = default(false);   // true, when logfiles for behaviour of CDRQ should be collected
-        string outputPathPrefix	            = default("");      // string for user-specific path for logfiles
         
     // all in, out and control gates
 	gates:

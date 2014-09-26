@@ -34,6 +34,8 @@ TbusQueueControl::~TbusQueueControl()
 }
 
 void TbusQueueControl::initialize() {
+	// Gates are not needed because we communicate directly with the queues
+	// Just to silent warnings about non-connected gates
 	cdrqControl		= findGate("cdrqControl");
 	crrqControl		= findGate("crrqControl");
 	crsqControl		= findGate("cdsqControl");
@@ -47,5 +49,33 @@ void TbusQueueControl::initialize() {
 }
 
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
-	// Call datarate and bbdelay functions of queues
+	// Act like this is part of our PHY layer
+	Enter_Method_Silent();
+
+	EV << "TbusQueueControl updating queues for coordinates " << newCoords << endl;
+
+	projekt::Datarate* sendDatarate = new projekt::Datarate();
+	projekt::Datarate* receiveDatarate = new projekt::Datarate();
+	projekt::Bbdelay* sendDelay = new projekt::Bbdelay();
+	projekt::Bbdelay* receiveDelay = new projekt::Bbdelay();
+
+	// TODO: Get Datarate and Delay for Position via database/source
+
+	sendDatarate->setDatarateSim(10.0);
+	receiveDatarate->setDatarateSim(10.0);
+	sendDatarate->setDroprate(0.05);
+	receiveDatarate->setDroprate(0.05);
+
+	sendDelay->setBbdelaySim(100000);
+	receiveDelay->setBbdelaySim(100000);
+
+	cdrq->bbDelayChanged(receiveDelay);
+	crrq->datarateChanged(receiveDatarate);
+	crsq->datarateChanged(sendDatarate);
+	cdsq->bbDelayChanged(sendDelay);
+
+	delete sendDatarate;
+	delete receiveDatarate;
+	delete sendDelay;
+	delete receiveDelay;
 }

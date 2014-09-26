@@ -4,8 +4,13 @@
  * Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
  */
 
+/**
+ * Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+ */
+
 #ifndef IQUEUE_H_
 #define IQUEUE_H_
+
 namespace projekt {
 
 #include "MyPacket_m.h"
@@ -17,19 +22,17 @@ class IQueue {
 
 	protected:
 		virtual void initialize() = 0;
-		virtual void writeLogToHarddrive(MyPacket* job, std::string filename, simtime_t currentDelay) = 0;
 
 		virtual void handleMessage(cMessage* msg) = 0;
 		virtual void handleControlMessage(cMessage* msg) = 0;
 
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t currentSimtime) = 0;
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t currentSimtime, simtime_t delay) = 0;
-		virtual void manipulateSelfMessageProcess(simtime_t currentSimtime) = 0;
+		virtual void scheduleNewSendHeadAndDeletePacket() = 0;
+		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t delay) = 0;
+		virtual void manipulateSelfMessageProcess() = 0;
 
-		virtual void addPacketToQueue(MyPacket* job, simtime_t currentSimtime) = 0;
-}
-;
-}
-;
+		virtual void addPacketToQueue(MyPacket* job) = 0;
+};
+
+};
 
 #endif /* IQUEUE_H_ */

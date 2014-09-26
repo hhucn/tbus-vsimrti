@@ -15,17 +15,22 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSQUEUECONTROLINFO_H_
+#define TBUSQUEUECONTROLINFO_H_
 
-//
-// TODO auto-generated type
-//
-simple TbusRadioPHY {
-    parameters:
-        @class("TbusRadioPHY");
-        
-	gates:
-	    input  upperLayerIn;
-	    output upperLayerOut;
-	    input radioIn @directIn;
-}
+#include <cobject.h>
+#include "omnetpp.h"
+
+namespace projekt {
+
+class TbusQueueControlInfo : public cObject {
+	private:
+		simtime_t earliestDelivery;
+	public:
+		TbusQueueControlInfo();
+		virtual ~TbusQueueControlInfo();
+};
+
+} /* namespace projekt */
+
+#endif /* TBUSQUEUECONTROLINFO_H_ */

@@ -26,8 +26,7 @@
 Define_Module(TbusRadioPHY);
 
 TbusRadioPHY::TbusRadioPHY() {
-    // TODO Auto-generated constructor stub
-
+	myHostRef = NULL;
 }
 
 TbusRadioPHY::~TbusRadioPHY() {
@@ -49,7 +48,6 @@ void TbusRadioPHY::initialize(int stage) {
 		nb->subscribe(this, NF_HOSTPOSITION_UPDATED);
 
 		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
-		cModule* parent = this->getParentModule();
 		queueControl = ModuleAccess<TbusQueueControl>("queueControl").get();
 	} else if (stage == 2) {
 		// Register ip address at channel control
@@ -100,8 +98,9 @@ void TbusRadioPHY::sendToChannel(cMessage* msg) {
 
 void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {
 	if (category == NF_HOSTPOSITION_UPDATED) {
-		// TODO: Update queues for host position
-		queueControl->updateQueues(this->getMyPosition());
+		if (myHostRef) {
+			queueControl->updateQueues(myHostRef->pos);
+		}
 		EV << "TbusRadio receive change notification!" << std::endl;
 	}
 }

@@ -3,6 +3,9 @@
  * @date 22.12.2013
  * Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
  */
+/**
+ * Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+ */
 
 #ifndef BBDELAY_H_
 #define BBDELAY_H_

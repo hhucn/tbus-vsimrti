@@ -3,6 +3,9 @@
  * @date 22.12.2013
  * Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
  */
+/**
+ * Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+ */
 
 #include "Datarate.h"
 
@@ -48,8 +51,7 @@ Datarate::Datarate(double datarate, bool validdatarate, double droprate, std::st
  * @param modemMode String representing the network technology used during
  * measurement
  */
-Datarate::Datarate(double datarate, double longitude, double latitude, bool validdatarate, double droprate, std::string modemMode, int sequenceNumber,
-		simtime_t tstamp) {
+Datarate::Datarate(double datarate, double longitude, double latitude, bool validdatarate, double droprate, std::string modemMode, int sequenceNumber, simtime_t tstamp) {
 	setDatarate(datarate);
 	setLongitude(longitude);
 	setLatitude(latitude);

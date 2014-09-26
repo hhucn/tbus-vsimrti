@@ -3,6 +3,9 @@
  * @date 22.12.2013
  * Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
  */
+/**
+ * Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+ */
 
 #ifndef CRRQ_H_
 #define CRRQ_H_
@@ -10,8 +13,6 @@
 #include "MyPacket_m.h"
 #include "SendHeadAndDeletePacket_m.h"
 #include "Preamble.h"
-#include "Localtime.h"
-#include "LogFileWriter.h"
 #include "IDatarateQueue.h"
 #include "IQueue.h"
 
@@ -28,18 +29,6 @@ class CRRQ : public cSimpleModule, public IQueue, public IDatarateQueue {
 
 		// remaining buffer in queue
 		int freeBufferInByte;
-
-		// boolean for test mode (in test mode we dont want logs)
-		bool isInTestMode;
-
-		//output path for logfiles
-		std::string outputPath;
-
-		//Filewrite for logfiles
-		LogFileWriter *logwriter;
-
-		// local time for output path
-		std::string localTime;
 
 		// our packet queue
 		cPacketQueue *queue;
@@ -67,30 +56,28 @@ class CRRQ : public cSimpleModule, public IQueue, public IDatarateQueue {
 
 	public:
 		CRRQ();
-		CRRQ(bool testModeEnabled);
 		virtual ~CRRQ();
-		virtual void datarateChanged(Datarate* newDatarate, simtime_t currentSimtime);
+		virtual void datarateChanged(Datarate* newDatarate);
 		friend class CRRQ_test; // need for tests
 
 	protected:
 		virtual void initialize();
-		virtual void writeLogToHarddrive(MyPacket* job, std::string filename, simtime_t currentDelay);
 
 		virtual void handleMessage(cMessage* msg);
-		virtual void handleSendHeadAndDeletePacket(simtime_t currentSimtime, SendHeadAndDeletePacket* sendHeadPacket);
+		virtual void handleSendHeadAndDeletePacket(SendHeadAndDeletePacket* sendHeadPacket);
 		virtual void handleControlMessage(cMessage* msg);
 
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t currentSimtime);
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t currentSimtime, simtime_t delay);
-		virtual void manipulateSelfMessageProcess(simtime_t currentSimtime);
+		virtual void scheduleNewSendHeadAndDeletePacket();
+		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t delay);
+		virtual void manipulateSelfMessageProcess();
 
-		virtual void addPacketToQueue(MyPacket* job, simtime_t currentSimtime);
+		virtual void addPacketToQueue(MyPacket* job);
 
-		virtual double calculateLossProbability(simtime_t currentSimtime);
-		virtual simtime_t calculateDatarateDelay(double packetsize, simtime_t currentSimtime);
+		virtual double calculateLossProbability();
+		virtual simtime_t calculateDatarateDelay(double packetsize);
 
-		virtual void transmitOrLooseHead(simtime_t currentSimtime, bool retBool[]);
-		virtual void dispatch(simtime_t currentSimtime, bool retBool[]);
+		virtual void transmitOrLooseHead(bool retBool[]);
+		virtual void dispatch(bool retBool[]);
 }
 ;
 }

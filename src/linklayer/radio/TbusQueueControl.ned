@@ -17,15 +17,12 @@
 
 package tbus.linklayer.radio;
 
-//
-// TODO auto-generated type
-//
-simple TbusRadioPHY {
-    parameters:
-        @class("TbusRadioPHY");
-        
+simple TbusQueueControl {
+	parameters:
+		@display("");
 	gates:
-	    input  upperLayerIn;
-	    output upperLayerOut;
-	    input radioIn @directIn;
+	    inout cdrqControl;
+	    inout crrqControl;
+	    inout crsqControl;
+	    inout cdsqControl;
 }

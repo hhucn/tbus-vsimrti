@@ -3,14 +3,16 @@
 //@date 22.12.2013
 //Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
 //
+//
+// Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+//
 
 package tbus.queues.ned;
 
 // Client Datarate Receive Queue
 // Queue for simulating upload datarate delay. Contains in and outgate, as well as extra gate for control message
 // Signals are included, but will not be collected
-simple CRRQ
-{
+simple CRRQ {
     // all parameters
     parameters:
         @display("i=block/subqueue");    // displaying as subqueue
@@ -38,12 +40,6 @@ simple CRRQ
         // will display signal 'CRRQ_drop_simulated' as and vector, with no interpolation
         @statistic[dropsimulated](title="CRRQ drop simulated"; source="CRRQ_drop_simulated"; record=vector; unit="int"; interpolationmode=none);
 		
-		
-        //# attributes
-        bool writingLogFileNode             = default(false);    // when true, logfiles for behaviour of node should be collected
-        bool writingLogFileQueue            = default(false);    // true, when logfiles for behaviour of CRRQ should be collected
-        string outputPathPrefix				= default("");       // string for user-specific path for logfiles
-        
     // all in, out and control gates
     gates:
         input in;             // input gate, connected to CDRQ

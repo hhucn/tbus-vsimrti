@@ -3,6 +3,9 @@
  * @date 22.12.2013
  * Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
  */
+/**
+ * Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+ */
 
 // some Values
 #define kZERO									0.0
@@ -45,52 +48,6 @@
 #define kSTRING_CRSQ_SENDHEAD					"CRSQ send head"
 #define kSTRING_CDRQ_SENDHEAD					"CDRQ send head"
 #define kSTRING_CRRQ_SENDHEAD					"CRRQ send head"
-
-//strings for filennames
-#define kSTRING_FILE_CRSQ_SEND					"CRSQ.send"
-#define kSTRING_FILE_CDSQ_SEND					"CDSQ.end"
-#define kSTRING_FILE_CRRQ_SEND					"CRRQ.send"
-#define kSTRING_FILE_CDRQ_SEND					"CDRQ.send"
-#define kSTRING_FILE_CRSQ_SENDHEAD				"CRSQ.sendhead"
-#define kSTRING_FILE_CDSQ_SENDHEAD				"CDSQ.sendhead"
-#define kSTRING_FILE_CRRQ_SENDHEAD				"CRRQ.sendhead"
-#define kSTRING_FILE_CDRQ_SENDHEAD				"CDRQ.sendhead"
-#define kSTRING_FILE_CRSQ_RECEIVED				"CRSQ.received"
-#define kSTRING_FILE_CDSQ_RECEIVED				"CDSQ.received"
-#define kSTRING_FILE_CRRQ_RECEIVED				"CRRQ.received"
-#define kSTRING_FILE_CDRQ_RECEIVED				"CDRQ.received"
-#define kSTRING_FILE_UPLOADDATARATE				"uploaddatarate"
-#define kSTRING_FILE_UPLOADBBDELAY				"uploadbbdelay"
-#define kSTRING_FILE_UPLOADPACKETS				"uploadpackets"
-#define kSTRING_FILE_UPLOADRECEIVED				"uploadrec"
-#define kSTRING_FILE_UPLOADSEND					"uploadsend"
-#define kSTRING_FILE_UPLOADPACKETTIMESTAMPS     "uploadpackettimestamps"
-#define kSTRING_FILE_UPLOADPACKETSBBDELAY       "uploadpacketsbbdelay"
-#define kSTRING_FILE_UPLOADPACKETSDATARATE      "uploadpacketsdatarate"
-#define kSTRING_FILE_UPLOADCHAR					"uploadchar"
-#define kSTRING_FILE_UPLOADSTATS				"uploadstats"
-#define kSTRING_FILE_UPLOADSTATS_FIRSTDIFF		"uploadstats.firstdiff"
-#define kSTRING_FILE_UPLOADSTATS_LASTDIFF		"uploadstats.lastdiff"
-#define kSTRING_FILE_UPLOAD_SIMCDF				"uploadDelaySimCDF"
-#define kSTRING_FILE_UPLOAD_REALCDF				"uploadDelayRealCDF"
-#define kSTRING_FILE_DOWNLOADDATARATE			"downloaddatarate"
-#define kSTRING_FILE_DOWNLOADBBDELAY			"downloadbbdelay"
-#define kSTRING_FILE_DOWNLOADPACKETS			"downloadpackets"
-#define kSTRING_FILE_DOWNLOADRECEIVED			"downloadrec"
-#define kSTRING_FILE_DOWNLOADSEND				"downloadsend"
-#define kSTRING_FILE_DOWNLOADPACKETTIMESTAMPS	"downloadpackettimestamps"
-#define kSTRING_FILE_DOWNLOADPACKETSBBDELAY		"downloadpacketsbbdelay"
-#define kSTRING_FILE_DOWNLOADPACKETSDATARATE	"downloadpacketsdatarate"
-#define kSTRING_FILE_DOWNLOADCHAR				"downloadchar"
-#define kSTRING_FILE_DOWNLOADSTATS				"downloadstats"
-#define kSTRING_FILE_DOWNLOADSTATS_FIRSTDIFF	"downloadstats.firstdiff"
-#define kSTRING_FILE_DOWNLOADSTATS_LASTDIFF		"downloadstats.lastdiff"
-#define kSTRING_FILE_DOWNLOAD_SIMCDF			"downloadDelaySimCDF"
-#define kSTRING_FILE_DOWNLOAD_REALCDF			"downloadDelayRealCDF"
-#define kSTRING_FILE_PACKETS					"packets"
-#define kSTRING_FILE_PACKETSUPLOAD				"packets.upload"
-#define kSTRING_FILE_PACKETSDOWNLOAD			"packets.download"
-#define kSTRING_FILE_PACKETSSTATS				"packets.stats"
 
 
 //ports

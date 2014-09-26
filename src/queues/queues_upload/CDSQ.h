@@ -3,15 +3,17 @@
  * @date 22.12.2013
  * Copyright (c) Heinrich-Heine-Universität Düsseldorf. All rights reserved.
  */
+/**
+ * Modified for VSimRTI-Tbus by Raphael Bialon <Raphael.Bialon@hhu.de>
+ */
 
 #ifndef CDSQ_H_
 #define CDSQ_H_
 
+#include "MyPacket_m.h"
 #include "SendHeadAndDeletePacket_m.h"
 #include "Preamble.h"
 #include "Bbdelay.h"
-#include "Localtime.h"
-#include "LogFileWriter.h"
 #include "IBbdelayQueue.h"
 #include "IQueue.h"
 
@@ -32,18 +34,6 @@ class CDSQ : public cSimpleModule, public IQueue, public IBbdelayQueue {
 		// current self message for dispatching head of queue
 		SendHeadAndDeletePacket *currSendHeadCDSQPacket;
 
-		// boolean for test mode (in test mode we dont want logs)
-		bool isInTestMode;
-
-		//output path for logfiles
-		std::string outputPath;
-
-		// local time for output path
-		std::string localTime;
-
-		//Filewrite for logfiles
-		LogFileWriter *logwriter;
-
 		//some initialization value to overcome null pointer exceptions that happen at first bbdelay change event
 		Bbdelay* currentBbdelay;
 
@@ -55,31 +45,28 @@ class CDSQ : public cSimpleModule, public IQueue, public IBbdelayQueue {
 
 	public:
 		CDSQ();
-		CDSQ(bool testModeEnabled);
 		virtual ~CDSQ();
-		virtual void bbDelayChanged(Bbdelay* newBbdelay, simtime_t currentSimtime);
+		virtual void bbDelayChanged(Bbdelay* newBbdelay);
 		friend class CDSQ_test; // need for tests
 		friend class CRSQ_test; // need for tests
 
 	protected:
 		virtual void initialize();
-		virtual void writeLogToHarddrive(MyPacket* job, std::string filename, simtime_t currentDelay);
 
 		virtual void handleMessage(cMessage* msg);
 		virtual void handleControlMessage(cMessage* msg);
 
-		virtual simtime_t calculateBackboneDelay(simtime_t currentSimtime);
-		virtual simtime_t calculateRestBackboneDelay(MyPacket* job, simtime_t currentSimtime);
+		virtual simtime_t calculateBackboneDelay();
+		virtual simtime_t calculateRestBackboneDelay(MyPacket* job);
 
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t currentSimtime);
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t currentSimtime, simtime_t delay);
-		virtual void manipulateSelfMessageProcess(simtime_t currentSimtime);
+		virtual void scheduleNewSendHeadAndDeletePacket();
+		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t delay);
+		virtual void manipulateSelfMessageProcess();
 
-		virtual void addPacketToQueue(MyPacket* job, simtime_t currentSimtime);
-		virtual void dispatch(simtime_t currentSimtime);
-}
-;
-}
-;
+		virtual void addPacketToQueue(MyPacket* job);
+		virtual void dispatch();
+};
+
+};
 
 #endif /* CDSQ_H_ */

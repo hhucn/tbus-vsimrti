@@ -39,6 +39,8 @@ module TbusRadio
         mac: TbusRadioMAC {
             @display("p=278,63");
         }
+        queueControl: TbusQueueControl {
+        }
         cdrq: CDRQ {
             @display("p=172,209");
         }
@@ -67,4 +69,9 @@ module TbusRadio
         //        mac.lowerLayerIn <-- phy.upperLayerOut;
         //        mac.lowerLayerOut --> phy.upperLayerIn;
         radioIn --> phy.radioIn;
+        
+        queueControl.cdrqControl <--> cdrq.controlPort;
+        queueControl.cdsqControl <--> cdsq.controlPort;
+        queueControl.crrqControl <--> crrq.controlPort;
+        queueControl.crsqControl <--> crsq.controlPort;
 }

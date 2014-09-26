@@ -15,17 +15,17 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#include <control_info/TbusQueueControlInfo.h>
 
-//
-// TODO auto-generated type
-//
-simple TbusRadioPHY {
-    parameters:
-        @class("TbusRadioPHY");
-        
-	gates:
-	    input  upperLayerIn;
-	    output upperLayerOut;
-	    input radioIn @directIn;
+namespace projekt {
+
+TbusQueueControlInfo::TbusQueueControlInfo() {
+	// TODO Auto-generated constructor stub
+
 }
+
+TbusQueueControlInfo::~TbusQueueControlInfo() {
+	// TODO Auto-generated destructor stub
+}
+
+} /* namespace projekt */
