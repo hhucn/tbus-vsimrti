@@ -26,3 +26,51 @@ TbusDelayQueue::~TbusDelayQueue() {
 	// TODO Auto-generated destructor stub
 }
 
+void TbusDelayQueue::calculateEarliestDeliveries() {
+	simtime_t delay = this->currentDelay();
+
+	packetIterator it(queue);
+	for (; !it.end(); it++) {
+		cPacket* packet = check_and_cast<cPacket*>(it());
+		ASSERT2(packet, "Invalid packet in queue!");
+
+		this->calculateEarliestDeliveryForPacket(packet, delay);
+	}
+}
+
+void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
+	this->calculateEarliestDeliveryForPacket(packet, this->currentDelay());
+}
+
+void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime_t delay) {
+	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
+	ASSERT2(controlInfo, "Invalid control info on packet!");
+
+	// Calculations according to Tobias Krauthoffs work
+	simtime_t delayGone = simTime() - controlInfo->getQueueArrival();
+	simtime_t delayWait = delay - delayGone;
+
+	if (delayWait < simtime_t()) {
+		controlInfo->setEarliestDelivery(simTime());
+	} else {
+		controlInfo->setEarliestDelivery(simTime() + delayWait);
+	}
+}
+
+simtime_t TbusDelayQueue::currentDelay() {
+	ASSERT2(values.size() > 0, "Empty values array!");
+	// Calculations according to Tobias Krauthoffs work
+	simtime_t runtime = simTime() - values.front()->time;
+	simtime_t delay = simtime_t();
+	simtime_t endtime = simTime();
+	simtime_t starttime;
+
+	valueIterator it;
+	for (it = values.end(); it != values.begin(); --it) {
+		starttime = (*it)->time.dbl();
+		delay += (*it)->delay.dbl() * (endtime - starttime) / runtime;
+		endtime = starttime;
+	}
+
+	return delay;
+}

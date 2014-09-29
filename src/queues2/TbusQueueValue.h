@@ -18,10 +18,14 @@
 #ifndef TBUSQUEUEVALUE_H_
 #define TBUSQUEUEVALUE_H_
 
+#include "omnetpp.h"
+
 class TbusQueueValue
 {
 	public:
-		TbusQueueValue();
+		const simtime_t time;
+
+		TbusQueueValue() : time(simTime()) {};
 		virtual ~TbusQueueValue() = 0;
 
 		virtual bool operator!=(TbusQueueValue& other) = 0;

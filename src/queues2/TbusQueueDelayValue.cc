@@ -29,5 +29,5 @@ TbusQueueDelayValue::~TbusQueueDelayValue()
 }
 
 bool TbusQueueDelayValue::operator!=(TbusQueueDelayValue& other) {
-	return false;
+	return (this->delay != other.delay);
 }

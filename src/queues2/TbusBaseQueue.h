@@ -32,6 +32,7 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		virtual ~TbusBaseQueue();
 
 		typedef typename std::vector<T*>::iterator valueIterator;
+		typedef cPacketQueue::Iterator packetIterator;
 
 	protected:
 		cPacketQueue queue;

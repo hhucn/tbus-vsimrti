@@ -26,6 +26,8 @@ class TbusQueueDelayValue : public TbusQueueValue
 		TbusQueueDelayValue();
 		virtual ~TbusQueueDelayValue();
 
+		simtime_t delay;
+
 		virtual bool operator!=(TbusQueueDelayValue& other);
 };
 
