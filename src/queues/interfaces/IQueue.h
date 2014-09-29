@@ -19,18 +19,16 @@ namespace projekt {
 #include <string.h>
 
 class IQueue {
-
 	protected:
 		virtual void initialize() = 0;
 
 		virtual void handleMessage(cMessage* msg) = 0;
-		virtual void handleControlMessage(cMessage* msg) = 0;
 
-		virtual void scheduleNewSendHeadAndDeletePacket() = 0;
+//		virtual void scheduleNewSendHeadAndDeletePacket() = 0;
 		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t delay) = 0;
 		virtual void manipulateSelfMessageProcess() = 0;
 
-		virtual void addPacketToQueue(MyPacket* job) = 0;
+		virtual void addPacketToQueue(cMessage* msg) = 0;
 };
 
 };

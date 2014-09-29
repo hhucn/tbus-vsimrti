@@ -15,7 +15,7 @@ namespace projekt {
 #include <omnetpp.h>
 #include "Datarate.h"
 
-class IDatarateQueue{
+class IDatarateQueue {
 
 	public:
 		virtual void datarateChanged(Datarate* newDatarate) = 0;

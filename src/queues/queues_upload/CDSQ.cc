@@ -12,8 +12,7 @@
 namespace projekt {
 
 // this class defines the simple module with name CDSQ
-Define_Module(CDSQ)
-;
+Define_Module(CDSQ);
 
 /**
  * default constructor
@@ -36,7 +35,7 @@ CDSQ::~CDSQ() {
  * default initializer
  */
 void CDSQ::initialize() {
-	currentBbdelay = new Bbdelay(0.007, true, "DUMMY");
+	currentBbdelay = new Bbdelay();
 
 	signalBbdelay = registerSignal(kSIGNAL_CDSQ_BBDELAY);
 	emit(signalBbdelay, currentBbdelay->bbdelay());
@@ -54,7 +53,7 @@ void CDSQ::handleMessage(cMessage* msg) {
 
 	// check for control message
 	if (strcmp(msg->getFullName(), kSTRING_CONTROL_CDSQ) == 0) {
-		handleControlMessage(msg);
+//		handleControlMessage(msg);
 
 	// or normal message
 	} else if (job != 0) {
@@ -76,110 +75,54 @@ void CDSQ::handleMessage(cMessage* msg) {
 }
 
 /**
- * Handles control packet for changing delays
- * @param ControlPacket*
- */
-void CDSQ::handleControlMessage(cMessage* msg) {
-	EV<<getFullPath()<<" handles Packet for bbDelayChanged at " << msg->getArrivalTime() << endl;
-
-	// get new delays and call bbDelayChanged
-	cMsgPar *par = reinterpret_cast<cMsgPar*>(msg->getParList()[msg->findPar(kSTRING_NEWBBDELAYPOINTER)]);
-	Bbdelay* newBbdelay = reinterpret_cast<Bbdelay*>(par->pointerValue());
-	bbDelayChanged(newBbdelay);
-
-	delete(msg);
-	delete(newBbdelay);
-}
-
-/**
  * add a packet to the queue
  *
  * @param packet to add
  * @param simTime() simulation time
  */
-void CDSQ::addPacketToQueue(MyPacket* job) {
-	bool isQueueEmpty = queue->isEmpty();
-
-	// add timestamp
-	job->setTimestampsArraySize((1 + job->getTimestampsArraySize()));
-	char timelog[50];
-	sprintf(timelog, "%s %s,%.0f", kSTRING_CDSQ, kSTRING_RECEIVED, simTime().dbl() * kMULTIPLIER_S_TO_NS);
-	job->setTimestamps((job->getTimestampsArraySize() - 1), timelog);
-	job->setDCDSQ(simTime());
-
-	// manipulate tstamp when packet is dropped
-	if (job->getDroppedSimulated()) {
-		job->setArrivalTimeForLogging(job->getSendingTimeForLogging());
-	} else {
-		job->setArrivalTimeForLogging(simTime());
-	}
-
-	// log packet for bbdelay
-	if (job->getPacketNumber() == 0){
-		currentBbdelay->setCMsgNumberOfProbePackets(job->getNumberOfProbePackets());
-		currentBbdelay->setCMsgPayloadSize(job->getPayloadSize());
-		currentBbdelay->setDelay(simTime()-job->getStartTimeForLogging());
-		currentBbdelay->setDroprate(job->getDroprateQueue());
-	}
-
-	// add time for the earliest delivery
-	if (bbDelayVector.size() > 0 && bbTimeVector.size() > 0) {
-		simtime_t delay = calculateBackboneDelay();
-		job->setEarliestTimeForDelivery(simTime() + delay);
-	}
-
-	// insert packet into queue
-	queue->insert(job);
-
-	// starting self messaging process when queue is empty
-	if (isQueueEmpty) {
-		//update the vectors
-		bbDelayVector.push_back(currentBbdelay);
-		bbTimeVector.push_back(simTime());
-
-		// schedule self message
-		scheduleNewSendHeadAndDeletePacket(simTime());
-	}
-}
-
-/**
- * Will schedule a new self-message (which will send head of queue and pop it)
- * @param simTime(): actually simulation time
- */
-void CDSQ::scheduleNewSendHeadAndDeletePacket() {
-	if (currSendHeadCDSQPacket->isScheduled()) {
-		EV<< getFullPath() << " currSendHeadCDSQPacket is currently scheduled! SHOULD NOT HAPPEN";
-	}
-
-	simtime_t delay;
-	// get earliest time for delivery or calculate the time
-	if (((MyPacket*)queue->front())->getEarliestTimeForDelivery() == SIMTIME_ZERO) {
-		delay = calculateBackboneDelay();
-		// sub the time, which is already gone
-		simtime_t waited = simTime() - ((MyPacket*)queue->front())->getArrivalTime();
-		delay -= delay < SIMTIME_ZERO ? delay : waited;
-		((MyPacket*)queue->front())->setEarliestTimeForDelivery(simTime() + delay);
-	} else {
-		delay = ((MyPacket*)queue->front())->getEarliestTimeForDelivery() - simTime();
-	}
-
-	// dropped package got no delay
-	if (((MyPacket*)queue->front())->getDroppedSimulated()) {
-		delay = SIMTIME_ZERO;
-	}
-
-	// set new simtimes
-	currSendHeadCDSQPacket->setDeletePacketWithName(((MyPacket*)queue->front())->getName());
-	currSendHeadCDSQPacket->setSendingTimeForTesting(simTime());
-	currSendHeadCDSQPacket->setArrivalTimeForTesting(simTime()+delay);
-
-	// output in tkenv
-	// set datarate for logging
-	Bbdelay tmp = *currentBbdelay;
-	((MyPacket*) queue->front())->setBbdelay(tmp);
-	// send self msg
-	scheduleAt(simTime() + delay, currSendHeadCDSQPacket);
-	EV<< getFullPath() << " scheduled SendHeadAndDeletePacket with d_bb: " << delay << endl;
+void CDSQ::addPacketToQueue(cMessage* msg) {
+//	bool isQueueEmpty = queue->isEmpty();
+//
+//	// add timestamp
+//	job->setTimestampsArraySize((1 + job->getTimestampsArraySize()));
+//	char timelog[50];
+//	sprintf(timelog, "%s %s,%.0f", kSTRING_CDSQ, kSTRING_RECEIVED, simTime().dbl() * kMULTIPLIER_S_TO_NS);
+//	job->setTimestamps((job->getTimestampsArraySize() - 1), timelog);
+//	job->setDCDSQ(simTime());
+//
+//	// manipulate tstamp when packet is dropped
+//	if (job->getDroppedSimulated()) {
+//		job->setArrivalTimeForLogging(job->getSendingTimeForLogging());
+//	} else {
+//		job->setArrivalTimeForLogging(simTime());
+//	}
+//
+//	// log packet for bbdelay
+//	if (job->getPacketNumber() == 0){
+//		currentBbdelay->setCMsgNumberOfProbePackets(job->getNumberOfProbePackets());
+//		currentBbdelay->setCMsgPayloadSize(job->getPayloadSize());
+//		currentBbdelay->setDelay(simTime()-job->getStartTimeForLogging());
+//		currentBbdelay->setDroprate(job->getDroprateQueue());
+//	}
+//
+//	// add time for the earliest delivery
+//	if (bbDelayVector.size() > 0 && bbTimeVector.size() > 0) {
+//		simtime_t delay = calculateBackboneDelay();
+//		job->setEarliestTimeForDelivery(simTime() + delay);
+//	}
+//
+//	// insert packet into queue
+//	queue->insert(job);
+//
+//	// starting self messaging process when queue is empty
+//	if (isQueueEmpty) {
+//		//update the vectors
+//		bbDelayVector.push_back(currentBbdelay);
+//		bbTimeVector.push_back(simTime());
+//
+//		// schedule self message
+//		scheduleNewSendHeadAndDeletePacket(simTime());
+//	}
 }
 
 /**
@@ -223,7 +166,7 @@ void CDSQ::bbDelayChanged(Bbdelay* newBbdelay) {
 	//if the new backbone is valid and changed in regards to the last we need to make changes
 	bool delayChanged = false;
 
-	if (newBbdelay->validbbdelay() && newBbdelay->bbdelay() != currentBbdelay->bbdelay()) {
+	if (newBbdelay->bbdelay() != currentBbdelay->bbdelay()) {
 		//save the newBbdelay
 		currentBbdelay = newBbdelay->copy();
 		delayChanged = true;
@@ -242,9 +185,9 @@ void CDSQ::bbDelayChanged(Bbdelay* newBbdelay) {
 
 	// output in tkenv and manipulating self messages, cause we got new delays
 	if (delayChanged) {
-		char c[50];
-		currentBbdelay->toString(c);
-		EV<< getFullPath() << " backbone delay changed to " << c << " at " << simTime() <<endl;
+//		char c[50];
+//		currentBbdelay->toString(c);
+//		EV<< getFullPath() << " backbone delay changed to " << c << " at " << simTime() <<endl;
 
 		manipulateSelfMessageProcess();
 		emit(signalBbdelay, currentBbdelay->bbdelay());

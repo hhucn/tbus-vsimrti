@@ -45,26 +45,22 @@ class CDSQ : public cSimpleModule, public IQueue, public IBbdelayQueue {
 
 	public:
 		CDSQ();
-		virtual ~CDSQ();
-		virtual void bbDelayChanged(Bbdelay* newBbdelay);
-		friend class CDSQ_test; // need for tests
-		friend class CRSQ_test; // need for tests
+		~CDSQ();
+		void bbDelayChanged(Bbdelay* newBbdelay);
 
 	protected:
-		virtual void initialize();
+		void initialize();
 
-		virtual void handleMessage(cMessage* msg);
-		virtual void handleControlMessage(cMessage* msg);
+		void handleMessage(cMessage* msg);
 
-		virtual simtime_t calculateBackboneDelay();
-		virtual simtime_t calculateRestBackboneDelay(MyPacket* job);
+		simtime_t calculateBackboneDelay();
+		simtime_t calculateRestBackboneDelay(MyPacket* job);
 
-		virtual void scheduleNewSendHeadAndDeletePacket();
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t delay);
-		virtual void manipulateSelfMessageProcess();
+		void scheduleNewSendHeadAndDeletePacket(simtime_t delay);
+		void manipulateSelfMessageProcess();
 
-		virtual void addPacketToQueue(MyPacket* job);
-		virtual void dispatch();
+		void addPacketToQueue(cMessage* msg);
+		void dispatch();
 };
 
 };

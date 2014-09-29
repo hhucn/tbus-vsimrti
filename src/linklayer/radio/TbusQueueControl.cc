@@ -66,8 +66,8 @@ void TbusQueueControl::updateQueues(const Coord& newCoords) {
 	sendDatarate->setDroprate(0.05);
 	receiveDatarate->setDroprate(0.05);
 
-	sendDelay->setBbdelaySim(100000);
-	receiveDelay->setBbdelaySim(100000);
+	sendDelay->setBbdelay(100000);
+	receiveDelay->setBbdelay(100000);
 
 	cdrq->bbDelayChanged(receiveDelay);
 	crrq->datarateChanged(receiveDatarate);

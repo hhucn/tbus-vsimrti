@@ -15,17 +15,16 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+#ifndef TBUSDELAYQUEUE_H_
+#define TBUSDELAYQUEUE_H_
 
-namespace projekt {
+#include <TbusBaseQueue.h>
+#include "TbusQueueDelayValue.h"
 
-TbusQueueControlInfo::TbusQueueControlInfo() {
-	// TODO Auto-generated constructor stub
+class TbusDelayQueue : public TbusBaseQueue<TbusQueueDelayValue> {
+	public:
+		TbusDelayQueue();
+		virtual ~TbusDelayQueue();
+};
 
-}
-
-TbusQueueControlInfo::~TbusQueueControlInfo() {
-	// TODO Auto-generated destructor stub
-}
-
-} /* namespace projekt */
+#endif /* TBUSDELAYQUEUE_H_ */

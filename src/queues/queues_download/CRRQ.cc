@@ -67,7 +67,7 @@ void CRRQ::handleMessage(cMessage* msg) {
 
 	// is message a control message?
 	if (strcmp(msg->getFullName(), kSTRING_CONTROL_CRRQ) == 0) {
-		handleControlMessage(msg);
+//		handleControlMessage(msg);
 
 	// or send head event?
 	} else if (sendHead != 0) {
@@ -87,26 +87,6 @@ void CRRQ::handleMessage(cMessage* msg) {
 }
 
 /**
- * Handles control packet for changing delays
- * @param msg*
- */
-void CRRQ::handleControlMessage(cMessage* msg) {
-	EV << getFullPath() << " handles Packet for datarateChanged at " << msg->getArrivalTime() << endl;
-
-	// getting new Datarate*
-	cMsgPar *par = reinterpret_cast<cMsgPar*>(msg->getParList()[msg->findPar(kSTRING_NEWDATARATEPOINTER)]);
-	Datarate* newDatarate = reinterpret_cast<Datarate*>(par->pointerValue());
-//		char* c = new char[50];
-//		newDatarate->toString(c);
-//		EV <<"\thandleControlMessage: " << c <<endl;
-	datarateChanged(newDatarate);
-
-	// garbage collection
-	delete(msg);
-	delete(newDatarate);
-}
-
-/**
  * Handles SendHeadAndDeletePacket. Will calculate bbdelay for current head of queue,
  * call dispatch for the current head and schedule new SendHeadAndDeletePacket
  * @param simTime()
@@ -123,35 +103,6 @@ void CRRQ::handleSendHeadAndDeletePacket(SendHeadAndDeletePacket* sendHead) {
 		scheduleNewSendHeadAndDeletePacket(simTime());
 	} else {
 		EV<< getFullPath() << " gets 'SendHeadAndDelete', but queue is empty, " << " at " << simTime() << endl;
-	}
-}
-
-/**
- * Will schedule a new self-message (which will send head of queue and pop it).
- * @param simTime()
- */
-void CRRQ::scheduleNewSendHeadAndDeletePacket() {
-	if (!queue->empty()) {
-		simtime_t d_air = calculateDatarateDelay(((MyPacket*) queue->front())->getPayloadSize());
-		// dropped packages got no delay
-		if (((MyPacket*) queue->front())->getDroppedSimulated()) {
-			d_air = 0.0;
-		}
-
-		// setting new simtimes
-		currSendHeadCRRQPacket->setDeletePacketWithName(((MyPacket*) queue->front())->getName());
-		currSendHeadCRRQPacket->setArrivalTimeForTesting(simTime() + d_air);
-		currSendHeadCRRQPacket->setSendingTimeForTesting(simTime());
-
-		// schedule new self message and log stuff only, when not in test mode
-			// TODO
-			// addind a micro second for untested logfiles
-//			while ((simTime() + d_air) < simTime()){
-//				d_air += 1/1000 / kMULTIPLIER_S_TO_NS;
-//			}
-			// send self msg
-			scheduleAt(simTime() + d_air, currSendHeadCRRQPacket);
-			EV << getFullPath() << " scheduled SendHeadAndDeletePacket with d_air: " << d_air << endl;
 	}
 }
 
@@ -180,52 +131,52 @@ void CRRQ::scheduleNewSendHeadAndDeletePacket(simtime_t delay) {
  * @param job
  * @param simTime()
  */
-void CRRQ::addPacketToQueue(MyPacket* job) {
-	// add timestamp
-	job->setTimestampsArraySize((1 + job->getTimestampsArraySize()));
-	char timelog[50];
-	sprintf(timelog, "%s %s,%.0f", kSTRING_CRRQ, kSTRING_RECEIVED, simTime().dbl() * kMULTIPLIER_S_TO_NS);
-	job->setTimestamps((job->getTimestampsArraySize() - 1), timelog);
-	job->setDCRRQ(simTime());
-
-	if (job->getDroppedSimulated()) {
-		job->setArrivalTimeForLogging(job->getSendingTimeForLogging());
-	} else {
-		job->setArrivalTimeForLogging(simTime());
-	}
-
-	// log packet for datarate
-	if (job->getPacketNumber() == 0){
-		currentDatarate->setCMsgNumberOfProbePackets(job->getNumberOfProbePackets());
-		currentDatarate->setCMsgPayloadSize(job->getPayloadSize());
-	}
-
-	//if queue is empty, store some data
-	bool isQueueEmpty = queue->empty();
-	if (isQueueEmpty) {
-		//update the vectors
-		datarateVector.push_back(currentDatarate);
-		drTimeVector.push_back(simTime());
-
-		//set capacity to zero, because we had no transmitted data yet
-		capacityBytes = 0;
-	}
-
-	bool jobInserted = false;
-	// Add the packet to the queue if there is space left in the queue - if not, drop it.
-	if (freeBufferInByte - job->getPayloadSize() > 0) {
-		freeBufferInByte -= job->getPayloadSize();
-		queue->insert(job);
-		jobInserted = true;
-	} else {
-		EV<< getFullPath() << " dropped " << job << " (no free buffer)" << " at " << simTime() << endl;
-		delete(job);
-	}
-
-		// if queue was empty, we will start the self messaging process, that will send the heads
-	if (isQueueEmpty && jobInserted) {
-		scheduleNewSendHeadAndDeletePacket(simTime());
-	}
+void CRRQ::addPacketToQueue(cMessage* msg) {
+//	// add timestamp
+//	job->setTimestampsArraySize((1 + job->getTimestampsArraySize()));
+//	char timelog[50];
+//	sprintf(timelog, "%s %s,%.0f", kSTRING_CRRQ, kSTRING_RECEIVED, simTime().dbl() * kMULTIPLIER_S_TO_NS);
+//	job->setTimestamps((job->getTimestampsArraySize() - 1), timelog);
+//	job->setDCRRQ(simTime());
+//
+//	if (job->getDroppedSimulated()) {
+//		job->setArrivalTimeForLogging(job->getSendingTimeForLogging());
+//	} else {
+//		job->setArrivalTimeForLogging(simTime());
+//	}
+//
+//	// log packet for datarate
+//	if (job->getPacketNumber() == 0){
+//		currentDatarate->setCMsgNumberOfProbePackets(job->getNumberOfProbePackets());
+//		currentDatarate->setCMsgPayloadSize(job->getPayloadSize());
+//	}
+//
+//	//if queue is empty, store some data
+//	bool isQueueEmpty = queue->empty();
+//	if (isQueueEmpty) {
+//		//update the vectors
+//		datarateVector.push_back(currentDatarate);
+//		drTimeVector.push_back(simTime());
+//
+//		//set capacity to zero, because we had no transmitted data yet
+//		capacityBytes = 0;
+//	}
+//
+//	bool jobInserted = false;
+//	// Add the packet to the queue if there is space left in the queue - if not, drop it.
+//	if (freeBufferInByte - job->getPayloadSize() > 0) {
+//		freeBufferInByte -= job->getPayloadSize();
+//		queue->insert(job);
+//		jobInserted = true;
+//	} else {
+//		EV<< getFullPath() << " dropped " << job << " (no free buffer)" << " at " << simTime() << endl;
+//		delete(job);
+//	}
+//
+//		// if queue was empty, we will start the self messaging process, that will send the heads
+//	if (isQueueEmpty && jobInserted) {
+//		scheduleNewSendHeadAndDeletePacket(simTime());
+//	}
 }
 
 /**

@@ -27,30 +27,35 @@
 
 Define_Module(TbusChannelControl);
 
+/**
+ *
+ */
 TbusChannelControl::TbusChannelControl() {
 }
 
+/**
+ * Destructor, nothing to destroy
+ */
 TbusChannelControl::~TbusChannelControl() {
 }
 
-void TbusChannelControl::initialize(int stage) {
+/**
+ * OMNeT++ initialization call
+ *
+ * stores gateIds for in and output
+ */
+void TbusChannelControl::initialize() {
 	ChannelControl::initialize();
 
-	if (stage == 0) {
-		routerInGate  = findGate("routerInGate");
-		routerOutGate = findGate("routerOutGate");
-	}
+	routerInGate  = findGate("routerInGate");
+	routerOutGate = findGate("routerOutGate");
 }
 
-ChannelControl::HostRef TbusChannelControl::registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate) {
-	Enter_Method_Silent();
-	ChannelControl::HostRef hostRef = ChannelControl::registerHost(host, initialPos);
-
-	EV << "Registered Host: " << host << std::endl;
-
-	return hostRef;
-}
-
+/**
+ * Register hostRef's first NIC IP from a NIC that is no loopback
+ * This is done for an IP to Host mapping in O(1)
+ * @param hostRef host to register
+ */
 void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
 	IInterfaceTable* interfaceTable = IPAddressResolver().interfaceTableOf(hostRef->host);
 	InterfaceEntry* ie = NULL;
@@ -70,13 +75,19 @@ void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
 	EV << "Registered " << hostRef->host->getFullName() << " with address " << ie->ipv4Data()->getIPAddress() << endl;
 }
 
+/**
+ * Handles messages send to TbusChannelControl via ordinary connections
+ * @param msg message to send
+ */
 void TbusChannelControl::handleMessage(cMessage* msg) {
 	// TODO: Handle router messages
 }
 
 /**
- * Sends the message to the corresponding receiver
+ * Sends duplicates of the message to the corresponding receiver(s)
+ * Only supports Broadcast and Unicast right now
  * @param msg The message to send
+ * @param h host reference from sender
  */
 void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 	Enter_Method_Silent();
@@ -107,12 +118,6 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 	} else {
 		opp_error("Tbus Channel Control received non-IPDatagram packet!");
 	}
-
-		EV << "Sending message from " << msg->getSenderModule() << std::endl;
-
-
-
-	//TODO/DISCUSSION: Send the message to router?
 
 	drop(msg);
 	delete msg;

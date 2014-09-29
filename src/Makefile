@@ -44,7 +44,6 @@ INCLUDE_PATH = \
     -Inodes/mobile \
     -Inodes/router \
     -Iqueues \
-    -Iqueues/control_info \
     -Iqueues/helper \
     -Iqueues/interfaces \
     -Iqueues/message \
@@ -52,6 +51,8 @@ INCLUDE_PATH = \
     -Iqueues/network \
     -Iqueues/queues_download \
     -Iqueues/queues_upload \
+    -Iqueues2 \
+    -Iqueues2/control_info \
     -Iworld
 
 # Additional object and library files to link with
@@ -73,13 +74,16 @@ OBJS = \
     $O/linklayer/radio/TbusRadio.o \
     $O/linklayer/radio/TbusRadioMAC.o \
     $O/nodes/router/TbusRouterNode.o \
-    $O/queues/control_info/TbusQueueControlInfo.o \
     $O/queues/network/Datarate.o \
     $O/queues/network/Bbdelay.o \
     $O/queues/queues_download/CDRQ.o \
     $O/queues/queues_download/CRRQ.o \
     $O/queues/queues_upload/CRSQ.o \
     $O/queues/queues_upload/CDSQ.o \
+    $O/queues2/TbusBaseQueue.o \
+    $O/queues2/TbusDelayQueue.o \
+    $O/queues2/TbusQueueDelayValue.o \
+    $O/queues2/control_info/TbusQueueControlInfo.o \
     $O/world/TbusChannelControl.o \
     $O/queues/message/MyPacket_m.o \
     $O/queues/message/SendHeadAndDeletePacket_m.o
@@ -171,7 +175,6 @@ clean:
 	$(Q)-rm -f nodes/mobile/*_m.cc nodes/mobile/*_m.h
 	$(Q)-rm -f nodes/router/*_m.cc nodes/router/*_m.h
 	$(Q)-rm -f queues/*_m.cc queues/*_m.h
-	$(Q)-rm -f queues/control_info/*_m.cc queues/control_info/*_m.h
 	$(Q)-rm -f queues/helper/*_m.cc queues/helper/*_m.h
 	$(Q)-rm -f queues/interfaces/*_m.cc queues/interfaces/*_m.h
 	$(Q)-rm -f queues/message/*_m.cc queues/message/*_m.h
@@ -179,6 +182,8 @@ clean:
 	$(Q)-rm -f queues/network/*_m.cc queues/network/*_m.h
 	$(Q)-rm -f queues/queues_download/*_m.cc queues/queues_download/*_m.h
 	$(Q)-rm -f queues/queues_upload/*_m.cc queues/queues_upload/*_m.h
+	$(Q)-rm -f queues2/*_m.cc queues2/*_m.h
+	$(Q)-rm -f queues2/control_info/*_m.cc queues2/control_info/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
 
 cleanall: clean
@@ -186,7 +191,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/control_info/*.cc queues/helper/*.cc queues/interfaces/*.cc queues/message/*.cc queues/ned/*.cc queues/network/*.cc queues/queues_download/*.cc queues/queues_upload/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/helper/*.cc queues/interfaces/*.cc queues/message/*.cc queues/ned/*.cc queues/network/*.cc queues/queues_download/*.cc queues/queues_upload/*.cc queues2/*.cc queues2/control_info/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/linklayer/radio/TbusQueueControl.o: linklayer/radio/TbusQueueControl.cc \
@@ -260,8 +265,6 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	world/TbusChannelControl.h
 $O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
 	nodes/router/TbusRouterNode.h
-$O/queues/control_info/TbusQueueControlInfo.o: queues/control_info/TbusQueueControlInfo.cc \
-	queues/control_info/TbusQueueControlInfo.h
 $O/queues/message/MyPacket_m.o: queues/message/MyPacket_m.cc \
 	queues/message/MyPacket_m.h \
 	queues/network/Bbdelay.h \
@@ -280,7 +283,8 @@ $O/queues/queues_download/CDRQ.o: queues/queues_download/CDRQ.cc \
 	queues/message/SendHeadAndDeletePacket_m.h \
 	queues/network/Bbdelay.h \
 	queues/network/Datarate.h \
-	queues/queues_download/CDRQ.h
+	queues/queues_download/CDRQ.h \
+	queues2/control_info/TbusQueueControlInfo.h
 $O/queues/queues_download/CRRQ.o: queues/queues_download/CRRQ.cc \
 	queues/helper/Preamble.h \
 	queues/interfaces/IDatarateQueue.h \
@@ -308,6 +312,21 @@ $O/queues/queues_upload/CRSQ.o: queues/queues_upload/CRSQ.cc \
 	queues/network/Bbdelay.h \
 	queues/network/Datarate.h \
 	queues/queues_upload/CRSQ.h
+$O/queues2/TbusBaseQueue.o: queues2/TbusBaseQueue.cc \
+	queues2/TbusBaseQueue.h \
+	queues2/TbusQueueValue.h \
+	queues2/control_info/TbusQueueControlInfo.h
+$O/queues2/TbusDelayQueue.o: queues2/TbusDelayQueue.cc \
+	queues2/TbusBaseQueue.h \
+	queues2/TbusDelayQueue.h \
+	queues2/TbusQueueDelayValue.h \
+	queues2/TbusQueueValue.h \
+	queues2/control_info/TbusQueueControlInfo.h
+$O/queues2/TbusQueueDelayValue.o: queues2/TbusQueueDelayValue.cc \
+	queues2/TbusQueueDelayValue.h \
+	queues2/TbusQueueValue.h
+$O/queues2/control_info/TbusQueueControlInfo.o: queues2/control_info/TbusQueueControlInfo.cc \
+	queues2/control_info/TbusQueueControlInfo.h
 $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \

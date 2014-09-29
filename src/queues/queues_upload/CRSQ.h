@@ -56,28 +56,25 @@ class CRSQ : public cSimpleModule, public IQueue, public IDatarateQueue  {
 
 	public:
 		CRSQ();
-		virtual ~CRSQ();
-		virtual void datarateChanged(Datarate* newDatarate);
-		friend class CRSQ_test; // need for tests
+		~CRSQ();
+		void datarateChanged(Datarate* newDatarate);
 
 	protected:
-		virtual void initialize();
+		void initialize();
 
-		virtual void handleMessage(cMessage* msg);
-		virtual void handleSendHeadAndDeletePacket(SendHeadAndDeletePacket* sendHeadPacket);
-		virtual void handleControlMessage(cMessage* msg);
+		void handleMessage(cMessage* msg);
+		void handleSendHeadAndDeletePacket(SendHeadAndDeletePacket* sendHeadPacket);
 
-		virtual void scheduleNewSendHeadAndDeletePacket();
-		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t delay);
-		virtual void manipulateSelfMessageProcess();
+		void scheduleNewSendHeadAndDeletePacket(simtime_t delay);
+		void manipulateSelfMessageProcess();
 
-		virtual void addPacketToQueue(MyPacket* job);
+		void addPacketToQueue(cMessage* msg);
 
-		virtual double calculateLossProbability();
-		virtual simtime_t calculateDatarateDelay(double packetsize);
+		double calculateLossProbability();
+		simtime_t calculateDatarateDelay(double packetsize);
 
-		virtual void transmitOrLooseHead(bool retBool[]);
-		virtual void dispatch(bool retBool[]);
+		void transmitOrLooseHead(bool retBool[]);
+		void dispatch(bool retBool[]);
 };
 
 };

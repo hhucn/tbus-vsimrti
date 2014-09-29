@@ -40,25 +40,22 @@ class CDRQ : public cSimpleModule, public IQueue, public IBbdelayQueue {
 
 	public:
 		CDRQ();
-		virtual ~CDRQ();
+		~CDRQ();
 		virtual void bbDelayChanged(Bbdelay* newBbdelay);
-		friend class CDRQ_test; // need for tests
-		friend class CRRQ_test; // need for tests
 
 	protected:
 		virtual void initialize();
 
 		virtual void handleMessage(cMessage* msg);
-		virtual void handleControlMessage(cMessage* msg);
 
-		virtual simtime_t calculateBackboneDelay();
-		virtual simtime_t calculateRestBackboneDelay(MyPacket* job);
+		simtime_t calculateBackboneDelay();
+		simtime_t calculateRestBackboneDelay(MyPacket* job);
 
 		virtual void scheduleNewSendHeadAndDeletePacket();
 		virtual void scheduleNewSendHeadAndDeletePacket(simtime_t delay);
 		virtual void manipulateSelfMessageProcess();
 
-		virtual void addPacketToQueue(MyPacket* job);
+		virtual void addPacketToQueue(cMessage* msg);
 		virtual void dispatch();
 }
 ;

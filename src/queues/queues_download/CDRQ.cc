@@ -8,6 +8,7 @@
  */
 
 #include "CDRQ.h"
+#include "TbusQueueControlInfo.h"
 
 namespace projekt {
 
@@ -35,7 +36,8 @@ CDRQ::~CDRQ() {
  * default initializer
  */
 void CDRQ::initialize() {
-	currentBbdelay = new Bbdelay(0.005, true, "DUMMY");
+	//TODO: find the right initialization values
+	currentBbdelay = new Bbdelay();
 	signalBbdelay = registerSignal(kSIGNAL_CDRQ_BBDELAY);
 	emit(signalBbdelay, currentBbdelay->bbdelay());
 }
@@ -47,47 +49,19 @@ void CDRQ::initialize() {
  * @param msg, incoming cMessage*
  */
 void CDRQ::handleMessage(cMessage* msg) {
-	SendHeadAndDeletePacket* sendHead = dynamic_cast<SendHeadAndDeletePacket*>(msg);
-	MyPacket* job = dynamic_cast<MyPacket*>(msg);
+	if (msg->isSelfMessage()) {
+		SendHeadAndDeletePacket* sendHead = check_and_cast<SendHeadAndDeletePacket*>(msg);
 
-	// check for control message
-	if (strcmp(msg->getFullName(), kSTRING_CONTROL_CDRQ) == 0) {
-		handleControlMessage(msg);
-
-		// check for normal packet
-	} else if (job != 0) {
-		// add packet to queue and log it
-		addPacketToQueue(job);
-
-		// check for send head event
-	} else if (sendHead != 0) {
-		// dispatch head events, schedule new self msgs
-		EV<< getFullPath() << " handles SendHeadAndDeletePacket for " << sendHead->getDeletePacketWithName() << endl;
-		dispatch();
+		if (sendHead) {
+			// dispatch head events, schedule new self msgs
+			EV << getFullPath() << " handles SendHeadAndDeletePacket for " << sendHead->getDeletePacketWithName() << endl;
+			dispatch();
+		}
 
 		// all checks failed, trop the packet
 	} else {
-		EV << getFullPath() << " unknown message: " << msg->getFullName()
-		<< ", type (" << msg << "), at " << simTime()<< endl;
-		delete(job);
-		delete(msg);
+		addPacketToQueue(msg);
 	}
-}
-
-		/**
-		 * Handles control packet for changing delays
-		 * @param ControlPacket*
-		 */
-void CDRQ::handleControlMessage(cMessage* msg) {
-	EV<<getFullPath()<<" handles Packet for bbDelayChanged at " << msg->getArrivalTime() << endl;
-
-	// get new delays and call bbDelayChanged
-	cMsgPar *par = reinterpret_cast<cMsgPar*>(msg->getParList()[msg->findPar(kSTRING_NEWBBDELAYPOINTER)]);
-	Bbdelay* newBbdelay = reinterpret_cast<Bbdelay*>(par->pointerValue());
-	bbDelayChanged(newBbdelay);
-
-	delete(msg);
-	delete(newBbdelay);
 }
 
 /**
@@ -96,89 +70,43 @@ void CDRQ::handleControlMessage(cMessage* msg) {
  * @param packet to add
  * @param simTime() simulation time
  */
-void CDRQ::addPacketToQueue(MyPacket* job) {
+void CDRQ::addPacketToQueue(cMessage* msg) {
 	bool isQueueEmpty = queue->isEmpty();
-
-	// add timestamp
-	job->setTimestampsArraySize((1 + job->getTimestampsArraySize()));
-	char timelog[50];
-	sprintf(timelog, "%s %s,%.0f", kSTRING_CDRQ, kSTRING_RECEIVED, simTime().dbl() * kMULTIPLIER_S_TO_NS);
-	job->setTimestamps((job->getTimestampsArraySize() - 1), timelog);
-	job->setDCDRQ(simTime());
-
-	// manipulate tstamp, when packet is dropped
-	if (job->getDroppedSimulated()) {
-		job->setArrivalTimeForLogging(job->getSendingTimeForLogging());
-	} else {
-		job->setArrivalTimeForLogging(simTime());
-	}
-
-	// log packet for bbdelay
-	if (job->getPacketNumber() == 0) {
-		currentBbdelay->setCMsgNumberOfProbePackets(job->getNumberOfProbePackets());
-		currentBbdelay->setCMsgPayloadSize(job->getPayloadSize());
-		currentBbdelay->setDelay(simTime() - job->getStartTimeForLogging());
-		currentBbdelay->setDroprate(job->getDroprateQueue());
-	}
+//
+//	// manipulate tstamp, when packet is dropped
+//	if (job->getDroppedSimulated()) {
+//		job->setArrivalTimeForLogging(job->getSendingTimeForLogging());
+//	} else {
+//		job->setArrivalTimeForLogging(simTime());
+//	}
 
 	// add time for the earliest delivery
 	if (bbDelayVector.size() > 0 && bbTimeVector.size() > 0) {
 		simtime_t delay = calculateBackboneDelay();
-		job->setEarliestTimeForDelivery(simTime() + delay);
+
+		TbusQueueControlInfo* controlInfo = new TbusQueueControlInfo();
+		controlInfo->setEarliestDelivery(simTime() + delay);
+
+		msg->setControlInfo(controlInfo);
+	} else {
+		opp_error("Adding packet without Backbonedelay set!");
 	}
 
-	queue->insert(job);
-
-	// starting self messaging process when queue is empty
-	if (isQueueEmpty) {
-		//update the vectors
-		bbDelayVector.push_back(currentBbdelay);
-		bbTimeVector.push_back(simTime());
-
-		// schedule self message
-		scheduleNewSendHeadAndDeletePacket(simTime());
-	}
+//	queue->insert(msg);
+//
+//	// starting self messaging process when queue is empty
+//	if (isQueueEmpty) {
+//		//update the vectors
+//		bbDelayVector.push_back(currentBbdelay);
+//		bbTimeVector.push_back(simTime());
+//
+//		// schedule self message
+//		scheduleNewSendHeadAndDeletePacket(simTime());
+//	}
 }
 
-/**
- * Will schedule a new self-message (which will send head of queue and pop it)
- * @param simTime(): actually simulation time
- */
 void CDRQ::scheduleNewSendHeadAndDeletePacket() {
-	if (currSendHeadCDRQPacket->isScheduled()) {
-		EV<< getFullPath() << " currSendHeadCDSQPacket is currently scheduled! SHOULD NOT HAPPEN";
-	}
 
-	simtime_t delay;
-	// TODO: WTF?
-	// get earliest time for delivery or calculate the time
-	if (((MyPacket*)queue->front())->getEarliestTimeForDelivery() == SIMTIME_ZERO) {
-		delay = calculateBackboneDelay();
-		// sub the time, which is already gone
-		simtime_t waited = simTime() - ((MyPacket*)queue->front())->getArrivalTime();
-		delay -= delay < SIMTIME_ZERO ? delay : waited;
-		((MyPacket*)queue->front())->setEarliestTimeForDelivery(simTime() + delay);
-	} else {
-		delay = ((MyPacket*)queue->front())->getEarliestTimeForDelivery() - simTime();
-	}
-
-	// dropped package got no delay
-	if (((MyPacket*)queue->front())->getDroppedSimulated()) {
-		delay = SIMTIME_ZERO;
-	}
-
-	// set new simtimes
-	currSendHeadCDRQPacket->setDeletePacketWithName(((MyPacket*)queue->front())->getName());
-	currSendHeadCDRQPacket->setSendingTimeForTesting(simTime());
-	currSendHeadCDRQPacket->setArrivalTimeForTesting(simTime()+delay);
-
-	// output in tkenv
-	// set datarate for logging
-	Bbdelay tmp = *currentBbdelay;
-	((MyPacket*) queue->front())->setBbdelay(tmp);
-	// send self msg
-	scheduleAt(simTime() + delay, currSendHeadCDRQPacket);
-	EV << getFullPath() << " scheduled SendHeadAndDeletePacket with d_bb: " << delay << endl;
 }
 
 /**
@@ -222,9 +150,9 @@ void CDRQ::bbDelayChanged(Bbdelay* newBbdelay) {
 	//if the new backbone is valid and changed in regards to the last we need to make changes
 	bool delayChanged = false;
 
-	if (newBbdelay->validbbdelay() && newBbdelay->bbdelay() != currentBbdelay->bbdelay()) {
+	if (newBbdelay->bbdelay() != currentBbdelay->bbdelay()) {
 		//save the newBbdelay
-		currentBbdelay = newBbdelay->copy();
+		currentBbdelay = newBbdelay;
 		delayChanged = true;
 
 		//if queue is not empty we need to recalculate capacity and change the backbone vector
@@ -242,9 +170,9 @@ void CDRQ::bbDelayChanged(Bbdelay* newBbdelay) {
 
 //	// output in tkenv and manipulating self messages, cause we got new delays
 	if (delayChanged) {
-		char c[50];
-		currentBbdelay->toString(c);
-		EV<< getFullPath() << " backbone delay changed to " << c << " at " << simTime() <<endl;
+//		char c[50];
+//		currentBbdelay->toString(c);
+//		EV<< getFullPath() << " backbone delay changed to " << c << " at " << simTime() <<endl;
 
 		manipulateSelfMessageProcess();
 		emit(signalBbdelay, currentBbdelay->bbdelay());
@@ -256,7 +184,7 @@ void CDRQ::bbDelayChanged(Bbdelay* newBbdelay) {
  * even schedules new self message or calls dispatch directly
  */
 void CDRQ::manipulateSelfMessageProcess() {
-	if ((currSendHeadCDRQPacket->isScheduled() && !queue->isEmpty())) { // || isInTestMode) {
+	if ((currSendHeadCDRQPacket->isScheduled() && !queue->isEmpty())) {
 		cancelEvent(currSendHeadCDRQPacket);
 
 		// get delay
@@ -362,14 +290,9 @@ void CDRQ::dispatch() {
 		}
 	}
 
-	if (queue->isEmpty()) {
-		//as the queue is empty now we clear all stored accumulation
-		bbDelayVector.clear();
-		bbTimeVector.clear();
-	} else {
-		//the queue is not empty so we need to change some values
-		bbDelayVector.clear();
-		bbTimeVector.clear();
+	bbDelayVector.clear();
+	bbTimeVector.clear();
+	if (!queue->isEmpty()) {
 		bbDelayVector.push_back(currentBbdelay);
 		bbTimeVector.push_back(simTime());
 	}

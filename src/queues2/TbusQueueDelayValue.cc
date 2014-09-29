@@ -15,22 +15,19 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef TBUSQUEUECONTROLINFO_H_
-#define TBUSQUEUECONTROLINFO_H_
+#include <TbusQueueDelayValue.h>
 
-#include <cobject.h>
-#include "omnetpp.h"
+TbusQueueDelayValue::TbusQueueDelayValue()
+{
+	// TODO Auto-generated constructor stub
 
-namespace projekt {
+}
 
-class TbusQueueControlInfo : public cObject {
-	private:
-		simtime_t earliestDelivery;
-	public:
-		TbusQueueControlInfo();
-		virtual ~TbusQueueControlInfo();
-};
+TbusQueueDelayValue::~TbusQueueDelayValue()
+{
+	// TODO Auto-generated destructor stub
+}
 
-} /* namespace projekt */
-
-#endif /* TBUSQUEUECONTROLINFO_H_ */
+bool TbusQueueDelayValue::operator!=(TbusQueueDelayValue& other) {
+	return false;
+}

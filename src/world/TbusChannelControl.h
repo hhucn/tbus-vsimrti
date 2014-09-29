@@ -24,6 +24,9 @@
 
 class TbusRadioPHY;
 
+/**
+ * Provides a Control layer for NICs attached to the air interface
+ */
 class TbusChannelControl : public ChannelControl {
 private:
 	int routerInGate;
@@ -36,10 +39,9 @@ public:
     TbusChannelControl();
     virtual ~TbusChannelControl();
 
-    void initialize(int stage);
+    void initialize();
     void handleMessage(cMessage* msg);
 
-    ChannelControl::HostRef registerHost(cModule *host, const Coord& initialPos, cGate *radioInGate);
     void registerIP(ChannelControl::HostRef hostRef);
 
     void sendToChannel(cMessage* msg, HostRef h);
