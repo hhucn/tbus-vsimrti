@@ -28,11 +28,16 @@
 
 template <class T> class TbusBaseQueue : public cSimpleModule {
 	public:
+		typedef typename std::vector<T*>::iterator valueIterator;
+		typedef cPacketQueue::Iterator packetIterator;
+
 		TbusBaseQueue();
 		virtual ~TbusBaseQueue();
 
-		typedef typename std::vector<T*>::iterator valueIterator;
-		typedef cPacketQueue::Iterator packetIterator;
+		virtual void initialize();
+		void handleMessage(cMessage* msg);
+
+		void updateValue(T* newValue);
 
 	protected:
 		cPacketQueue queue;
@@ -44,9 +49,6 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		int inGate;
 		int outGate;
 
-		virtual void initialize();
-
-		void handleMessage(cMessage* msg);
 		virtual void handleSelfMessage(cMessage* msg);
 		void addPacketToQueue(cPacket* packet);
 
@@ -54,9 +56,7 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		virtual void calculateEarliestDeliveries() = 0;
 		virtual void calculateEarliestDeliveryForPacket(cPacket* packet) = 0;
 
-		void updateValue(T* newValue);
-
-		void sendFrontOfQueue();
+		virtual void sendFrontOfQueue();
 };
 
 #endif /* TBUSBASEQUEUE_H_ */

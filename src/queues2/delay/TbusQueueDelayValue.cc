@@ -15,20 +15,25 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef TBUSQUEUEVALUE_H_
-#define TBUSQUEUEVALUE_H_
+#include <TbusQueueDelayValue.h>
 
-#include "omnetpp.h"
-
-class TbusQueueValue
+TbusQueueDelayValue::TbusQueueDelayValue()
 {
-	public:
-		const simtime_t time;
+	// TODO Auto-generated constructor stub
 
-		TbusQueueValue() : time(simTime()) {};
-		virtual ~TbusQueueValue() = 0;
+}
 
-		virtual bool operator!=(TbusQueueValue& other) = 0;
-};
+TbusQueueDelayValue::~TbusQueueDelayValue()
+{
+	// TODO Auto-generated destructor stub
+}
 
-#endif /* TBUSQUEUEVALUE_H_ */
+bool TbusQueueDelayValue::operator!=(TbusQueueValue& other) {
+	TbusQueueDelayValue* cother = check_and_cast<TbusQueueDelayValue*>(&other);
+
+	if (cother) {
+		return (this->delay != cother->delay);
+	} else {
+		return true;
+	}
+}

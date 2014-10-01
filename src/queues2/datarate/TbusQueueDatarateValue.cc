@@ -15,34 +15,27 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+#include <datarate/TbusQueueDatarateValue.h>
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
+TbusQueueDatarateValue::TbusQueueDatarateValue() {
+	// TODO Auto-generated constructor stub
+
 }
 
-TbusQueueControlInfo::~TbusQueueControlInfo() {
+TbusQueueDatarateValue::~TbusQueueDatarateValue() {
 	// TODO Auto-generated destructor stub
 }
 
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
-	return earliestDelivery;
+void TbusQueueDatarateValue::initialize() {
+
 }
 
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-const simtime_t& TbusQueueControlInfo::getQueueArrival() const {
-	return queueArrival;
-}
+bool TbusQueueDatarateValue::operator!=(TbusQueueValue& other) {
+	TbusQueueDatarateValue* cother = check_and_cast<TbusQueueDatarateValue*>(&other);
 
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
+	if (cother) {
+		return (this->droprate != cother->droprate) || (this->datarate != cother->datarate);
+	} else {
+		return true;
+	}
 }

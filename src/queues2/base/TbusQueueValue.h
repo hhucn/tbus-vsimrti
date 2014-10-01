@@ -15,34 +15,19 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+#ifndef TBUSQUEUEVALUE_H_
+#define TBUSQUEUEVALUE_H_
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
-}
+#include "omnetpp.h"
 
-TbusQueueControlInfo::~TbusQueueControlInfo() {
-	// TODO Auto-generated destructor stub
-}
+class TbusQueueValue : public cObject {
+	public:
+		const simtime_t time;
 
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
-	return earliestDelivery;
-}
+		TbusQueueValue() : time(simTime()) {};
+		virtual ~TbusQueueValue() {};
 
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-const simtime_t& TbusQueueControlInfo::getQueueArrival() const {
-	return queueArrival;
-}
+		virtual bool operator!=(TbusQueueValue& other) = 0;
+};
 
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
-}
+#endif /* TBUSQUEUEVALUE_H_ */

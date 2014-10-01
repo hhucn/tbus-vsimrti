@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libtbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/world -I../../inetmanet/src/transport/contract -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/util -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
+#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/world -I../../inetmanet/src/transport/contract -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/util -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../../inetmanet
 #
 
 # Name of target to be created (-o option)
@@ -16,8 +16,8 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/transport/contract \
     -I../../inetmanet/src/linklayer/mfcore \
     -I../../inetmanet/src/linklayer/ethernet \
-    -I../../inetmanet/src/networklayer/ted \
     -I../../inetmanet/src/util \
+    -I../../inetmanet/src/networklayer/ted \
     -I../../inetmanet/src/linklayer/ieee80211/mac \
     -I../../inetmanet/src/networklayer/queue \
     -I../../inetmanet/src/networklayer/common \
@@ -52,7 +52,12 @@ INCLUDE_PATH = \
     -Iqueues/queues_download \
     -Iqueues/queues_upload \
     -Iqueues2 \
+    -Iqueues2/base \
     -Iqueues2/control_info \
+    -Iqueues2/datarate \
+    -Iqueues2/delay \
+    -Iqueues2/test \
+    -Iqueues2/test/ned \
     -Iworld
 
 # Additional object and library files to link with
@@ -80,10 +85,14 @@ OBJS = \
     $O/queues/queues_download/CRRQ.o \
     $O/queues/queues_upload/CRSQ.o \
     $O/queues/queues_upload/CDSQ.o \
-    $O/queues2/TbusBaseQueue.o \
-    $O/queues2/TbusDelayQueue.o \
-    $O/queues2/TbusQueueDelayValue.o \
+    $O/queues2/base/TbusBaseQueue.o \
     $O/queues2/control_info/TbusQueueControlInfo.o \
+    $O/queues2/datarate/TbusQueueDatarateValue.o \
+    $O/queues2/datarate/TbusDatarateQueue.o \
+    $O/queues2/delay/TbusDelayQueue.o \
+    $O/queues2/delay/TbusQueueDelayValue.o \
+    $O/queues2/test/TbusTestBase.o \
+    $O/queues2/test/TbusDatarateQueueTester.o \
     $O/world/TbusChannelControl.o \
     $O/queues/message/MyPacket_m.o \
     $O/queues/message/SendHeadAndDeletePacket_m.o
@@ -183,7 +192,12 @@ clean:
 	$(Q)-rm -f queues/queues_download/*_m.cc queues/queues_download/*_m.h
 	$(Q)-rm -f queues/queues_upload/*_m.cc queues/queues_upload/*_m.h
 	$(Q)-rm -f queues2/*_m.cc queues2/*_m.h
+	$(Q)-rm -f queues2/base/*_m.cc queues2/base/*_m.h
 	$(Q)-rm -f queues2/control_info/*_m.cc queues2/control_info/*_m.h
+	$(Q)-rm -f queues2/datarate/*_m.cc queues2/datarate/*_m.h
+	$(Q)-rm -f queues2/delay/*_m.cc queues2/delay/*_m.h
+	$(Q)-rm -f queues2/test/*_m.cc queues2/test/*_m.h
+	$(Q)-rm -f queues2/test/ned/*_m.cc queues2/test/ned/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
 
 cleanall: clean
@@ -191,7 +205,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/helper/*.cc queues/interfaces/*.cc queues/message/*.cc queues/ned/*.cc queues/network/*.cc queues/queues_download/*.cc queues/queues_upload/*.cc queues2/*.cc queues2/control_info/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/helper/*.cc queues/interfaces/*.cc queues/message/*.cc queues/ned/*.cc queues/network/*.cc queues/queues_download/*.cc queues/queues_upload/*.cc queues2/*.cc queues2/base/*.cc queues2/control_info/*.cc queues2/datarate/*.cc queues2/delay/*.cc queues2/test/*.cc queues2/test/ned/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/linklayer/radio/TbusQueueControl.o: linklayer/radio/TbusQueueControl.cc \
@@ -312,21 +326,50 @@ $O/queues/queues_upload/CRSQ.o: queues/queues_upload/CRSQ.cc \
 	queues/network/Bbdelay.h \
 	queues/network/Datarate.h \
 	queues/queues_upload/CRSQ.h
-$O/queues2/TbusBaseQueue.o: queues2/TbusBaseQueue.cc \
-	queues2/TbusBaseQueue.h \
-	queues2/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h
-$O/queues2/TbusDelayQueue.o: queues2/TbusDelayQueue.cc \
-	queues2/TbusBaseQueue.h \
-	queues2/TbusDelayQueue.h \
-	queues2/TbusQueueDelayValue.h \
-	queues2/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h
-$O/queues2/TbusQueueDelayValue.o: queues2/TbusQueueDelayValue.cc \
-	queues2/TbusQueueDelayValue.h \
-	queues2/TbusQueueValue.h
+$O/queues2/base/TbusBaseQueue.o: queues2/base/TbusBaseQueue.cc \
+	queues2/base/TbusBaseQueue.h \
+	queues2/base/TbusQueueValue.h \
+	queues2/control_info/TbusQueueControlInfo.h \
+	queues2/datarate/TbusQueueDatarateValue.h \
+	queues2/delay/TbusQueueDelayValue.h
 $O/queues2/control_info/TbusQueueControlInfo.o: queues2/control_info/TbusQueueControlInfo.cc \
 	queues2/control_info/TbusQueueControlInfo.h
+$O/queues2/datarate/TbusDatarateQueue.o: queues2/datarate/TbusDatarateQueue.cc \
+	queues2/base/TbusBaseQueue.h \
+	queues2/base/TbusQueueValue.h \
+	queues2/control_info/TbusQueueControlInfo.h \
+	queues2/datarate/TbusDatarateQueue.h \
+	queues2/datarate/TbusQueueDatarateValue.h
+$O/queues2/datarate/TbusQueueDatarateValue.o: queues2/datarate/TbusQueueDatarateValue.cc \
+	queues2/base/TbusQueueValue.h \
+	queues2/datarate/TbusQueueDatarateValue.h
+$O/queues2/delay/TbusDelayQueue.o: queues2/delay/TbusDelayQueue.cc \
+	queues2/base/TbusBaseQueue.h \
+	queues2/base/TbusQueueValue.h \
+	queues2/control_info/TbusQueueControlInfo.h \
+	queues2/delay/TbusDelayQueue.h \
+	queues2/delay/TbusQueueDelayValue.h
+$O/queues2/delay/TbusQueueDelayValue.o: queues2/delay/TbusQueueDelayValue.cc \
+	queues2/base/TbusQueueValue.h \
+	queues2/delay/TbusQueueDelayValue.h
+$O/queues2/test/TbusDatarateQueueTester.o: queues2/test/TbusDatarateQueueTester.cc \
+	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
+	queues2/base/TbusBaseQueue.h \
+	queues2/base/TbusQueueValue.h \
+	queues2/control_info/TbusQueueControlInfo.h \
+	queues2/datarate/TbusDatarateQueue.h \
+	queues2/datarate/TbusQueueDatarateValue.h \
+	queues2/test/TbusDatarateQueueTester.h \
+	queues2/test/TbusTestBase.h
+$O/queues2/test/TbusTestBase.o: queues2/test/TbusTestBase.cc \
+	queues2/base/TbusBaseQueue.h \
+	queues2/base/TbusQueueValue.h \
+	queues2/control_info/TbusQueueControlInfo.h \
+	queues2/datarate/TbusDatarateQueue.h \
+	queues2/datarate/TbusQueueDatarateValue.h \
+	queues2/test/TbusDatarateQueueTester.h \
+	queues2/test/TbusTestBase.h
 $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \

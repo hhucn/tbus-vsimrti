@@ -15,34 +15,22 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+#ifndef TBUSTESTBASE_H_
+#define TBUSTESTBASE_H_
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
-}
+#include <queue>
 
-TbusQueueControlInfo::~TbusQueueControlInfo() {
-	// TODO Auto-generated destructor stub
-}
+template <class T> class TbusTestBase {
+	private:
+		typedef void (T::*functionPtr)(void);
+		std::queue<functionPtr> tests;
+		T* instance;
+	public:
+		TbusTestBase(T* i);
+		virtual ~TbusTestBase();
 
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
-	return earliestDelivery;
-}
+		void addTest(functionPtr test);
+		void runNextTest();
+};
 
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-const simtime_t& TbusQueueControlInfo::getQueueArrival() const {
-	return queueArrival;
-}
-
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
-}
+#endif /* TBUSTESTBASE_H_ */

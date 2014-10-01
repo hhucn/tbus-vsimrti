@@ -15,19 +15,12 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <TbusQueueDelayValue.h>
+package tbus.queues2.test.ned;
 
-TbusQueueDelayValue::TbusQueueDelayValue()
-{
-	// TODO Auto-generated constructor stub
-
-}
-
-TbusQueueDelayValue::~TbusQueueDelayValue()
-{
-	// TODO Auto-generated destructor stub
-}
-
-bool TbusQueueDelayValue::operator!=(TbusQueueDelayValue& other) {
-	return (this->delay != other.delay);
+simple TbusDelayQueueTest {
+    parameters:
+        @class(TbusDelayQueue);
+	gates:
+	    input inGate;
+	    output outGate;
 }

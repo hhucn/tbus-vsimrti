@@ -16,15 +16,15 @@
 //
 
 #include "TbusBaseQueue.h"
+#include "TbusQueueDatarateValue.h"
+#include "TbusQueueDelayValue.h"
 #include "omnetpp.h"
 
 /**
  * Set up.
  */
 template<class T> TbusBaseQueue<T>::TbusBaseQueue() :
-	queue(cPacketQueue()),
-	selfMessage(cMessage(TBUS_BASE_QUEUE_SELFMESSAGE)),
-	values(std::vector<T>()) {
+	selfMessage(TBUS_BASE_QUEUE_SELFMESSAGE, 0) {
 }
 
 /**
@@ -93,11 +93,10 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
  * @param packet packet to add
  */
 template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
-	take(packet);
 	packet->setControlInfo(new TbusQueueControlInfo());
 
-	this->calculateEarliestDeliveryForPacket(packet);
 	queue.insert(packet);
+	this->calculateEarliestDeliveryForPacket(packet);
 
 	if (!selfMessage.isScheduled()) {
 		scheduleAt(((TbusQueueControlInfo*) packet->getControlInfo())->getEarliestDelivery(), &selfMessage);
@@ -130,12 +129,12 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
 	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
 	cPacket* packet = queue.pop();
 
-	TbusQueueControlInfo* controlInfo = packet->removeControlInfo();
+	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->removeControlInfo());
+	ASSERT2(controlInfo, "Invalid control info on packet!");
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
 	delete controlInfo;
 
 	send(packet, outGate);
-	drop(packet);
 
 	values.clear();
 	values.push_back(currentValue);
@@ -162,3 +161,7 @@ template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 		}
 	}
 }
+
+// Template instantiation for linker
+template class TbusBaseQueue<TbusQueueDatarateValue>;
+template class TbusBaseQueue<TbusQueueDelayValue>;

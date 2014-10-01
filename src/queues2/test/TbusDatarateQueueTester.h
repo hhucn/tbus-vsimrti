@@ -15,34 +15,30 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+#ifndef TBUSDATARATEQUEUETESTER_H_
+#define TBUSDATARATEQUEUETESTER_H_
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
-}
+#include <csimplemodule.h>
+#include "TbusTestBase.h"
+#include "TbusDatarateQueue.h"
+#include "omnetpp.h"
 
-TbusQueueControlInfo::~TbusQueueControlInfo() {
-	// TODO Auto-generated destructor stub
-}
+class TbusDatarateQueueTester : public cSimpleModule, public TbusTestBase<TbusDatarateQueueTester> {
+	private:
+		int inGate;
+		int outGate;
 
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
-	return earliestDelivery;
-}
+		simtime_t expectedTime;
+		TbusDatarateQueue* datarateQueue;
 
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-const simtime_t& TbusQueueControlInfo::getQueueArrival() const {
-	return queueArrival;
-}
+	public:
+		TbusDatarateQueueTester();
+		virtual ~TbusDatarateQueueTester();
 
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
-}
+		void initialize();
+		void handleMessage(cMessage* msg);
+
+		void testNormalDatarate();
+};
+
+#endif /* TBUSDATARATEQUEUETESTER_H_ */

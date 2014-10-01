@@ -15,34 +15,29 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+#include <test/TbusTestBase.h>
+#include "TbusDatarateQueueTester.h"
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
+template <class T> TbusTestBase<T>::TbusTestBase(T* i) {
+	instance = i;
 }
 
-TbusQueueControlInfo::~TbusQueueControlInfo() {
+template <class T> TbusTestBase<T>::~TbusTestBase()
+{
 	// TODO Auto-generated destructor stub
 }
 
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
-	return earliestDelivery;
+template <class T> void TbusTestBase<T>::addTest(functionPtr test) {
+	tests.push(test);
 }
 
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-const simtime_t& TbusQueueControlInfo::getQueueArrival() const {
-	return queueArrival;
+template <class T> void TbusTestBase<T>::runNextTest() {
+	if (!tests.empty()) {
+		functionPtr test = tests.front();
+		tests.pop();
+		(instance->*test)();
+	}
 }
 
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
-}
+// Template instantiation for linker
+template class TbusTestBase<TbusDatarateQueueTester>;

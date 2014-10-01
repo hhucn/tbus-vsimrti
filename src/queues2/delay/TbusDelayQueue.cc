@@ -17,13 +17,12 @@
 
 #include <TbusDelayQueue.h>
 
-TbusDelayQueue::TbusDelayQueue() : TbusBaseQueue<TbusQueueDelayValue>() {
-	// TODO Auto-generated constructor stub
+Define_Module(TbusDelayQueue);
 
+TbusDelayQueue::TbusDelayQueue() : TbusBaseQueue<TbusQueueDelayValue>() {
 }
 
 TbusDelayQueue::~TbusDelayQueue() {
-	// TODO Auto-generated destructor stub
 }
 
 void TbusDelayQueue::calculateEarliestDeliveries() {

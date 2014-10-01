@@ -15,34 +15,25 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+package tbus.queues2.test.ned;
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
-}
+import tbus.queues2.test.ned.TbusDatarateQueueTest;
+import tbus.queues2.test.ned.TbusDatarateQueueTester;
 
-TbusQueueControlInfo::~TbusQueueControlInfo() {
-	// TODO Auto-generated destructor stub
-}
+network TbusTestNetwork
+{
+    parameters:
 
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
-	return earliestDelivery;
-}
+        @display("bgb=327,119");
+    submodules:
+        testQueue: TbusDatarateQueueTest {
+            @display("p=42,50");
+        }
+        tester: TbusDatarateQueueTester {
+            @display("p=291,50");
+        }
 
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-const simtime_t& TbusQueueControlInfo::getQueueArrival() const {
-	return queueArrival;
-}
-
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
+    connections:
+        tester.outGate --> testQueue.inGate;
+        tester.inGate <-- testQueue.outGate;
 }

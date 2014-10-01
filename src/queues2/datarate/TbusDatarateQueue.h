@@ -15,20 +15,27 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef TBUSQUEUEDELAYVALUE_H_
-#define TBUSQUEUEDELAYVALUE_H_
+#ifndef TBUSDATARATEQUEUE_H_
+#define TBUSDATARATEQUEUE_H_
 
-#include <TbusQueueValue.h>
+#include <base/TbusBaseQueue.h>
+#include "TbusQueueDatarateValue.h"
 
-class TbusQueueDelayValue : public TbusQueueValue
-{
+class TbusDatarateQueue : public TbusBaseQueue<TbusQueueDatarateValue> {
 	public:
-		TbusQueueDelayValue();
-		virtual ~TbusQueueDelayValue();
+		TbusDatarateQueue();
+		virtual ~TbusDatarateQueue();
 
-		simtime_t delay;
+	protected:
+		int64_t bytesSent;
 
-		virtual bool operator!=(TbusQueueDelayValue& other);
+		virtual void calculateEarliestDeliveries();
+		virtual void calculateEarliestDeliveryForPacket(cPacket* packet);
+
+		virtual void sendFrontOfQueue();
+
+		double currentLossProbability();
+		simtime_t currentDatarateDelay(int64_t byteLength);
 };
 
-#endif /* TBUSQUEUEDELAYVALUE_H_ */
+#endif /* TBUSDATARATEQUEUE_H_ */
