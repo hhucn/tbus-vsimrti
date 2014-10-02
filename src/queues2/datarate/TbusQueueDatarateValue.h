@@ -31,7 +31,7 @@ class TbusQueueDatarateValue : public TbusQueueValue {
 
 		// Droprate in percent
 		double droprate;
-		// Datarate in bytes per nanosecond
+		// Datarate in bit per second
 		double datarate;
 };
 

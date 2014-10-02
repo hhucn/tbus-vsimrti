@@ -31,7 +31,7 @@ TbusQueueControlInfo::~TbusQueueControlInfo() {
  * Time for earliest delivery from qeue
  * @return earliest delivery time
  */
-const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
+simtime_t TbusQueueControlInfo::getEarliestDelivery() {
 	return earliestDelivery;
 }
 
@@ -39,10 +39,12 @@ const simtime_t& TbusQueueControlInfo::getEarliestDelivery() const {
  * Arrival time at queue (=> Object creation time)
  * @return arrival time
  */
-const simtime_t& TbusQueueControlInfo::getQueueArrival() const {
+simtime_t TbusQueueControlInfo::getQueueArrival() {
 	return queueArrival;
 }
 
 void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
 	earliestDelivery = time;
+
+	std::cout << "Earliest delivery set to " << time << std::endl;
 }

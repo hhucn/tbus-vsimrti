@@ -15,30 +15,40 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef TBUSDATARATEQUEUETESTER_H_
-#define TBUSDATARATEQUEUETESTER_H_
+#ifndef TBUSTESTBASE_H_
+#define TBUSTESTBASE_H_
 
-#include <csimplemodule.h>
-#include "TbusTestBase.h"
-#include "TbusDatarateQueue.h"
-#include "omnetpp.h"
+#include <queue>
+#include "csimplemodule.h"
+#include "cmessage.h"
 
-class TbusDatarateQueueTester : public cSimpleModule, public TbusTestBase<TbusDatarateQueueTester> {
+#define NEXT_TEST_MESSAGE "next.test.message"
+
+template <class T> class TbusTestBase : public cSimpleModule {
 	private:
-		int inGate;
-		int outGate;
+		typedef void (T::*testFunctionPtr)(void);
+		typedef void (T::*handleFunctionPtr)(cMessage*);
+		typedef struct {
+				testFunctionPtr test;
+				handleFunctionPtr handle;
+				std::string description;
+		} Test;
+		std::queue< Test* > tests;
+		T* instance;
+		handleFunctionPtr currentHandle;
 
-		simtime_t expectedTime;
-		TbusDatarateQueue* datarateQueue;
+	protected:
+		bool success;
+		cMessage nextTestMessage;
 
 	public:
-		TbusDatarateQueueTester();
-		virtual ~TbusDatarateQueueTester();
+		TbusTestBase(T* i);
+		virtual ~TbusTestBase();
 
-		void initialize();
 		void handleMessage(cMessage* msg);
 
-		void testNormalDatarate();
+		void addTest(testFunctionPtr test, handleFunctionPtr handle, std::string description);
+		void runNextTest();
 };
 
-#endif /* TBUSDATARATEQUEUETESTER_H_ */
+#endif /* TBUSTESTBASE_H_ */

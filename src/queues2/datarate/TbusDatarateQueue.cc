@@ -21,19 +21,15 @@
 Define_Module(TbusDatarateQueue);
 
 TbusDatarateQueue::TbusDatarateQueue() :
-	bytesSent(0) {
+	bitsSent(0) {
 }
 
 TbusDatarateQueue::~TbusDatarateQueue() {
 }
 
 void TbusDatarateQueue::calculateEarliestDeliveries() {
-	packetIterator it(queue);
-	for (; !it.end(); it++) {
-		cPacket* packet = check_and_cast<cPacket*>(it());
-		ASSERT2(packet, "Invalid packet in queue!");
-
-		this->calculateEarliestDeliveryForPacket(packet);
+	for (int i = 0; i < queue.length(); i++) {
+		this->calculateEarliestDeliveryForPacket(queue.get(i));
 	}
 }
 
@@ -42,35 +38,24 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
 	ASSERT2(controlInfo, "Invalid control info on packet!");
 
+	// Only calculate for the first packet, the others have to wait
 	if (queue.front() == packet) {
 		// Calculate earliest delivery with respect to already sent bytes
 
 		// What time shall we use?
 		simtime_t starttime = std::max(values.back()->time.dbl(), controlInfo->getQueueArrival().dbl());
-		simtime_t runtime = starttime - simTime();
+		simtime_t runtime = simTime() - starttime;
 
-		bytesSent += (int64) floor(runtime.dbl() * values.back()->datarate);
+		std::cout << "Runtime: " << runtime << std::endl;
 
-		delay = this->currentDatarateDelay(packet->getByteLength() - bytesSent);
-		controlInfo->setEarliestDelivery(simTime() + delay);
-	} else {
-		// Calculate earliest delivery with respect to packets in front of us
-		// Get our delay
-		delay = this->currentDatarateDelay(packet->getByteLength());
-
-		// Add current delays of all packets until our packet
-		packetIterator it(queue);
-		for (; it() != packet; it++) {
-			cPacket* other = check_and_cast<cPacket*>(it());
-			ASSERT2(other, "invalid packet in queue!");
-			TbusQueueControlInfo* otherControlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
-			ASSERT2(otherControlInfo, "invalid control info on packet!");
-
-			delay += otherControlInfo->getEarliestDelivery() - simTime();
-		}
+		bitsSent += (int64) floor(runtime.dbl() * values.back()->datarate);
+		std::cout << "Already " << bitsSent << " bits sent!" << std::endl;
+		delay = this->currentDatarateDelay(packet->getBitLength() - bitsSent);
 
 		// Add current time to delay
 		controlInfo->setEarliestDelivery(simTime() + delay);
+
+		EV << "Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ")" << std::endl;
 	}
 }
 
@@ -81,6 +66,7 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->removeControlInfo());
 	ASSERT2(controlInfo, "Invalid control info on packet!");
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
+	EV << "Dispatched packet " << packet << " after delay " << (simTime() - controlInfo->getQueueArrival()) << " (Entered Queue at " << controlInfo->getQueueArrival() << ")" << std::endl;
 	delete controlInfo;
 
 	// Check for drop
@@ -89,14 +75,12 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 		send(packet, outGate);
 	} else {
 		// Drop
+		EV << "Packet " << packet << " dropped!" << std::endl;
 		delete packet;
 	}
 
 	// Reset the bytes sent
-	bytesSent = 0;
-
-	values.clear();
-	values.push_back(currentValue);
+	bitsSent = 0;
 }
 
 double TbusDatarateQueue::currentLossProbability() {
@@ -108,8 +92,8 @@ double TbusDatarateQueue::currentLossProbability() {
 	simtime_t starttime;
 	double loss = 0.0;
 
-	valueIterator it;
-	for (it = values.end(); it != values.begin(); --it) {
+	reverseValueIterator it;
+	for (it = values.rbegin(); it != values.rend(); ++it) {
 		starttime = (*it)->time;
 		loss += (*it)->droprate * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
 		endtime = starttime;
@@ -118,7 +102,7 @@ double TbusDatarateQueue::currentLossProbability() {
 	return loss;
 }
 
-simtime_t TbusDatarateQueue::currentDatarateDelay(int64_t byteLength) {
+simtime_t TbusDatarateQueue::currentDatarateDelay(int64_t bitLength) {
 	ASSERT2(values.size() > 0, "Empty values array!");
 
 	// Calculations according to Tobias Krauthoffs work
@@ -128,15 +112,15 @@ simtime_t TbusDatarateQueue::currentDatarateDelay(int64_t byteLength) {
 	double datarate = 0.0;
 
 	if (runtime == simtime_t()) {
-		return ((double) byteLength) / values.front()->datarate;
+		return ((double) bitLength) / values.front()->datarate;
 	}
 
-	valueIterator it;
-	for (it = values.end(); it != values.begin(); --it) {
+	reverseValueIterator it;
+	for (it = values.rbegin(); it != values.rend(); ++it) {
 		starttime = (*it)->time;
 		datarate += (double) (*it)->datarate * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
 		endtime = starttime;
 	}
 
-	return ((double) byteLength) / datarate;
+	return ((double) bitLength) / datarate;
 }

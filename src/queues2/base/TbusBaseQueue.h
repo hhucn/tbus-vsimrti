@@ -29,6 +29,7 @@
 template <class T> class TbusBaseQueue : public cSimpleModule {
 	public:
 		typedef typename std::vector<T*>::iterator valueIterator;
+		typedef typename std::vector<T*>::reverse_iterator reverseValueIterator;
 		typedef cPacketQueue::Iterator packetIterator;
 
 		TbusBaseQueue();

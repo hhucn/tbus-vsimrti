@@ -72,16 +72,14 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 		// First, send the front packet
 		this->sendFrontOfQueue();
 
+		//Only leave current value
+		values.clear();
+		values.push_back(currentValue);
+
 		// Then check the next one and/or reschedule
 		if (queue.length() > 0) {
-			TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(queue.front()->getControlInfo());
-			ASSERT2(controlInfo, "Invalid control info on packet!");
-
-			if (controlInfo->getEarliestDelivery() <= simTime()) {
-				scheduleAt(simTime(), &selfMessage);
-			} else {
-				scheduleAt(controlInfo->getEarliestDelivery(), &selfMessage);
-			}
+			// Re-calculate earliest deliveries
+			this->adaptSelfMessage();
 		}
 	} else {
 		opp_error("Received invalid self message!");
@@ -135,9 +133,6 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
 	delete controlInfo;
 
 	send(packet, outGate);
-
-	values.clear();
-	values.push_back(currentValue);
 }
 
 /**
@@ -145,6 +140,7 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
  * @param newValue value to update to
  */
 template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
+	Enter_Method("updateValue()");
 	if (currentValue != newValue) {
 		// Clear old values
 		if (queue.isEmpty()) {

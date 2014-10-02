@@ -15,22 +15,38 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#ifndef TBUSTESTBASE_H_
-#define TBUSTESTBASE_H_
+#ifndef TBUSDATARATEQUEUETESTER_H_
+#define TBUSDATARATEQUEUETESTER_H_
 
-#include <queue>
+#include "TbusTestBase.h"
+#include "TbusDatarateQueue.h"
+#include "omnetpp.h"
 
-template <class T> class TbusTestBase {
+class TbusDatarateQueueTester : public TbusTestBase<TbusDatarateQueueTester> {
 	private:
-		typedef void (T::*functionPtr)(void);
-		std::queue<functionPtr> tests;
-		T* instance;
-	public:
-		TbusTestBase(T* i);
-		virtual ~TbusTestBase();
+		int inGate;
+		int outGate;
 
-		void addTest(functionPtr test);
-		void runNextTest();
+		simtime_t expectedTime;
+		TbusDatarateQueue* datarateQueue;
+
+	public:
+		TbusDatarateQueueTester();
+		virtual ~TbusDatarateQueueTester();
+
+		void initialize();
+
+		void testChangingDatarate();
+		void handleChangingDatarate(cMessage* msg);
+
+		void testNormalDatarate();
+		void handleNormalDatarate(cMessage* msg);
+
+		void testFullDrop();
+		void handleFullDrop(cMessage* msg);
+
+		void testHalfDrop();
+		void handleHalfDrop(cMessage* msg);
 };
 
-#endif /* TBUSTESTBASE_H_ */
+#endif /* TBUSDATARATEQUEUETESTER_H_ */

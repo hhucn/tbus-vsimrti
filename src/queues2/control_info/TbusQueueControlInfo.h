@@ -32,8 +32,8 @@ class TbusQueueControlInfo : public cObject {
 		TbusQueueControlInfo();
 		virtual ~TbusQueueControlInfo();
 
-		const simtime_t& getQueueArrival() const;
-		const simtime_t& getEarliestDelivery() const;
+		simtime_t getQueueArrival();
+		simtime_t getEarliestDelivery();
 
 		void setEarliestDelivery(simtime_t time);
 };

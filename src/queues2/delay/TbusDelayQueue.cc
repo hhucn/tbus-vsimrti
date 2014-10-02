@@ -28,12 +28,8 @@ TbusDelayQueue::~TbusDelayQueue() {
 void TbusDelayQueue::calculateEarliestDeliveries() {
 	simtime_t delay = this->currentDelay();
 
-	packetIterator it(queue);
-	for (; !it.end(); it++) {
-		cPacket* packet = check_and_cast<cPacket*>(it());
-		ASSERT2(packet, "Invalid packet in queue!");
-
-		this->calculateEarliestDeliveryForPacket(packet, delay);
+	for (int i = 0; i < queue.length(); i++) {
+		this->calculateEarliestDeliveryForPacket(queue.get(i), delay);
 	}
 }
 

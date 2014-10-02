@@ -27,7 +27,7 @@ class TbusDatarateQueue : public TbusBaseQueue<TbusQueueDatarateValue> {
 		virtual ~TbusDatarateQueue();
 
 	protected:
-		int64_t bytesSent;
+		int64_t bitsSent;
 
 		virtual void calculateEarliestDeliveries();
 		virtual void calculateEarliestDeliveryForPacket(cPacket* packet);

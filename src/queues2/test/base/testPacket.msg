@@ -15,29 +15,10 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <test/TbusTestBase.h>
-#include "TbusDatarateQueueTester.h"
-
-template <class T> TbusTestBase<T>::TbusTestBase(T* i) {
-	instance = i;
+//
+// TODO generated message class
+//
+packet TestPacket {
+    simtime_t expectedArrival;
+    simtime_t dispatchTime;
 }
-
-template <class T> TbusTestBase<T>::~TbusTestBase()
-{
-	// TODO Auto-generated destructor stub
-}
-
-template <class T> void TbusTestBase<T>::addTest(functionPtr test) {
-	tests.push(test);
-}
-
-template <class T> void TbusTestBase<T>::runNextTest() {
-	if (!tests.empty()) {
-		functionPtr test = tests.front();
-		tests.pop();
-		(instance->*test)();
-	}
-}
-
-// Template instantiation for linker
-template class TbusTestBase<TbusDatarateQueueTester>;
