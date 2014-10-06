@@ -24,16 +24,25 @@ network TbusTestNetwork
 {
     parameters:
 
-        @display("bgb=327,119");
+        @display("bgb=327,182");
     submodules:
-        testQueue: TbusDatarateQueueTest {
-            @display("p=42,50");
+        datarateQueue: TbusDatarateQueueTest {
+            @display("p=54,50");
         }
-        tester: TbusDatarateQueueTester {
-            @display("p=291,50");
+        datarateTester: TbusDatarateQueueTester {
+            @display("p=271,50");
+        }
+        delayQueue: TbusDelayQueueTest {
+            @display("p=54,128");
+        }
+        delayTester: TbusDelayQueueTester {
+            @display("p=271,128");
         }
 
     connections:
-        tester.outGate --> testQueue.inGate;
-        tester.inGate <-- testQueue.outGate;
+        datarateTester.outGate --> datarateQueue.inGate;
+        datarateTester.inGate <-- datarateQueue.outGate;
+
+        delayTester.outGate --> delayQueue.inGate;
+        delayTester.inGate <-- delayQueue.outGate;
 }

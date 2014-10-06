@@ -28,28 +28,29 @@ TbusDatarateQueue::~TbusDatarateQueue() {
 }
 
 void TbusDatarateQueue::calculateEarliestDeliveries() {
-	for (int i = 0; i < queue.length(); i++) {
-		this->calculateEarliestDeliveryForPacket(queue.get(i));
+	// Only calculate for the front of queue
+	if (!queue.empty()) {
+		this->calculateEarliestDeliveryForPacket(queue.front());
 	}
 }
 
 void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
-	simtime_t delay;
-	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
-	ASSERT2(controlInfo, "Invalid control info on packet!");
-
 	// Only calculate for the first packet, the others have to wait
 	if (queue.front() == packet) {
 		// Calculate earliest delivery with respect to already sent bytes
 
-		// What time shall we use?
-		simtime_t starttime = std::max(values.back()->time.dbl(), controlInfo->getQueueArrival().dbl());
-		simtime_t runtime = simTime() - starttime;
+		simtime_t delay;
+		TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
+		ASSERT2(controlInfo, "Invalid control info on packet!");
 
-		std::cout << "Runtime: " << runtime << std::endl;
+		if (values.size() > 1) {
+			// What time shall we use?
+			simtime_t starttime = std::max(values[1]->time.dbl(), controlInfo->getQueueArrival().dbl());
+			simtime_t runtime = simTime() - starttime;
 
-		bitsSent += (int64) floor(runtime.dbl() * values.back()->datarate);
-		std::cout << "Already " << bitsSent << " bits sent!" << std::endl;
+			bitsSent += (int64) floor(runtime.dbl() * values[1]->datarate);
+		}
+
 		delay = this->currentDatarateDelay(packet->getBitLength() - bitsSent);
 
 		// Add current time to delay
@@ -79,48 +80,38 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 		delete packet;
 	}
 
+	// Remove the previous value
+	values.clear();
+
 	// Reset the bytes sent
 	bitsSent = 0;
 }
 
 double TbusDatarateQueue::currentLossProbability() {
-	ASSERT2(values.size() > 0, "Empty values array!");
+	ASSERT2(!values.empty(), "Empty values array!");
 
-	// Calculations according to Tobias Krauthoffs work
-	simtime_t runtime = simTime() - values.front()->time;
-	simtime_t endtime = simTime();
-	simtime_t starttime;
-	double loss = 0.0;
+	double loss;
+	if (values.size() > 1) {
+		// Calculations according to/adapted from Tobias Krauthoffs work
+		simtime_t starttime;
+		simtime_t endtime = simTime();
+		simtime_t runtime = simTime() - values.back()->time;
 
-	reverseValueIterator it;
-	for (it = values.rbegin(); it != values.rend(); ++it) {
-		starttime = (*it)->time;
-		loss += (*it)->droprate * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
-		endtime = starttime;
+		rValueIterator it;
+		for (it = values.rbegin(); it != values.rend(); ++it) {
+			starttime = (*it)->time;
+			loss += (*it)->droprate * (endtime - starttime) / runtime;
+			endtime = starttime;
+		}
+	} else {
+		loss = values.front()->droprate;
 	}
 
 	return loss;
 }
 
 simtime_t TbusDatarateQueue::currentDatarateDelay(int64_t bitLength) {
-	ASSERT2(values.size() > 0, "Empty values array!");
+	ASSERT2(!values.empty(), "Empty values array!");
 
-	// Calculations according to Tobias Krauthoffs work
-	simtime_t runtime = simTime() - values.front()->time;
-	simtime_t endtime = simTime();
-	simtime_t starttime;
-	double datarate = 0.0;
-
-	if (runtime == simtime_t()) {
-		return ((double) bitLength) / values.front()->datarate;
-	}
-
-	reverseValueIterator it;
-	for (it = values.rbegin(); it != values.rend(); ++it) {
-		starttime = (*it)->time;
-		datarate += (double) (*it)->datarate * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
-		endtime = starttime;
-	}
-
-	return ((double) bitLength) / datarate;
+	return ((double) bitLength / values.front()->datarate);
 }

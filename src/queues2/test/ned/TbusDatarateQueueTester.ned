@@ -17,9 +17,6 @@
 
 package tbus.queues2.test.ned;
 
-//
-// TODO auto-generated type
-//
 simple TbusDatarateQueueTester {
     parameters:
         @display("");

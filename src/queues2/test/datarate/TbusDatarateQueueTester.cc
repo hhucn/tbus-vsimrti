@@ -23,7 +23,7 @@
 
 #include <sstream>
 
-template class TbusTestBase<TbusDatarateQueueTester>;
+//template class TbusTestBase<TbusDatarateQueueTester>;
 
 Define_Module(TbusDatarateQueueTester);
 
@@ -42,12 +42,16 @@ void TbusDatarateQueueTester::initialize() {
 	inGate = findGate("inGate");
 	outGate = findGate("outGate");
 
-	datarateQueue = ModuleAccess<TbusDatarateQueue>("testQueue").get();
+	queue = ModuleAccess<TbusDatarateQueue>("datarateQueue").get();
 
 	runNextTest();
 }
 
 void TbusDatarateQueueTester::testChangingDatarate() {
+	// Reset values
+	queue->updateValue(NULL);
+	queue->updateValue(NULL);
+
 	TbusQueueDatarateValue* datarate1 = new TbusQueueDatarateValue();
 	datarate1->datarate = 16.0; //16Bitps
 	datarate1->droprate = 0.0;
@@ -64,20 +68,24 @@ void TbusDatarateQueueTester::testChangingDatarate() {
 	packet2->setExpectedArrival(simTime() + 4.0 + 3.0);
 	packet2->setDispatchTime(simTime());
 
-	datarateQueue->updateValue(datarate1);
-	scheduleAt(simTime() + 1, new cMessage("change.datarate"));
+//	datarateQueue->updateValue(datarate1);
+	queue->updateValue(datarate1);
+
+	#define CHANGING_DATARATE_END "change.datarate"
+	scheduleAt(simTime() + 1, new cMessage(CHANGING_DATARATE_END));
 
 	send(packet1, outGate);
 	send(packet2, outGate);
 }
 
 void TbusDatarateQueueTester::handleChangingDatarate(cMessage* msg) {
-	if (msg->isSelfMessage() && (strcmp(msg->getName(), "change.datarate") == 0)) {
+	if (msg->isSelfMessage() && (strcmp(msg->getName(), CHANGING_DATARATE_END) == 0)) {
 		TbusQueueDatarateValue* datarate2 = new TbusQueueDatarateValue();
-		datarate2->datarate = 8.0; //5Bps
+		datarate2->datarate = 8.0; //8Bps
 		datarate2->droprate = 0.0;
 
-		datarateQueue->updateValue(datarate2);
+//		datarateQueue->updateValue(datarate2);
+		queue->updateValue(datarate2);
 	} else {
 		success = success && (abs(simTime().dbl() - ((TestPacket*) msg)->getExpectedArrival().dbl()) < 0.000001);
 		EV << "Changed datarate packet " << msg << " arrived with difference " << abs(simTime().dbl()  - ((TestPacket*) msg)->getExpectedArrival().dbl()) << std::endl;
@@ -91,11 +99,16 @@ void TbusDatarateQueueTester::handleChangingDatarate(cMessage* msg) {
 }
 
 void TbusDatarateQueueTester::testHalfDrop() {
+	// Reset values
+	queue->updateValue(NULL);
+	queue->updateValue(NULL);
+
 	TbusQueueDatarateValue* datarate = new TbusQueueDatarateValue();
 	datarate->datarate = 10000000.0/8.0; //10Mbit
 	datarate->droprate = .5;
 
-	datarateQueue->updateValue(datarate);
+//	datarateQueue->updateValue(datarate);
+	queue->updateValue(datarate);
 
 	for (uint32_t offset = 0; offset < 100; ++offset) {
 		std::ostringstream outStream;
@@ -109,7 +122,8 @@ void TbusDatarateQueueTester::testHalfDrop() {
 		sendDelayed(packet, offset, outGate);
 	}
 
-	scheduleAt(simTime() + 100, new cMessage("HalfDropEnd", 0));
+	#define HALF_DROP_END "HalfDropEnd"
+	scheduleAt(simTime() + 100, new cMessage(HALF_DROP_END, 0));
 }
 
 void TbusDatarateQueueTester::handleHalfDrop(cMessage* msg) {
@@ -119,7 +133,7 @@ void TbusDatarateQueueTester::handleHalfDrop(cMessage* msg) {
 		arrivals++;
 		EV << "Message " << msg->getName() << " survived!" << std::endl;
 		delete msg;
-	} else if (msg->isSelfMessage() && (strcmp(msg->getName(), "HalfDropEnd") == 0)){
+	} else if (msg->isSelfMessage() && (strcmp(msg->getName(), HALF_DROP_END) == 0)){
 		delete msg;
 
 		EV << "Test Half Drop: " << arrivals << " out of 100 packets arrived!" << std::endl;
@@ -130,11 +144,16 @@ void TbusDatarateQueueTester::handleHalfDrop(cMessage* msg) {
 }
 
 void TbusDatarateQueueTester::testFullDrop() {
+	// Reset values
+	queue->updateValue(NULL);
+	queue->updateValue(NULL);
+
 	TbusQueueDatarateValue* datarate = new TbusQueueDatarateValue();
 	datarate->datarate = 10000000.0/8.0; //10Mbit
 	datarate->droprate = 1.0;
 
-	datarateQueue->updateValue(datarate);
+//	datarateQueue->updateValue(datarate);
+	queue->updateValue(datarate);
 
 	for (uint32_t offset = 0; offset < 100; ++offset) {
 		std::ostringstream outStream;
@@ -157,11 +176,16 @@ void TbusDatarateQueueTester::handleFullDrop(cMessage* msg) {
 }
 
 void TbusDatarateQueueTester::testNormalDatarate() {
+	// Reset values
+	queue->updateValue(NULL);
+	queue->updateValue(NULL);
+
 	TbusQueueDatarateValue* datarate = new TbusQueueDatarateValue();
 	datarate->datarate = 10000000.0/8.0; //10Mbit
 	datarate->droprate = 0.0;
 
-	datarateQueue->updateValue(datarate);
+//	datarateQueue->updateValue(datarate);
+	queue->updateValue(datarate);
 
 	for (uint32_t offset = 0; offset < 100; ++offset) {
 		std::ostringstream outStream;

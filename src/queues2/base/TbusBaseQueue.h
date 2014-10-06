@@ -24,14 +24,13 @@
 #include "TbusQueueControlInfo.h"
 #include "TbusQueueValue.h"
 
+#include <deque>
+
 #define TBUS_BASE_QUEUE_SELFMESSAGE "tbus.base.queue.self.message"
 
 template <class T> class TbusBaseQueue : public cSimpleModule {
-	public:
-		typedef typename std::vector<T*>::iterator valueIterator;
-		typedef typename std::vector<T*>::reverse_iterator reverseValueIterator;
-		typedef cPacketQueue::Iterator packetIterator;
 
+	public:
 		TbusBaseQueue();
 		virtual ~TbusBaseQueue();
 
@@ -44,11 +43,31 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		cPacketQueue queue;
 		cMessage selfMessage;
 
-		std::vector<T*> values;
-		T* currentValue;
-
 		int inGate;
 		int outGate;
+
+		std::deque<T*> values;
+		typedef typename std::deque<T*>::reverse_iterator rValueIterator;
+
+//		struct Values {
+//			T* current = NULL;
+//			T* previous = NULL;
+//			void clear() {
+//				if (previous) {
+//					delete previous;
+//					previous = NULL;
+//				}
+//			}
+//			void update(T* newValue) {
+//				clear();
+//				previous = current;
+//				current = newValue;
+//			}
+//			~Values() {
+//				if (current) delete current;
+//				if (previous) delete previous;
+//			}
+//		} values;
 
 		virtual void handleSelfMessage(cMessage* msg);
 		void addPacketToQueue(cPacket* packet);

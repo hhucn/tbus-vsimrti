@@ -15,34 +15,33 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+#ifndef TBUSDELAYQUEUETESTER_H_
+#define TBUSDELAYQUEUETESTER_H_
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
-}
+#include "TbusTestBase.h"
+#include "TbusDelayQueue.h"
 
-TbusQueueControlInfo::~TbusQueueControlInfo() {
-	// TODO Auto-generated destructor stub
-}
+class TbusDelayQueueTester : public TbusTestBase<TbusDelayQueueTester> {
+	private:
+			int inGate;
+			int outGate;
 
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-simtime_t TbusQueueControlInfo::getEarliestDelivery() {
-	return earliestDelivery;
-}
+			TbusDelayQueue* queue;
 
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-simtime_t TbusQueueControlInfo::getQueueArrival() {
-	return queueArrival;
-}
+	public:
+		TbusDelayQueueTester();
+		virtual ~TbusDelayQueueTester();
 
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
-}
+		void initialize();
+
+		void testConstantDelay();
+		void handleConstantDelay(cMessage* msg);
+
+		void testNoDelay();
+		void handleNoDelay(cMessage* msg);
+
+		void testChangingDelay();
+		void handleChangingDelay(cMessage* msg);
+};
+
+#endif /* TBUSDELAYQUEUETESTER_H_ */

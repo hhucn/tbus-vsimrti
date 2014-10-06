@@ -20,6 +20,7 @@
 
 #include "TbusTestBase.h"
 #include "TbusDatarateQueue.h"
+#include "TbusBaseQueue.h"
 #include "omnetpp.h"
 
 class TbusDatarateQueueTester : public TbusTestBase<TbusDatarateQueueTester> {
@@ -27,8 +28,7 @@ class TbusDatarateQueueTester : public TbusTestBase<TbusDatarateQueueTester> {
 		int inGate;
 		int outGate;
 
-		simtime_t expectedTime;
-		TbusDatarateQueue* datarateQueue;
+		TbusDatarateQueue* queue;
 
 	public:
 		TbusDatarateQueueTester();

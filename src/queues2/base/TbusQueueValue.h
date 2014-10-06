@@ -22,7 +22,7 @@
 
 class TbusQueueValue : public cObject {
 	public:
-		const simtime_t time;
+		simtime_t time;
 
 		TbusQueueValue() : time(simTime()) {};
 		virtual ~TbusQueueValue() {};

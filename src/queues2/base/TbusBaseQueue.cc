@@ -31,9 +31,7 @@ template<class T> TbusBaseQueue<T>::TbusBaseQueue() :
  * Clean up.
  */
 template<class T> TbusBaseQueue<T>::~TbusBaseQueue() {
-	values.clear();
 	queue.clear();
-	delete currentValue;
 }
 
 /**
@@ -73,8 +71,9 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 		this->sendFrontOfQueue();
 
 		//Only leave current value
+		T* currentValue(values.front());
 		values.clear();
-		values.push_back(currentValue);
+		values.push_front(currentValue);
 
 		// Then check the next one and/or reschedule
 		if (queue.length() > 0) {
@@ -141,15 +140,16 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
  */
 template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 	Enter_Method("updateValue()");
-	if (currentValue != newValue) {
+	if (values.front() != newValue) {
 		// Clear old values
 		if (queue.isEmpty()) {
 			values.clear();
 		}
 
+		EV << "Updated value at " << simTime() << std::endl;
+
 		// Store new value
-		values.push_back(newValue);
-		currentValue = newValue;
+		values.push_front(newValue);
 
 		// If there are ongoing transmissions, update their earliest deliveries
 		if (!queue.isEmpty()) {

@@ -28,6 +28,7 @@ TbusDelayQueue::~TbusDelayQueue() {
 void TbusDelayQueue::calculateEarliestDeliveries() {
 	simtime_t delay = this->currentDelay();
 
+	// No iterators because OMNeTs iterators are weird
 	for (int i = 0; i < queue.length(); i++) {
 		this->calculateEarliestDeliveryForPacket(queue.get(i), delay);
 	}
@@ -53,18 +54,23 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime
 }
 
 simtime_t TbusDelayQueue::currentDelay() {
-	ASSERT2(values.size() > 0, "Empty values array!");
-	// Calculations according to Tobias Krauthoffs work
-	simtime_t runtime = simTime() - values.front()->time;
-	simtime_t delay = simtime_t();
-	simtime_t endtime = simTime();
-	simtime_t starttime;
+	ASSERT2(!values.empty(), "Empty values array!");
+	// Calculations according to/adapted from Tobias Krauthoffs work
 
-	valueIterator it;
-	for (it = values.end(); it != values.begin(); --it) {
-		starttime = (*it)->time.dbl();
-		delay += (*it)->delay.dbl() * (endtime - starttime) / runtime;
-		endtime = starttime;
+	simtime_t delay;
+	if (values.size() > 1) {
+		simtime_t starttime;
+		simtime_t endtime = simTime();
+		simtime_t runtime = simTime() - values.back()->time;
+
+		rValueIterator it;
+		for (it = values.rbegin(); it != values.rend(); ++it) {
+			starttime = (*it)->time;
+			delay += (*it)->delay.dbl() * (endtime - starttime) / runtime;
+			endtime = starttime;
+		}
+	} else {
+		delay = values.front()->delay;
 	}
 
 	return delay;

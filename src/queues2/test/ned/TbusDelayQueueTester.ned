@@ -15,34 +15,13 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-#include <control_info/TbusQueueControlInfo.h>
+package tbus.queues2.test.ned;
 
-/**
- * Saves simulation time on creation in queueArrival
- */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {
-}
-
-TbusQueueControlInfo::~TbusQueueControlInfo() {
-	// TODO Auto-generated destructor stub
-}
-
-/**
- * Time for earliest delivery from qeue
- * @return earliest delivery time
- */
-simtime_t TbusQueueControlInfo::getEarliestDelivery() {
-	return earliestDelivery;
-}
-
-/**
- * Arrival time at queue (=> Object creation time)
- * @return arrival time
- */
-simtime_t TbusQueueControlInfo::getQueueArrival() {
-	return queueArrival;
-}
-
-void TbusQueueControlInfo::setEarliestDelivery(simtime_t time) {
-	earliestDelivery = time;
+simple TbusDelayQueueTester {
+    parameters:
+        @display("");
+        
+	gates:
+	    input inGate;
+	    output outGate;
 }

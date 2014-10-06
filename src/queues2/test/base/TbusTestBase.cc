@@ -17,6 +17,7 @@
 
 #include "TbusTestBase.h"
 #include "TbusDatarateQueueTester.h"
+#include "TbusDelayQueueTester.h"
 
 template <class T> TbusTestBase<T>::TbusTestBase(T* i) :
 	instance(i),
@@ -73,3 +74,4 @@ template <class T> void TbusTestBase<T>::runNextTest() {
 
 // Template instantiation for linker
 template class TbusTestBase<TbusDatarateQueueTester>;
+template class TbusTestBase<TbusDelayQueueTester>;

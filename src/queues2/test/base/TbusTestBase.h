@@ -21,6 +21,7 @@
 #include <queue>
 #include "csimplemodule.h"
 #include "cmessage.h"
+#include "TbusBaseQueue.h"
 
 #define NEXT_TEST_MESSAGE "next.test.message"
 
@@ -41,14 +42,15 @@ template <class T> class TbusTestBase : public cSimpleModule {
 		bool success;
 		cMessage nextTestMessage;
 
-	public:
 		TbusTestBase(T* i);
-		virtual ~TbusTestBase();
-
-		void handleMessage(cMessage* msg);
 
 		void addTest(testFunctionPtr test, handleFunctionPtr handle, std::string description);
 		void runNextTest();
+
+	public:
+		virtual ~TbusTestBase();
+
+		void handleMessage(cMessage* msg);
 };
 
 #endif /* TBUSTESTBASE_H_ */
