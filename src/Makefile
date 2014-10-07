@@ -44,23 +44,19 @@ INCLUDE_PATH = \
     -Inodes/mobile \
     -Inodes/router \
     -Iqueues \
-    -Iqueues/helper \
-    -Iqueues/interfaces \
-    -Iqueues/message \
+    -Iqueues/download \
+    -Iqueues/implementation \
+    -Iqueues/implementation/base \
+    -Iqueues/implementation/control_info \
+    -Iqueues/implementation/datarate \
+    -Iqueues/implementation/delay \
+    -Iqueues/implementation/test \
+    -Iqueues/implementation/test/base \
+    -Iqueues/implementation/test/datarate \
+    -Iqueues/implementation/test/delay \
+    -Iqueues/implementation/test/ned \
     -Iqueues/ned \
-    -Iqueues/network \
-    -Iqueues/queues_download \
-    -Iqueues/queues_upload \
-    -Iqueues2 \
-    -Iqueues2/base \
-    -Iqueues2/control_info \
-    -Iqueues2/datarate \
-    -Iqueues2/delay \
-    -Iqueues2/test \
-    -Iqueues2/test/base \
-    -Iqueues2/test/datarate \
-    -Iqueues2/test/delay \
-    -Iqueues2/test/ned \
+    -Iqueues/upload \
     -Iworld
 
 # Additional object and library files to link with
@@ -82,31 +78,25 @@ OBJS = \
     $O/linklayer/radio/TbusRadio.o \
     $O/linklayer/radio/TbusRadioMAC.o \
     $O/nodes/router/TbusRouterNode.o \
-    $O/queues/network/Datarate.o \
-    $O/queues/network/Bbdelay.o \
-    $O/queues/queues_download/CDRQ.o \
-    $O/queues/queues_download/CRRQ.o \
-    $O/queues/queues_upload/CRSQ.o \
-    $O/queues/queues_upload/CDSQ.o \
-    $O/queues2/base/TbusBaseQueue.o \
-    $O/queues2/control_info/TbusQueueControlInfo.o \
-    $O/queues2/datarate/TbusQueueDatarateValue.o \
-    $O/queues2/datarate/TbusDatarateQueue.o \
-    $O/queues2/delay/TbusDelayQueue.o \
-    $O/queues2/delay/TbusQueueDelayValue.o \
-    $O/queues2/test/base/TbusTestBase.o \
-    $O/queues2/test/datarate/TbusDatarateQueueTester.o \
-    $O/queues2/test/delay/TbusDelayQueueTester.o \
+    $O/queues/download/TbusCDRQ.o \
+    $O/queues/download/TbusCRRQ.o \
+    $O/queues/implementation/base/TbusBaseQueue.o \
+    $O/queues/implementation/control_info/TbusQueueControlInfo.o \
+    $O/queues/implementation/datarate/TbusQueueDatarateValue.o \
+    $O/queues/implementation/datarate/TbusDatarateQueue.o \
+    $O/queues/implementation/delay/TbusDelayQueue.o \
+    $O/queues/implementation/delay/TbusQueueDelayValue.o \
+    $O/queues/implementation/test/base/TbusTestBase.o \
+    $O/queues/implementation/test/datarate/TbusDatarateQueueTester.o \
+    $O/queues/implementation/test/delay/TbusDelayQueueTester.o \
+    $O/queues/upload/TbusCRSQ.o \
+    $O/queues/upload/TbusCDSQ.o \
     $O/world/TbusChannelControl.o \
-    $O/queues/message/MyPacket_m.o \
-    $O/queues/message/SendHeadAndDeletePacket_m.o \
-    $O/queues2/test/base/testPacket_m.o
+    $O/queues/implementation/test/base/testPacket_m.o
 
 # Message files
 MSGFILES = \
-    queues/message/MyPacket.msg \
-    queues/message/SendHeadAndDeletePacket.msg \
-    queues2/test/base/testPacket.msg
+    queues/implementation/test/base/testPacket.msg
 
 # Other makefile variables (-K)
 INETMANET_PROJ=../../inetmanet
@@ -190,23 +180,19 @@ clean:
 	$(Q)-rm -f nodes/mobile/*_m.cc nodes/mobile/*_m.h
 	$(Q)-rm -f nodes/router/*_m.cc nodes/router/*_m.h
 	$(Q)-rm -f queues/*_m.cc queues/*_m.h
-	$(Q)-rm -f queues/helper/*_m.cc queues/helper/*_m.h
-	$(Q)-rm -f queues/interfaces/*_m.cc queues/interfaces/*_m.h
-	$(Q)-rm -f queues/message/*_m.cc queues/message/*_m.h
+	$(Q)-rm -f queues/download/*_m.cc queues/download/*_m.h
+	$(Q)-rm -f queues/implementation/*_m.cc queues/implementation/*_m.h
+	$(Q)-rm -f queues/implementation/base/*_m.cc queues/implementation/base/*_m.h
+	$(Q)-rm -f queues/implementation/control_info/*_m.cc queues/implementation/control_info/*_m.h
+	$(Q)-rm -f queues/implementation/datarate/*_m.cc queues/implementation/datarate/*_m.h
+	$(Q)-rm -f queues/implementation/delay/*_m.cc queues/implementation/delay/*_m.h
+	$(Q)-rm -f queues/implementation/test/*_m.cc queues/implementation/test/*_m.h
+	$(Q)-rm -f queues/implementation/test/base/*_m.cc queues/implementation/test/base/*_m.h
+	$(Q)-rm -f queues/implementation/test/datarate/*_m.cc queues/implementation/test/datarate/*_m.h
+	$(Q)-rm -f queues/implementation/test/delay/*_m.cc queues/implementation/test/delay/*_m.h
+	$(Q)-rm -f queues/implementation/test/ned/*_m.cc queues/implementation/test/ned/*_m.h
 	$(Q)-rm -f queues/ned/*_m.cc queues/ned/*_m.h
-	$(Q)-rm -f queues/network/*_m.cc queues/network/*_m.h
-	$(Q)-rm -f queues/queues_download/*_m.cc queues/queues_download/*_m.h
-	$(Q)-rm -f queues/queues_upload/*_m.cc queues/queues_upload/*_m.h
-	$(Q)-rm -f queues2/*_m.cc queues2/*_m.h
-	$(Q)-rm -f queues2/base/*_m.cc queues2/base/*_m.h
-	$(Q)-rm -f queues2/control_info/*_m.cc queues2/control_info/*_m.h
-	$(Q)-rm -f queues2/datarate/*_m.cc queues2/datarate/*_m.h
-	$(Q)-rm -f queues2/delay/*_m.cc queues2/delay/*_m.h
-	$(Q)-rm -f queues2/test/*_m.cc queues2/test/*_m.h
-	$(Q)-rm -f queues2/test/base/*_m.cc queues2/test/base/*_m.h
-	$(Q)-rm -f queues2/test/datarate/*_m.cc queues2/test/datarate/*_m.h
-	$(Q)-rm -f queues2/test/delay/*_m.cc queues2/test/delay/*_m.h
-	$(Q)-rm -f queues2/test/ned/*_m.cc queues2/test/ned/*_m.h
+	$(Q)-rm -f queues/upload/*_m.cc queues/upload/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
 
 cleanall: clean
@@ -214,7 +200,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/helper/*.cc queues/interfaces/*.cc queues/message/*.cc queues/ned/*.cc queues/network/*.cc queues/queues_download/*.cc queues/queues_upload/*.cc queues2/*.cc queues2/base/*.cc queues2/control_info/*.cc queues2/datarate/*.cc queues2/delay/*.cc queues2/test/*.cc queues2/test/base/*.cc queues2/test/datarate/*.cc queues2/test/delay/*.cc queues2/test/ned/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/ned/*.cc queues/upload/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/linklayer/radio/TbusQueueControl.o: linklayer/radio/TbusQueueControl.cc \
@@ -223,18 +209,17 @@ $O/linklayer/radio/TbusQueueControl.o: linklayer/radio/TbusQueueControl.cc \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	linklayer/radio/TbusQueueControl.h \
-	queues/helper/Preamble.h \
-	queues/interfaces/IBbdelayQueue.h \
-	queues/interfaces/IDatarateQueue.h \
-	queues/interfaces/IQueue.h \
-	queues/message/MyPacket_m.h \
-	queues/message/SendHeadAndDeletePacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h \
-	queues/queues_download/CDRQ.h \
-	queues/queues_download/CRRQ.h \
-	queues/queues_upload/CDSQ.h \
-	queues/queues_upload/CRSQ.h
+	queues/download/TbusCDRQ.h \
+	queues/download/TbusCRRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/upload/TbusCDSQ.h \
+	queues/upload/TbusCRSQ.h
 $O/linklayer/radio/TbusRadio.o: linklayer/radio/TbusRadio.cc \
 	linklayer/radio/TbusRadio.h
 $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
@@ -273,129 +258,112 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	linklayer/radio/TbusQueueControl.h \
 	linklayer/radio/TbusRadioPHY.h \
-	queues/helper/Preamble.h \
-	queues/interfaces/IBbdelayQueue.h \
-	queues/interfaces/IDatarateQueue.h \
-	queues/interfaces/IQueue.h \
-	queues/message/MyPacket_m.h \
-	queues/message/SendHeadAndDeletePacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h \
-	queues/queues_download/CDRQ.h \
-	queues/queues_download/CRRQ.h \
-	queues/queues_upload/CDSQ.h \
-	queues/queues_upload/CRSQ.h \
+	queues/download/TbusCDRQ.h \
+	queues/download/TbusCRRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/upload/TbusCDSQ.h \
+	queues/upload/TbusCRSQ.h \
 	world/TbusChannelControl.h
 $O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
 	nodes/router/TbusRouterNode.h
-$O/queues/message/MyPacket_m.o: queues/message/MyPacket_m.cc \
-	queues/message/MyPacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h
-$O/queues/message/SendHeadAndDeletePacket_m.o: queues/message/SendHeadAndDeletePacket_m.cc \
-	queues/message/SendHeadAndDeletePacket_m.h
-$O/queues/network/Bbdelay.o: queues/network/Bbdelay.cc \
-	queues/network/Bbdelay.h
-$O/queues/network/Datarate.o: queues/network/Datarate.cc \
-	queues/network/Datarate.h
-$O/queues/queues_download/CDRQ.o: queues/queues_download/CDRQ.cc \
-	queues/helper/Preamble.h \
-	queues/interfaces/IBbdelayQueue.h \
-	queues/interfaces/IQueue.h \
-	queues/message/MyPacket_m.h \
-	queues/message/SendHeadAndDeletePacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h \
-	queues/queues_download/CDRQ.h \
-	queues2/control_info/TbusQueueControlInfo.h
-$O/queues/queues_download/CRRQ.o: queues/queues_download/CRRQ.cc \
-	queues/helper/Preamble.h \
-	queues/interfaces/IDatarateQueue.h \
-	queues/interfaces/IQueue.h \
-	queues/message/MyPacket_m.h \
-	queues/message/SendHeadAndDeletePacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h \
-	queues/queues_download/CRRQ.h
-$O/queues/queues_upload/CDSQ.o: queues/queues_upload/CDSQ.cc \
-	queues/helper/Preamble.h \
-	queues/interfaces/IBbdelayQueue.h \
-	queues/interfaces/IQueue.h \
-	queues/message/MyPacket_m.h \
-	queues/message/SendHeadAndDeletePacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h \
-	queues/queues_upload/CDSQ.h
-$O/queues/queues_upload/CRSQ.o: queues/queues_upload/CRSQ.cc \
-	queues/helper/Preamble.h \
-	queues/interfaces/IDatarateQueue.h \
-	queues/interfaces/IQueue.h \
-	queues/message/MyPacket_m.h \
-	queues/message/SendHeadAndDeletePacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h \
-	queues/queues_upload/CRSQ.h
-$O/queues2/base/TbusBaseQueue.o: queues2/base/TbusBaseQueue.cc \
-	queues2/base/TbusBaseQueue.h \
-	queues2/base/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h \
-	queues2/datarate/TbusQueueDatarateValue.h \
-	queues2/delay/TbusQueueDelayValue.h
-$O/queues2/control_info/TbusQueueControlInfo.o: queues2/control_info/TbusQueueControlInfo.cc \
-	queues2/control_info/TbusQueueControlInfo.h
-$O/queues2/datarate/TbusDatarateQueue.o: queues2/datarate/TbusDatarateQueue.cc \
-	queues2/base/TbusBaseQueue.h \
-	queues2/base/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h \
-	queues2/datarate/TbusDatarateQueue.h \
-	queues2/datarate/TbusQueueDatarateValue.h
-$O/queues2/datarate/TbusQueueDatarateValue.o: queues2/datarate/TbusQueueDatarateValue.cc \
-	queues2/base/TbusQueueValue.h \
-	queues2/datarate/TbusQueueDatarateValue.h
-$O/queues2/delay/TbusDelayQueue.o: queues2/delay/TbusDelayQueue.cc \
-	queues2/base/TbusBaseQueue.h \
-	queues2/base/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h \
-	queues2/delay/TbusDelayQueue.h \
-	queues2/delay/TbusQueueDelayValue.h
-$O/queues2/delay/TbusQueueDelayValue.o: queues2/delay/TbusQueueDelayValue.cc \
-	queues2/base/TbusQueueValue.h \
-	queues2/delay/TbusQueueDelayValue.h
-$O/queues2/test/base/TbusTestBase.o: queues2/test/base/TbusTestBase.cc \
-	queues2/base/TbusBaseQueue.h \
-	queues2/base/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h \
-	queues2/datarate/TbusDatarateQueue.h \
-	queues2/datarate/TbusQueueDatarateValue.h \
-	queues2/delay/TbusDelayQueue.h \
-	queues2/delay/TbusQueueDelayValue.h \
-	queues2/test/base/TbusTestBase.h \
-	queues2/test/datarate/TbusDatarateQueueTester.h \
-	queues2/test/delay/TbusDelayQueueTester.h
-$O/queues2/test/base/testPacket_m.o: queues2/test/base/testPacket_m.cc \
-	queues2/test/base/testPacket_m.h
-$O/queues2/test/datarate/TbusDatarateQueueTester.o: queues2/test/datarate/TbusDatarateQueueTester.cc \
+$O/queues/download/TbusCDRQ.o: queues/download/TbusCDRQ.cc \
+	queues/download/TbusCDRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h
+$O/queues/download/TbusCRRQ.o: queues/download/TbusCRRQ.cc \
+	queues/download/TbusCRRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h
+$O/queues/implementation/base/TbusBaseQueue.o: queues/implementation/base/TbusBaseQueue.cc \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h
+$O/queues/implementation/control_info/TbusQueueControlInfo.o: queues/implementation/control_info/TbusQueueControlInfo.cc \
+	queues/implementation/control_info/TbusQueueControlInfo.h
+$O/queues/implementation/datarate/TbusDatarateQueue.o: queues/implementation/datarate/TbusDatarateQueue.cc \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h
+$O/queues/implementation/datarate/TbusQueueDatarateValue.o: queues/implementation/datarate/TbusQueueDatarateValue.cc \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h
+$O/queues/implementation/delay/TbusDelayQueue.o: queues/implementation/delay/TbusDelayQueue.cc \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h
+$O/queues/implementation/delay/TbusQueueDelayValue.o: queues/implementation/delay/TbusQueueDelayValue.cc \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h
+$O/queues/implementation/test/base/TbusTestBase.o: queues/implementation/test/base/TbusTestBase.cc \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/test/base/TbusTestBase.h \
+	queues/implementation/test/datarate/TbusDatarateQueueTester.h \
+	queues/implementation/test/delay/TbusDelayQueueTester.h
+$O/queues/implementation/test/base/testPacket_m.o: queues/implementation/test/base/testPacket_m.cc \
+	queues/implementation/test/base/testPacket_m.h
+$O/queues/implementation/test/datarate/TbusDatarateQueueTester.o: queues/implementation/test/datarate/TbusDatarateQueueTester.cc \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
-	queues2/base/TbusBaseQueue.h \
-	queues2/base/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h \
-	queues2/datarate/TbusDatarateQueue.h \
-	queues2/datarate/TbusQueueDatarateValue.h \
-	queues2/test/base/TbusTestBase.h \
-	queues2/test/base/testPacket_m.h \
-	queues2/test/datarate/TbusDatarateQueueTester.h
-$O/queues2/test/delay/TbusDelayQueueTester.o: queues2/test/delay/TbusDelayQueueTester.cc \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/test/base/TbusTestBase.h \
+	queues/implementation/test/base/testPacket_m.h \
+	queues/implementation/test/datarate/TbusDatarateQueueTester.h
+$O/queues/implementation/test/delay/TbusDelayQueueTester.o: queues/implementation/test/delay/TbusDelayQueueTester.cc \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
-	queues2/base/TbusBaseQueue.h \
-	queues2/base/TbusQueueValue.h \
-	queues2/control_info/TbusQueueControlInfo.h \
-	queues2/delay/TbusDelayQueue.h \
-	queues2/delay/TbusQueueDelayValue.h \
-	queues2/test/base/TbusTestBase.h \
-	queues2/test/base/testPacket_m.h \
-	queues2/test/delay/TbusDelayQueueTester.h
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/test/base/TbusTestBase.h \
+	queues/implementation/test/base/testPacket_m.h \
+	queues/implementation/test/delay/TbusDelayQueueTester.h
+$O/queues/upload/TbusCDSQ.o: queues/upload/TbusCDSQ.cc \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/upload/TbusCDSQ.h
+$O/queues/upload/TbusCRSQ.o: queues/upload/TbusCRSQ.cc \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/upload/TbusCDSQ.h \
+	queues/upload/TbusCRSQ.h
 $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \
@@ -422,17 +390,16 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	linklayer/radio/TbusQueueControl.h \
 	linklayer/radio/TbusRadioPHY.h \
-	queues/helper/Preamble.h \
-	queues/interfaces/IBbdelayQueue.h \
-	queues/interfaces/IDatarateQueue.h \
-	queues/interfaces/IQueue.h \
-	queues/message/MyPacket_m.h \
-	queues/message/SendHeadAndDeletePacket_m.h \
-	queues/network/Bbdelay.h \
-	queues/network/Datarate.h \
-	queues/queues_download/CDRQ.h \
-	queues/queues_download/CRRQ.h \
-	queues/queues_upload/CDSQ.h \
-	queues/queues_upload/CRSQ.h \
+	queues/download/TbusCDRQ.h \
+	queues/download/TbusCRRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/upload/TbusCDSQ.h \
+	queues/upload/TbusCRSQ.h \
 	world/TbusChannelControl.h
 

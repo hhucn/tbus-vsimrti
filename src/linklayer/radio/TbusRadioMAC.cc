@@ -97,6 +97,10 @@ void TbusRadioMAC::initialize(int stage) {
 }
 
 void TbusRadioMAC::handleMessage(cMessage* msg) {
+	cObject* controlInfo = msg->removeControlInfo();
+
+	EV << "removed control info " << controlInfo << std::endl;
+
 	if (msg->arrivedOn(upperLayerIn)) {
 		send(msg, lowerLayerOut);
 	} else if (msg->arrivedOn(lowerLayerIn)) {

@@ -18,8 +18,6 @@
 #include "TbusChannelControl.h"
 #include "ChannelControl.h"
 #include "TbusRadioPHY.h"
-#include "Datarate.h"
-#include "Bbdelay.h"
 #include "ModuleAccess.h"
 #include "TbusQueueControl.h"
 

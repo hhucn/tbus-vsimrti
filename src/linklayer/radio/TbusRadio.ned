@@ -19,10 +19,10 @@ package tbus.linklayer.radio;
 
 import tbus.linklayer.radio.TbusRadioPHY;
 import tbus.linklayer.radio.TbusRadioMAC;
-import tbus.queues.ned.CDRQ;
-import tbus.queues.ned.CDSQ;
-import tbus.queues.ned.CRRQ;
-import tbus.queues.ned.CRSQ;
+import tbus.queues.ned.TbusCDRQ;
+import tbus.queues.ned.TbusCDSQ;
+import tbus.queues.ned.TbusCRRQ;
+import tbus.queues.ned.TbusCRSQ;
 
 module TbusRadio
 {
@@ -41,37 +41,32 @@ module TbusRadio
         }
         queueControl: TbusQueueControl {
         }
-        cdrq: CDRQ {
+        cdrq: TbusCDRQ {
             @display("p=172,209");
         }
-        cdsq: CDSQ {
+        cdsq: TbusCDSQ {
             @display("p=389,209");
         }
-        crrq: CRRQ {
+        crrq: TbusCRRQ {
             @display("p=172,102");
         }
-        crsq: CRSQ {
+        crsq: TbusCRSQ {
             @display("p=389,102");
         }
     connections:
         upperLayerIn --> mac.upperLayerIn;
         upperLayerOut <-- mac.upperLayerOut;
 
-        mac.lowerLayerIn <-- crrq.out;
-        mac.lowerLayerOut --> crsq.in;
+        mac.lowerLayerIn <-- crrq.outGate;
+        mac.lowerLayerOut --> crsq.inGate;
 
-        crrq.in <-- cdrq.out;
-        crsq.out --> cdsq.in;
+        crrq.inGate <-- cdrq.outGate;
+        crsq.outGate --> cdsq.inGate;
 
-        cdrq.in <-- phy.upperLayerOut;
-        cdsq.out --> phy.upperLayerIn;
+        cdrq.inGate <-- phy.upperLayerOut;
+        cdsq.outGate --> phy.upperLayerIn;
 
         //        mac.lowerLayerIn <-- phy.upperLayerOut;
         //        mac.lowerLayerOut --> phy.upperLayerIn;
         radioIn --> phy.radioIn;
-        
-        queueControl.cdrqControl <--> cdrq.controlPort;
-        queueControl.cdsqControl <--> cdsq.controlPort;
-        queueControl.crrqControl <--> crrq.controlPort;
-        queueControl.crsqControl <--> crsq.controlPort;
 }

@@ -15,9 +15,12 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+package tbus.queues.ned;
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
+simple TbusCDSQ {
+    parameters:
+	
+	gates:
+	    input inGate;
+	    output outGate;
 }

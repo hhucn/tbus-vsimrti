@@ -15,9 +15,22 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSQUEUEDATARATEVALUE_H_
+#define TBUSQUEUEDATARATEVALUE_H_
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
-}
+#include <base/TbusQueueValue.h>
+
+class TbusQueueDatarateValue : public TbusQueueValue {
+	public:
+		TbusQueueDatarateValue();
+		TbusQueueDatarateValue(const TbusQueueDatarateValue& other);
+
+		virtual bool operator!=(TbusQueueValue& other);
+
+		// Droprate in percent
+		double droprate;
+		// Datarate in bit per second
+		double datarate;
+};
+
+#endif /* TBUSQUEUEDATARATEVALUE_H_ */

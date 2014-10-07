@@ -15,9 +15,26 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#include <TbusCDRQ.h>
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
+Define_Module(TbusCDRQ);
+
+TbusCDRQ::TbusCDRQ() : TbusDelayQueue() {
+	// We only need to store one element
+	values.resize(1);
+}
+
+void TbusCDRQ::updateValue(TbusQueueDelayValue* newValue) {
+	Enter_Method("updateValue()");
+	if (values.front() != newValue) {
+		// Store only new value
+		delete values[0];
+		values[0] = newValue;
+
+		EV << this->getName() << ": Updated value at " << simTime() << std::endl;
+
+		// No update on ongoing transmissions, because we simply use the value as the packet arrives
+	} else {
+		delete newValue;
+	}
 }

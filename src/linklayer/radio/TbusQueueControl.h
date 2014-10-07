@@ -20,27 +20,21 @@
 
 #include <csimplemodule.h>
 
-#include "CDRQ.h"
-#include "CRRQ.h"
-#include "CRSQ.h"
-#include "CDSQ.h"
+#include "TbusCDRQ.h"
+#include "TbusCRRQ.h"
+#include "TbusCRSQ.h"
+#include "TbusCDSQ.h"
 #include "Coord.h"
 
 class TbusQueueControl : public cSimpleModule {
 	private:
-		projekt::CDRQ* cdrq;
-		projekt::CRRQ* crrq;
-		projekt::CRSQ* crsq;
-		projekt::CDSQ* cdsq;
-
-		int cdrqControl;
-		int crrqControl;
-		int crsqControl;
-		int cdsqControl;
+		TbusCDRQ* cdrq;
+		TbusCRRQ* crrq;
+		TbusCRSQ* crsq;
+		TbusCDSQ* cdsq;
 
 	public:
 		TbusQueueControl();
-		virtual ~TbusQueueControl();
 
 		void updateQueues(const Coord& newCoords);
 

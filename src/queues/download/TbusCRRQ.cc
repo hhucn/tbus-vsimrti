@@ -15,9 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#include <TbusCRRQ.h>
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
-}
+Define_Module(TbusCRRQ);
+
+TbusCRRQ::TbusCRRQ() : TbusDatarateQueue() {}

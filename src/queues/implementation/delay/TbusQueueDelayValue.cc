@@ -15,9 +15,21 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#include "TbusQueueDelayValue.h"
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
+TbusQueueDelayValue::TbusQueueDelayValue() : TbusQueueValue() {}
+
+TbusQueueDelayValue::TbusQueueDelayValue(const TbusQueueDelayValue& other) :
+	delay(other.delay) {
+	time = other.time;
+}
+
+bool TbusQueueDelayValue::operator!=(TbusQueueValue& other) {
+	TbusQueueDelayValue* cother = check_and_cast<TbusQueueDelayValue*>(&other);
+
+	if (cother) {
+		return (this->delay != cother->delay);
+	} else {
+		return true;
+	}
 }

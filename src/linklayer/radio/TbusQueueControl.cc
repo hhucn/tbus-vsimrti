@@ -17,35 +17,19 @@
 
 #include <TbusQueueControl.h>
 #include "ModuleAccess.h"
-#include "Datarate.h"
-#include "Bbdelay.h"
+#include "TbusQueueDatarateValue.h"
+#include "TbusQueueDelayValue.h"
 
 Define_Module(TbusQueueControl);
 
-TbusQueueControl::TbusQueueControl()
-{
-	// TODO Auto-generated constructor stub
-
-}
-
-TbusQueueControl::~TbusQueueControl()
-{
-	// TODO Auto-generated destructor stub
-}
+TbusQueueControl::TbusQueueControl() {}
 
 void TbusQueueControl::initialize() {
-	// Gates are not needed because we communicate directly with the queues
-	// Just to silent warnings about non-connected gates
-	cdrqControl		= findGate("cdrqControl");
-	crrqControl		= findGate("crrqControl");
-	crsqControl		= findGate("cdsqControl");
-	cdsqControl		= findGate("cdsqControl");
-
 	// Get references to "our" queues
-	cdrq = ModuleAccess<projekt::CDRQ>("cdrq").get();
-	crrq = ModuleAccess<projekt::CRRQ>("crrq").get();
-	crsq = ModuleAccess<projekt::CRSQ>("crsq").get();
-	cdsq = ModuleAccess<projekt::CDSQ>("cdsq").get();
+	cdrq = ModuleAccess<TbusCDRQ>("cdrq").get();
+	crrq = ModuleAccess<TbusCRRQ>("crrq").get();
+	crsq = ModuleAccess<TbusCRSQ>("crsq").get();
+	cdsq = ModuleAccess<TbusCDSQ>("cdsq").get();
 }
 
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
@@ -54,28 +38,23 @@ void TbusQueueControl::updateQueues(const Coord& newCoords) {
 
 	EV << "TbusQueueControl updating queues for coordinates " << newCoords << endl;
 
-	projekt::Datarate* sendDatarate = new projekt::Datarate();
-	projekt::Datarate* receiveDatarate = new projekt::Datarate();
-	projekt::Bbdelay* sendDelay = new projekt::Bbdelay();
-	projekt::Bbdelay* receiveDelay = new projekt::Bbdelay();
+	TbusQueueDatarateValue* sendDatarate = new TbusQueueDatarateValue();
+	TbusQueueDatarateValue* receiveDatarate = new TbusQueueDatarateValue();
+	TbusQueueDelayValue* sendDelay = new TbusQueueDelayValue();
+	TbusQueueDelayValue* receiveDelay = new TbusQueueDelayValue();
 
 	// TODO: Get Datarate and Delay for Position via database/source
 
-	sendDatarate->setDatarateSim(10.0);
-	receiveDatarate->setDatarateSim(10.0);
-	sendDatarate->setDroprate(0.05);
-	receiveDatarate->setDroprate(0.05);
+	sendDatarate->datarate = 10000000.0/8.0;
+	receiveDatarate->datarate = 10000000.0/8.0;
+	sendDatarate->droprate = 0.05;
+	receiveDatarate->droprate = 0.05;
 
-	sendDelay->setBbdelay(100000);
-	receiveDelay->setBbdelay(100000);
+	sendDelay->delay = 0.0001;
+	receiveDelay->delay = 0.0001;
 
-	cdrq->bbDelayChanged(receiveDelay);
-	crrq->datarateChanged(receiveDatarate);
-	crsq->datarateChanged(sendDatarate);
-	cdsq->bbDelayChanged(sendDelay);
-
-	delete sendDatarate;
-	delete receiveDatarate;
-	delete sendDelay;
-	delete receiveDelay;
+	cdrq->updateValue(receiveDelay);
+	crrq->updateValue(receiveDatarate);
+	crsq->updateValue(sendDatarate);
+	cdsq->updateValue(sendDelay);
 }

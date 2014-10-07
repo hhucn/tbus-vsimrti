@@ -15,9 +15,17 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSCDRQ_H_
+#define TBUSCDRQ_H_
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
-}
+#include "TbusDelayQueue.h"
+#include "TbusQueueValue.h"
+
+class TbusCDRQ : public TbusDelayQueue {
+	public:
+		TbusCDRQ();
+
+		virtual void updateValue(TbusQueueDelayValue* newValue);
+};
+
+#endif /* TBUSCDRQ_H_ */

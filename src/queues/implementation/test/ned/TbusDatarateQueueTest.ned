@@ -15,9 +15,12 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+package tbus.queues.implementation.test.ned;
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
+simple TbusDatarateQueueTest {
+    parameters:
+        @class(TbusDatarateQueue);
+	gates:
+	    input inGate;
+	    output outGate;
 }

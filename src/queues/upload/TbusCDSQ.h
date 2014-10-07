@@ -15,9 +15,29 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSCDSQ_H_
+#define TBUSCDSQ_H_
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
-}
+#define TBUS_DELAY_QUEUE_START_SAVE_VALUES "tbus.delay.queue.start.save.values"
+#define TBUS_DELAY_QUEUE_STOP_SAVE_VALUES "tbus.delay.queue.stop.save.values"
+#define TBUS_DELAY_QUEUE_RESET_VALUES "tbus.delay.queue.reset.values"
+
+#include "TbusDelayQueue.h"
+#include "TbusQueueDelayValue.h"
+
+class TbusCDSQ : public TbusDelayQueue {
+	private:
+		bool saveValues;
+
+	public:
+		TbusCDSQ();
+
+		virtual void updateValue(TbusQueueDelayValue* newValue);
+		virtual void handleMessage(cMessage* msg);
+
+	protected:
+		virtual void handleSelfMessage(cMessage* msg);
+		virtual void calculateEarliestDeliveries();
+};
+
+#endif /* TBUSCDSQ_H_ */

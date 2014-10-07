@@ -15,9 +15,22 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSDELAYQUEUE_H_
+#define TBUSDELAYQUEUE_H_
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
-}
+#include "TbusBaseQueue.h"
+#include "TbusQueueDelayValue.h"
+
+class TbusDelayQueue : public TbusBaseQueue<TbusQueueDelayValue> {
+	public:
+		TbusDelayQueue();
+
+	protected:
+		virtual void calculateEarliestDeliveries();
+		virtual void calculateEarliestDeliveryForPacket(cPacket* packet);
+		void calculateEarliestDeliveryForPacket(cPacket* packet, simtime_t delay);
+
+		simtime_t currentDelay();
+};
+
+#endif /* TBUSDELAYQUEUE_H_ */

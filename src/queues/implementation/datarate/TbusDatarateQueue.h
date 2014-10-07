@@ -15,9 +15,26 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSDATARATEQUEUE_H_
+#define TBUSDATARATEQUEUE_H_
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
-}
+#include <base/TbusBaseQueue.h>
+#include "TbusQueueDatarateValue.h"
+
+class TbusDatarateQueue : public TbusBaseQueue<TbusQueueDatarateValue> {
+	public:
+		TbusDatarateQueue();
+
+	protected:
+		int64_t bitsSent;
+
+		virtual void calculateEarliestDeliveries();
+		virtual void calculateEarliestDeliveryForPacket(cPacket* packet);
+
+		virtual void sendFrontOfQueue();
+
+		double currentLossProbability();
+		simtime_t currentDatarateDelay(int64_t byteLength);
+};
+
+#endif /* TBUSDATARATEQUEUE_H_ */

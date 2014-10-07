@@ -15,9 +15,22 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#include <datarate/TbusQueueDatarateValue.h>
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
+TbusQueueDatarateValue::TbusQueueDatarateValue() : TbusQueueValue() {}
+
+TbusQueueDatarateValue::TbusQueueDatarateValue(const TbusQueueDatarateValue& other) :
+	droprate(other.droprate),
+	datarate(other.datarate) {
+	time = other.time;
+}
+
+bool TbusQueueDatarateValue::operator!=(TbusQueueValue& other) {
+	TbusQueueDatarateValue* cother = check_and_cast<TbusQueueDatarateValue*>(&other);
+
+	if (cother) {
+		return (this->droprate != cother->droprate) || (this->datarate != cother->datarate);
+	} else {
+		return true;
+	}
 }

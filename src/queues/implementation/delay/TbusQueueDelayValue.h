@@ -15,9 +15,19 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+#ifndef TBUSQUEUEDELAYVALUE_H_
+#define TBUSQUEUEDELAYVALUE_H_
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
-}
+#include "TbusQueueValue.h"
+
+class TbusQueueDelayValue : public TbusQueueValue {
+	public:
+		TbusQueueDelayValue();
+		TbusQueueDelayValue(const TbusQueueDelayValue& other);
+
+		simtime_t delay;
+
+		virtual bool operator!=(TbusQueueValue& other);
+};
+
+#endif /* TBUSQUEUEDELAYVALUE_H_ */
