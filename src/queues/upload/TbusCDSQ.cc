@@ -59,6 +59,8 @@ void TbusCDSQ::handleMessage(cMessage* msg) {
 		saveValues = false;
 	} else if (strcmp(msg->getName(), TBUS_DELAY_QUEUE_RESET_VALUES) == 0) {
 		EV << this->getName() << ": Resetting saved values at " << simTime() << std::endl;
+		delete msg;
+
 		// Store a copy of the front value
 		TbusQueueDelayValue* currentValue = new TbusQueueDelayValue(*(values.front()));
 		// Delete all values before the packet entered the queue

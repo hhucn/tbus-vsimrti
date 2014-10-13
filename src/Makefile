@@ -74,23 +74,23 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 # Object files for local .cc and .msg files
 OBJS = \
     $O/linklayer/radio/TbusRadioPHY.o \
+    $O/linklayer/radio/TbusRadioMAC.o \
     $O/linklayer/radio/TbusQueueControl.o \
     $O/linklayer/radio/TbusRadio.o \
-    $O/linklayer/radio/TbusRadioMAC.o \
     $O/nodes/router/TbusRouterNode.o \
     $O/queues/download/TbusCDRQ.o \
     $O/queues/download/TbusCRRQ.o \
     $O/queues/implementation/base/TbusBaseQueue.o \
     $O/queues/implementation/control_info/TbusQueueControlInfo.o \
-    $O/queues/implementation/datarate/TbusQueueDatarateValue.o \
     $O/queues/implementation/datarate/TbusDatarateQueue.o \
+    $O/queues/implementation/datarate/TbusQueueDatarateValue.o \
     $O/queues/implementation/delay/TbusDelayQueue.o \
     $O/queues/implementation/delay/TbusQueueDelayValue.o \
     $O/queues/implementation/test/base/TbusTestBase.o \
     $O/queues/implementation/test/datarate/TbusDatarateQueueTester.o \
     $O/queues/implementation/test/delay/TbusDelayQueueTester.o \
-    $O/queues/upload/TbusCRSQ.o \
     $O/queues/upload/TbusCDSQ.o \
+    $O/queues/upload/TbusCRSQ.o \
     $O/world/TbusChannelControl.o \
     $O/queues/implementation/test/base/testPacket_m.o
 

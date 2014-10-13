@@ -1,5 +1,5 @@
 //
-// Generated file, do not edit! Created by opp_msgc 4.4 from queues2/test/testPacket.msg.
+// Generated file, do not edit! Created by opp_msgc 4.4 from queues/implementation/test/base/testPacket.msg.
 //
 
 #ifndef _TESTPACKET_M_H_
@@ -16,7 +16,7 @@
 
 
 /**
- * Class generated from <tt>queues2/test/testPacket.msg</tt> by opp_msgc.
+ * Class generated from <tt>queues/implementation/test/base/testPacket.msg</tt> by opp_msgc.
  * <pre>
  * packet TestPacket {
  *     simtime_t expectedArrival;
