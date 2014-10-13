@@ -61,18 +61,14 @@ void TbusRadioPHY::handleSelfMessage(cMessage* msg) {
 }
 
 void TbusRadioPHY::handleUpperMessage(cMessage* msg) {
-	Enter_Method("handleUpperMessage()");
-//
-//	// TODO Calculate delay with position here
-//
+//	Enter_Method("handleUpperMessage()");
+
 	sendToChannel(msg);
 }
 
 void TbusRadioPHY::handleLowerMessage(cMessage* msg) {
-	Enter_Method("handleLowerMessage()");
-//
-//	// TODO Calculate Delay with position here
-//
+//	Enter_Method("handleLowerMessage()");
+
 	send(msg, upperLayerOut);
 }
 
@@ -99,6 +95,5 @@ void TbusRadioPHY::receiveChangeNotification(int category, const cObject *detail
 		if (myHostRef) {
 			queueControl->updateQueues(myHostRef->pos);
 		}
-		EV << "TbusRadio receive change notification!" << std::endl;
 	}
 }

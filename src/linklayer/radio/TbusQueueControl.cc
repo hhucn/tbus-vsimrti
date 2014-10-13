@@ -19,6 +19,7 @@
 #include "ModuleAccess.h"
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
+#include "DatabaseHandler.h"
 
 Define_Module(TbusQueueControl);
 
@@ -30,6 +31,8 @@ void TbusQueueControl::initialize() {
 	crrq = ModuleAccess<TbusCRRQ>("crrq").get();
 	crsq = ModuleAccess<TbusCRSQ>("crsq").get();
 	cdsq = ModuleAccess<TbusCDSQ>("cdsq").get();
+
+	DatabaseHandler* handler = DatabaseHandler::getInstance<TbusQueueControl>();
 }
 
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
