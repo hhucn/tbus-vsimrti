@@ -29,7 +29,6 @@ public:
 			instance = dynamic_cast<DatabaseHandler*>(new T());
 
 			if (!instance) {
-				#define TBUS_GET_CLASS_NAME(x) #x
 				std::cerr << __FILE__ << ":" << __FUNCTION__ << " (" << __LINE__ << ") ERROR! Class DatabaseHandler is no base class of class \"" << typeid(T).name() << "\" ! Aborting..." << std::endl;
 				exit(1);
 			}

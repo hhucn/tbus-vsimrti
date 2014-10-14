@@ -6,5 +6,3 @@
  */
 
 #include "DatabaseHandler.h"
-
-//DatabaseHandler* DatabaseHandler::instance = 0;
