@@ -39,11 +39,17 @@ public:
 
     virtual ~DatabaseHandler() {};
 
-    virtual TbusQueueDatarateValue* getDatarate(Coord& pos, simtime_t time) = 0;
-    virtual TbusQueueDatarateValue* getDatarate(Coord& pos) = 0;
+    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos, simtime_t time) = 0;
+    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos) = 0;
 
-    virtual TbusQueueDelayValue* getDelay(Coord& pos, simtime_t time) = 0;
-    virtual TbusQueueDelayValue* getDelay(Coord& pos) = 0;
+    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos, simtime_t time) = 0;
+    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos) = 0;
+
+    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos, simtime_t time) = 0;
+    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos) = 0;
+
+    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos, simtime_t time) = 0;
+    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos) = 0;
 };
 
 #endif /* DATABASEHANDLER_H_ */

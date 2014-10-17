@@ -34,7 +34,7 @@ void TbusQueueControl::initialize() {
 	crsq = ModuleAccess<TbusCRSQ>("crsq").get();
 	cdsq = ModuleAccess<TbusCDSQ>("cdsq").get();
 
-	DatabaseHandler* handler = DatabaseHandler::getInstance<SqliteDatabaseHandler>();
+	dbHandler = DatabaseHandler::getInstance<SqliteDatabaseHandler>();
 }
 
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
@@ -43,20 +43,25 @@ void TbusQueueControl::updateQueues(const Coord& newCoords) {
 
 	EV << "TbusQueueControl updating queues for coordinates " << newCoords << endl;
 
-	TbusQueueDatarateValue* sendDatarate = new TbusQueueDatarateValue();
-	TbusQueueDatarateValue* receiveDatarate = new TbusQueueDatarateValue();
-	TbusQueueDelayValue* sendDelay = new TbusQueueDelayValue();
-	TbusQueueDelayValue* receiveDelay = new TbusQueueDelayValue();
+	TbusQueueDatarateValue* sendDatarate = dbHandler->getUploadDatarate(converter.translate(&newCoords));
+	TbusQueueDatarateValue* receiveDatarate = dbHandler->getDownloadDatarate(newCoords);
+	TbusQueueDelayValue* sendDelay = dbHandler->getUploadDelay(newCoords);
+	TbusQueueDelayValue* receiveDelay = dbHandler->getUploadDelay(newCoords);
 
-	// TODO: Get Datarate and Delay for Position via database/source
-
-	sendDatarate->datarate = 10000000.0/8.0;
-	receiveDatarate->datarate = 10000000.0/8.0;
-	sendDatarate->droprate = 0.05;
-	receiveDatarate->droprate = 0.05;
-
-	sendDelay->delay = 0.0001;
-	receiveDelay->delay = 0.0001;
+//	TbusQueueDatarateValue* sendDatarate = new TbusQueueDatarateValue();
+//	TbusQueueDatarateValue* receiveDatarate = new TbusQueueDatarateValue();
+//	TbusQueueDelayValue* sendDelay = new TbusQueueDelayValue();
+//	TbusQueueDelayValue* receiveDelay = new TbusQueueDelayValue();
+//
+//	// TODO: Get Datarate and Delay for Position via database/source
+//
+//	sendDatarate->datarate = 10000000.0/8.0;
+//	receiveDatarate->datarate = 10000000.0/8.0;
+//	sendDatarate->droprate = 0.05;
+//	receiveDatarate->droprate = 0.05;
+//
+//	sendDelay->delay = 0.0001;
+//	receiveDelay->delay = 0.0001;
 
 	cdrq->updateValue(receiveDelay);
 	crrq->updateValue(receiveDatarate);

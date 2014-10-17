@@ -1,6 +1,4 @@
 //
-// (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,35 +13,25 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef TBUSQUEUECONTROL_H_
-#define TBUSQUEUECONTROL_H_
+#ifndef TBUSCOORDINATECONVERTER_H_
+#define TBUSCOORDINATECONVERTER_H_
 
-#include <csimplemodule.h>
-
-#include "TbusCDRQ.h"
-#include "TbusCRRQ.h"
-#include "TbusCRSQ.h"
-#include "TbusCDSQ.h"
+#include <proj_api.h>
 #include "Coord.h"
-#include "DatabaseHandler.h"
-#include "TbusCoordinateConverter.h"
 
-class TbusQueueControl : public cSimpleModule {
+class TbusCoordinateConverter {
 	private:
-		TbusCDRQ* cdrq;
-		TbusCRRQ* crrq;
-		TbusCRSQ* crsq;
-		TbusCDSQ* cdsq;
+		projPJ projMercator;
+		projPJ projLatlong;
 
-		DatabaseHandler* dbHandler;
-		TbusCoordinateConverter converter;
+		inline void init(const char* initString);
 
 	public:
-		TbusQueueControl();
+		TbusCoordinateConverter();
+		TbusCoordinateConverter(const char* initString);
+		virtual ~TbusCoordinateConverter();
 
-		void updateQueues(const Coord& newCoords);
-
-		void initialize();
+		Coord translate(const Coord* pos) const;
 };
 
-#endif /* TBUSQUEUECONTROL_H_ */
+#endif /* TBUSCOORDINATECONVERTER_H_ */
