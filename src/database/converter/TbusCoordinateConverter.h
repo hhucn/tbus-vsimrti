@@ -24,11 +24,18 @@ class TbusCoordinateConverter {
 		projPJ projMercator;
 		projPJ projLatlong;
 
+		const double_t offset_x;
+		const double_t offset_y;
+
+		TbusCoordinateConverter();
+		TbusCoordinateConverter(TbusCoordinateConverter const&);
+		void operator=(TbusCoordinateConverter const&);
+		TbusCoordinateConverter(const char* initString);
+
 		inline void init(const char* initString);
 
 	public:
-		TbusCoordinateConverter();
-		TbusCoordinateConverter(const char* initString);
+		static TbusCoordinateConverter* getInstance();
 		virtual ~TbusCoordinateConverter();
 
 		Coord translate(const Coord* pos) const;

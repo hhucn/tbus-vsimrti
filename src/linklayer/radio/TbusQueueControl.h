@@ -36,7 +36,7 @@ class TbusQueueControl : public cSimpleModule {
 		TbusCDSQ* cdsq;
 
 		DatabaseHandler* dbHandler;
-		TbusCoordinateConverter converter;
+		TbusCoordinateConverter* converter;
 
 	public:
 		TbusQueueControl();

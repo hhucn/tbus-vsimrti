@@ -35,6 +35,7 @@ void TbusQueueControl::initialize() {
 	cdsq = ModuleAccess<TbusCDSQ>("cdsq").get();
 
 	dbHandler = DatabaseHandler::getInstance<SqliteDatabaseHandler>();
+	converter = TbusCoordinateConverter::getInstance();
 }
 
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
@@ -43,25 +44,12 @@ void TbusQueueControl::updateQueues(const Coord& newCoords) {
 
 	EV << "TbusQueueControl updating queues for coordinates " << newCoords << endl;
 
-	TbusQueueDatarateValue* sendDatarate = dbHandler->getUploadDatarate(converter.translate(&newCoords));
-	TbusQueueDatarateValue* receiveDatarate = dbHandler->getDownloadDatarate(newCoords);
-	TbusQueueDelayValue* sendDelay = dbHandler->getUploadDelay(newCoords);
-	TbusQueueDelayValue* receiveDelay = dbHandler->getUploadDelay(newCoords);
+	TbusQueueDatarateValue* sendDatarate = dbHandler->getUploadDatarate(converter->translate(&newCoords));
+	TbusQueueDatarateValue* receiveDatarate = dbHandler->getDownloadDatarate(converter->translate(&newCoords));
+	TbusQueueDelayValue* sendDelay = dbHandler->getUploadDelay(converter->translate(&newCoords));
+	TbusQueueDelayValue* receiveDelay = dbHandler->getUploadDelay(converter->translate(&newCoords));
 
-//	TbusQueueDatarateValue* sendDatarate = new TbusQueueDatarateValue();
-//	TbusQueueDatarateValue* receiveDatarate = new TbusQueueDatarateValue();
-//	TbusQueueDelayValue* sendDelay = new TbusQueueDelayValue();
-//	TbusQueueDelayValue* receiveDelay = new TbusQueueDelayValue();
-//
-//	// TODO: Get Datarate and Delay for Position via database/source
-//
-//	sendDatarate->datarate = 10000000.0/8.0;
-//	receiveDatarate->datarate = 10000000.0/8.0;
-//	sendDatarate->droprate = 0.05;
-//	receiveDatarate->droprate = 0.05;
-//
-//	sendDelay->delay = 0.0001;
-//	receiveDelay->delay = 0.0001;
+	std::cout << "sda:" << sendDatarate->datarate << " rda:" << receiveDatarate->datarate << " sde:" << sendDelay->delay << " rde:" << receiveDelay->delay << std::endl;
 
 	cdrq->updateValue(receiveDelay);
 	crrq->updateValue(receiveDatarate);

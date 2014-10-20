@@ -95,7 +95,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& po
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0);
+		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * 1024 * 1024; // MBit/s -> Bit/s
 		result->droprate = sqlite3_column_double(uploadDatarateStatement, 1);
 	}
 
@@ -127,7 +127,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
 		result->delay = 0.0;
 	} else {
 		// Retrieve values from database
-		result->delay = sqlite3_column_double(uploadDelayStatement, 0);
+		result->delay = sqlite3_column_double(uploadDelayStatement, 0) * 10e-9; // nsec -> sec
 	}
 
 	return result;
