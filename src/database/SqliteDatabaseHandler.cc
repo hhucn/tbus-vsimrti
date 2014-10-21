@@ -2,14 +2,15 @@
  * SqliteDatabaseHandler.cc
  *
  *  Created on: 13.10.2014
- *      Author: bialon
+ *      Author: Raphael Bialon <Raphael.Bialon@hhu.de>
  */
 
 #include "SqliteDatabaseHandler.h"
 
-#define TBUS_SQLITE_DATABASE "test.sqlite"
-#define TBUS_SQLITE_USER_VERSION 0x00000001
-
+/**
+ * Creates a new database connection by opening TBUS_SQLITE_DATABASE and checks the database version.
+ * Aborts on error with exit code 1 and message on stderr and closes the database connection.
+ */
 SqliteDatabaseHandler::SqliteDatabaseHandler() {
 	int result = 0;
 
@@ -28,6 +29,9 @@ SqliteDatabaseHandler::SqliteDatabaseHandler() {
 	}
 }
 
+/**
+ * Finalizes prepared statements and closes database connection.
+ */
 SqliteDatabaseHandler::~SqliteDatabaseHandler() {
 	sqlite3_finalize(uploadDatarateStatement);
 	sqlite3_finalize(uploadDelayStatement);
@@ -37,6 +41,10 @@ SqliteDatabaseHandler::~SqliteDatabaseHandler() {
 	sqlite3_close(database);
 }
 
+/**
+ * Retrieves the database version as of SQLites' pragma user_version 32-bit int field
+ * @return The database version
+ */
 int32_t SqliteDatabaseHandler::getDatabaseVersion() {
 	sqlite3_stmt* statement;
 
@@ -52,27 +60,22 @@ int32_t SqliteDatabaseHandler::getDatabaseVersion() {
 	return version;
 }
 
+/**
+ * Aborts execution by closing the database handler and exiting with value 1
+ */
 void SqliteDatabaseHandler::abort() {
 	sqlite3_close(database);
 	exit(1);
 }
 
-int SqliteDatabaseHandler::uploadCallbackHandler(SqliteDatabaseHandler* handler, int numCols, char** colValues, char** colNames) {
-	return handler ? handler->uploadCallback(numCols, colValues, colNames) : -1;
-}
-
-int SqliteDatabaseHandler::uploadCallback(int numCols, char** colValues, char** colNames) {
-	return 0;
-}
-
-int SqliteDatabaseHandler::downloadCallbackHandler(SqliteDatabaseHandler* handler, int numCols, char** colValues, char** colNames) {
-	return handler ? handler->downloadCallback(numCols, colValues, colNames) : -1;
-}
-
-int SqliteDatabaseHandler::downloadCallback(int numCols, char** colValues, char** colNames) {
-	return 0;
-}
-
+/**
+ * Retrieves upload data- and droprate for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
+ * on the two-dimensional position plane and one-dimensional timeline.
+ * The returned object has to be destroyed by the caller.
+ * @param pos The position to look at
+ * @param time The time to look at
+ * @return Data- and droprate as a TbusQueueDatarateValue object
+ */
 TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& pos, simtime_t time) {
 	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
 
@@ -89,23 +92,37 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& po
 	sqlite3_bind_int(uploadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(uploadDatarateStatement) != SQLITE_ROW) {
-		std::cerr << __FILE__ << " (" << __LINE__ << "): Unable to retrieve values from database - query result is not a row!" << std::endl;
+		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
 		result->datarate = 0.0;
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * 1024 * 1024; // MBit/s -> Bit/s
+		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(uploadDatarateStatement, 1);
 	}
 
 	return result;
 }
 
+/**
+ * Retrieves upload data- and droprate for position pos at the current simTime()
+ * @see SqliteDatabaseHandler::getUploadDatarate(const Coord&, simtime_t)
+ * @param pos The position to look at
+ * @return Data- and droprate as a TbusQueueDatarateValue object
+ */
 TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& pos) {
 	return this->getUploadDatarate(pos, simTime());
 }
 
+/**
+ * Retrieves upload delay for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
+ * on the two-dimensional position plane and one-dimensional timeline.
+ * The returned object has to be destroyed by the caller.
+ * @param pos The position to look at
+ * @param time The time to look at
+ * @return Delay as a TbusQueueDelayValue object
+ */
 TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, simtime_t time) {
 	TbusQueueDelayValue* result = new TbusQueueDelayValue();
 
@@ -122,21 +139,35 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
 	sqlite3_bind_int(uploadDelayStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(uploadDelayStatement) != SQLITE_ROW) {
-		std::cerr << __FILE__ << " (" << __LINE__ << "): Unable to retrieve values from database - query result is not a row!" << std::endl;
+		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
 		result->delay = 0.0;
 	} else {
 		// Retrieve values from database
-		result->delay = sqlite3_column_double(uploadDelayStatement, 0) * 10e-9; // nsec -> sec
+		result->delay = sqlite3_column_double(uploadDelayStatement, 0) * TBUS_NSEC_TO_SEC;
 	}
 
 	return result;
 }
 
+/**
+ * Retrieves upload delay for position pos at the current simTime()
+ * @see SqliteDatabaseHandler::getUploadDelay(const Coord&, simtime_t)
+ * @param pos The position to look at
+ * @return Delay as a TbusQueueDelayValue object
+ */
 TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos) {
 	return this->getUploadDelay(pos, simTime());
 }
 
+/**
+ * Retrieves download data- and droprate for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
+ * on the two-dimensional position plane and one-dimensional timeline.
+ * The returned object has to be destroyed by the caller.
+ * @param pos The position to look at
+ * @param time The time to look at
+ * @return Data- and droprate as a TbusQueueDatarateValue object
+ */
 TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& pos, simtime_t time) {
 	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
 
@@ -153,23 +184,37 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& 
 	sqlite3_bind_int(downloadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(downloadDatarateStatement) != SQLITE_ROW) {
-		std::cerr << __FILE__ << " (" << __LINE__ << "): Unable to retrieve values from database - query result is not a row!" << std::endl;
+		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
 		result->datarate = 0.0;
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(downloadDatarateStatement, 0);
+		result->datarate = sqlite3_column_double(downloadDatarateStatement, 0) * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(downloadDatarateStatement, 1);
 	}
 
 	return result;
 }
 
+/**
+ * Retrieves download data- and droprate for position pos at the current simTime()
+ * @see SqliteDatabaseHandler::getDownloadDatarate(const Coord&, simtime_t)
+ * @param pos The position to look at
+ * @return Data- and droprate as a TbusQueueDatarateValue object
+ */
 TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& pos) {
 	return this->getDownloadDatarate(pos, simTime());
 }
 
+/**
+ * Retrieves download delay for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
+ * on the two-dimensional position plane and one-dimensional timeline.
+ * The returned object has to be destroyed by the caller.
+ * @param pos The position to look at
+ * @param time The time to look at
+ * @return Delay as a TbusQueueDelayValue object
+ */
 TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, simtime_t time) {
 	TbusQueueDelayValue* result = new TbusQueueDelayValue();
 
@@ -186,17 +231,23 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, s
 	sqlite3_bind_int(downloadDelayStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(downloadDelayStatement) != SQLITE_ROW) {
-		std::cerr << __FILE__ << " (" << __LINE__ << "): Unable to retrieve values from database - query result is not a row!" << std::endl;
+		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
 		result->delay = 0.0;
 	} else {
 		// Retrieve values from database
-		result->delay = sqlite3_column_double(downloadDelayStatement, 0);
+		result->delay = sqlite3_column_double(downloadDelayStatement, 0) * TBUS_NSEC_TO_SEC;
 	}
 
 	return result;
 }
 
+/**
+ * Retrieves download delay for position pos at the current simTime()
+ * @see SqliteDatabaseHandler::getDownloadDelay(const Coord&, simtime_t)
+ * @param pos The position to look at
+ * @return Delay as a TbusQueueDelayValue object
+ */
 TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos) {
 	return this->getDownloadDelay(pos, simTime());
 }

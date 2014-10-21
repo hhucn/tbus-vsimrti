@@ -28,15 +28,19 @@
 #include "DatabaseHandler.h"
 #include "TbusCoordinateConverter.h"
 
+/**
+ * Queue control class.
+ * Distributes network characteristics along the related queues.
+ */
 class TbusQueueControl : public cSimpleModule {
 	private:
-		TbusCDRQ* cdrq;
-		TbusCRRQ* crrq;
-		TbusCRSQ* crsq;
-		TbusCDSQ* cdsq;
+		TbusCDRQ* cdrq; ///< Client delay receive queue reference
+		TbusCRRQ* crrq; ///< Client datarate receive queue reference
+		TbusCRSQ* crsq; ///< Client datarate send queue reference
+		TbusCDSQ* cdsq; ///< Client delay send queue reference
 
-		DatabaseHandler* dbHandler;
-		TbusCoordinateConverter* converter;
+		DatabaseHandler* dbHandler; ///< Database handler reference
+		TbusCoordinateConverter* converter; ///< Coordinate converter reference
 
 	public:
 		TbusQueueControl();

@@ -25,8 +25,14 @@
 
 Define_Module(TbusQueueControl);
 
+/**
+ * Empty constructor.
+ */
 TbusQueueControl::TbusQueueControl() {}
 
+/**
+ * Get references to the modules' queues and the global database handler and coordinate converter.
+ */
 void TbusQueueControl::initialize() {
 	// Get references to "our" queues
 	cdrq = ModuleAccess<TbusCDRQ>("cdrq").get();
@@ -38,16 +44,29 @@ void TbusQueueControl::initialize() {
 	converter = TbusCoordinateConverter::getInstance();
 }
 
+/**
+ * Translates the given coordinates into latitute/longitude.
+ * Then retrieves the belonging datarate, droprate and delay values from the database Handler.
+ * Then the new values are updated on the belonging queue.
+ * @see TbusCoordinateConverter::translate(const Coord&)
+ * @see DatabaseHandler::getUploadDatarate(const Coord&)
+ * @see DatabaseHandler::getDownloadDatarate(const Coord&)
+ * @see DatabaseHandler::getUploadDelay(const Coord&)
+ * @see DatabaseHandler::getDownloadDelay(const Coord&)
+ * @param newCoords The new node position
+ */
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
 	// Act like this is part of our PHY layer
 	Enter_Method_Silent();
 
 	EV << "TbusQueueControl updating queues for coordinates " << newCoords << endl;
 
-	TbusQueueDatarateValue* sendDatarate = dbHandler->getUploadDatarate(converter->translate(&newCoords));
-	TbusQueueDatarateValue* receiveDatarate = dbHandler->getDownloadDatarate(converter->translate(&newCoords));
-	TbusQueueDelayValue* sendDelay = dbHandler->getUploadDelay(converter->translate(&newCoords));
-	TbusQueueDelayValue* receiveDelay = dbHandler->getUploadDelay(converter->translate(&newCoords));
+	Coord translated = converter->translate(&newCoords);
+
+	TbusQueueDatarateValue* sendDatarate = dbHandler->getUploadDatarate(translated);
+	TbusQueueDatarateValue* receiveDatarate = dbHandler->getDownloadDatarate(translated);
+	TbusQueueDelayValue* sendDelay = dbHandler->getUploadDelay(translated);
+	TbusQueueDelayValue* receiveDelay = dbHandler->getDownloadDelay(translated);
 
 	std::cout << "sda:" << sendDatarate->datarate << " rda:" << receiveDatarate->datarate << " sde:" << sendDelay->delay << " rde:" << receiveDelay->delay << std::endl;
 
