@@ -27,12 +27,10 @@
 /**
  * MAC layer of TBUS NIC.
  */
-class TbusRadioMAC : public cSimpleModule, public INotifiable {
+class TbusRadioMAC : public cSimpleModule {
 	public:
 		TbusRadioMAC();
 		virtual ~TbusRadioMAC();
-
-		void receiveChangeNotification(int category, const cObject* details);
 
 		void initialize(int stage);
 		int numInitStages() const { return 3; }
