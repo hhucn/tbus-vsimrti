@@ -1,19 +1,19 @@
 //
 // (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #include "TbusDatarateQueueTester.h"
 #include "TbusQueueDatarateValue.h"
@@ -23,10 +23,11 @@
 
 #include <sstream>
 
-//template class TbusTestBase<TbusDatarateQueueTester>;
-
 Define_Module(TbusDatarateQueueTester);
 
+/**
+ * Initialize test base with current instance and add tests.
+ */
 TbusDatarateQueueTester::TbusDatarateQueueTester() : TbusTestBase(this) {
 	addTest(&TbusDatarateQueueTester::testNormalDatarate, &TbusDatarateQueueTester::handleNormalDatarate, "Normal Datarate Test");
 	addTest(&TbusDatarateQueueTester::testFullDrop, &TbusDatarateQueueTester::handleFullDrop, "Full Drop Test");
@@ -34,10 +35,14 @@ TbusDatarateQueueTester::TbusDatarateQueueTester() : TbusTestBase(this) {
 	addTest(&TbusDatarateQueueTester::testChangingDatarate, &TbusDatarateQueueTester::handleChangingDatarate, "Changing Datarate Test");
 }
 
-TbusDatarateQueueTester::~TbusDatarateQueueTester() {
-	// TODO Auto-generated destructor stub
-}
+/**
+ * Empty destructor.
+ */
+TbusDatarateQueueTester::~TbusDatarateQueueTester() {}
 
+/**
+ * Simulation initialization
+ */
 void TbusDatarateQueueTester::initialize() {
 	inGate = findGate("inGate");
 	outGate = findGate("outGate");
@@ -47,6 +52,9 @@ void TbusDatarateQueueTester::initialize() {
 	runNextTest();
 }
 
+/**
+ * Test changing datarate.
+ */
 void TbusDatarateQueueTester::testChangingDatarate() {
 	// Reset values
 	queue->updateValue(NULL);
@@ -78,6 +86,10 @@ void TbusDatarateQueueTester::testChangingDatarate() {
 	send(packet2, outGate);
 }
 
+/**
+ * Message handler for test changing datarate.
+ * @param msg Message to handle
+ */
 void TbusDatarateQueueTester::handleChangingDatarate(cMessage* msg) {
 	if (msg->isSelfMessage() && (strcmp(msg->getName(), CHANGING_DATARATE_END) == 0)) {
 		TbusQueueDatarateValue* datarate2 = new TbusQueueDatarateValue();
@@ -98,6 +110,9 @@ void TbusDatarateQueueTester::handleChangingDatarate(cMessage* msg) {
 	delete msg;
 }
 
+/**
+ * Test Queue with 10 MBit/s datarate and 50% droprate.
+ */
 void TbusDatarateQueueTester::testHalfDrop() {
 	// Reset values
 	queue->updateValue(NULL);
@@ -126,6 +141,10 @@ void TbusDatarateQueueTester::testHalfDrop() {
 	scheduleAt(simTime() + 100, new cMessage(HALF_DROP_END, 0));
 }
 
+/**
+ * Message handler for test with 10MBit/s datarate and 50% droprate.
+ * @param msg Message to handle
+ */
 void TbusDatarateQueueTester::handleHalfDrop(cMessage* msg) {
 	static uint32_t arrivals = 0;
 
@@ -143,6 +162,9 @@ void TbusDatarateQueueTester::handleHalfDrop(cMessage* msg) {
 	}
 }
 
+/**
+ * Test with 10MBit/s datarate and 100% droprate.
+ */
 void TbusDatarateQueueTester::testFullDrop() {
 	// Reset values
 	queue->updateValue(NULL);
@@ -170,11 +192,18 @@ void TbusDatarateQueueTester::testFullDrop() {
 	scheduleAt(simTime() + 100, &nextTestMessage);
 }
 
+/**
+ * Message handler for test with 100% droprate (There shouldn't be any messages coming through obviously).
+ * @param msg Message to handle
+ */
 void TbusDatarateQueueTester::handleFullDrop(cMessage* msg) {
 	// We don't expect any packets to come through
 	success = false;
 }
 
+/**
+ * Test a loss-free channel (0% droprate) with 10MBit/s datarate
+ */
 void TbusDatarateQueueTester::testNormalDatarate() {
 	// Reset values
 	queue->updateValue(NULL);
@@ -200,6 +229,10 @@ void TbusDatarateQueueTester::testNormalDatarate() {
 	}
 }
 
+/**
+ * Message handler for normal datarate.
+ * @param msg Message to handle
+ */
 void TbusDatarateQueueTester::handleNormalDatarate(cMessage* msg) {
 	if (!msg->isSelfMessage()) {
 		TestPacket* packet = check_and_cast<TestPacket*>(msg);

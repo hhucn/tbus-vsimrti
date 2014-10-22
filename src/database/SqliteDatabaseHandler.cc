@@ -42,7 +42,7 @@ SqliteDatabaseHandler::~SqliteDatabaseHandler() {
 }
 
 /**
- * Retrieves the database version as of SQLites' pragma user_version 32-bit int field
+ * Retrieves the database version as of SQLites' pragma user_version 32-bit int field.
  * @return The database version
  */
 int32_t SqliteDatabaseHandler::getDatabaseVersion() {

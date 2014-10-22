@@ -5,15 +5,15 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #include "TbusChannelControl.h"
 #include "omnetpp.h"
@@ -28,21 +28,18 @@
 Define_Module(TbusChannelControl);
 
 /**
- *
+ * Empty constructor
  */
-TbusChannelControl::TbusChannelControl() {
-}
+TbusChannelControl::TbusChannelControl() {}
 
 /**
- * Destructor, nothing to destroy
+ * Empty destructor
  */
-TbusChannelControl::~TbusChannelControl() {
-}
+TbusChannelControl::~TbusChannelControl() {}
 
 /**
- * OMNeT++ initialization call
- *
- * stores gateIds for in and output
+ * Simulation initialization.
+ * Stores gateIds for in and output
  */
 void TbusChannelControl::initialize() {
 	ChannelControl::initialize();
@@ -52,9 +49,9 @@ void TbusChannelControl::initialize() {
 }
 
 /**
- * Register hostRef's first NIC IP from a NIC that is no loopback
- * This is done for an IP to Host mapping in O(1)
- * @param hostRef host to register
+ * Register hostRef's first NIC IP from a NIC that is no loopback.
+ * This is done for an IP to Host mapping in O(1).
+ * @param hostRef Host to register
  */
 void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
 	IInterfaceTable* interfaceTable = IPAddressResolver().interfaceTableOf(hostRef->host);
@@ -76,18 +73,18 @@ void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
 }
 
 /**
- * Handles messages send to TbusChannelControl via ordinary connections
- * @param msg message to send
+ * Handles messages send to TbusChannelControl via ordinary connections.
+ * @param msg Message to send
  */
 void TbusChannelControl::handleMessage(cMessage* msg) {
 	// TODO: Handle router messages
 }
 
 /**
- * Sends duplicates of the message to the corresponding receiver(s)
- * Only supports Broadcast and Unicast right now
- * @param msg The message to send
- * @param h host reference from sender
+ * Sends duplicates of the message to the corresponding receiver(s).
+ * Only supports Broadcast and Unicast right now.
+ * @param msg Message to send
+ * @param h Host reference from sender
  */
 void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 	Enter_Method_Silent();
@@ -124,8 +121,8 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 }
 
 /**
- * Hook for updating host positions
- * @param h The host to update
+ * Hook for updating host positions.
+ * @param h Host to update
  * @param pos New position
  */
 void TbusChannelControl::updateHostPosition(HostRef h, const Coord& pos) {

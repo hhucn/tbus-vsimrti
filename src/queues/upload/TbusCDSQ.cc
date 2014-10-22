@@ -107,7 +107,7 @@ void TbusCDSQ::handleMessage(cMessage* msg) {
 
 /**
  * Handles a #TBUS_BASE_QUEUE_SELFMESSAGE, throws an error upon receiving other self messages.
- * @see #TBUS_BASE_QUEUE_MESSAGE
+ * @see #TBUS_BASE_QUEUE_SELFMESSAGE
  * @param msg Self message to handle.
  */
 void TbusCDSQ::handleSelfMessage(cMessage* msg) {

@@ -19,13 +19,18 @@
 #include <proj_api.h>
 #include "Coord.h"
 
+/**
+ * Coordinate conversion, to be used as a singleton.
+ * This class uses the proj.4 library to perform coordinate conversion from a user defined(*) format to latitude/longitude GPS coordinates.
+ * (*) Usually this string is defined by SUMO, see #init(const char*).
+ */
 class TbusCoordinateConverter {
 	private:
-		projPJ projMercator;
-		projPJ projLatlong;
+		projPJ projMercator; ///< User-defined projection (usually UTM)
+		projPJ projLatlong; ///< Real-world projection (GPS)
 
-		const double_t offset_x;
-		const double_t offset_y;
+		const double_t offset_x; ///< Coordinate offset of cartesian x values
+		const double_t offset_y; ///< Coordinate offset of cartesian y values
 
 		TbusCoordinateConverter();
 		TbusCoordinateConverter(TbusCoordinateConverter const&);

@@ -19,9 +19,14 @@
 
 Define_Module(TbusDelayQueue);
 
-TbusDelayQueue::TbusDelayQueue() : TbusBaseQueue<TbusQueueDelayValue>() {
-}
+/**
+ * Empty constructor.
+ */
+TbusDelayQueue::TbusDelayQueue() : TbusBaseQueue<TbusQueueDelayValue>() {}
 
+/**
+ * Calculates earliest delivery times for all packets enqueued.
+ */
 void TbusDelayQueue::calculateEarliestDeliveries() {
 	simtime_t delay = this->currentDelay();
 
@@ -31,10 +36,21 @@ void TbusDelayQueue::calculateEarliestDeliveries() {
 	}
 }
 
+/**
+ * Calculates earliest delivery time for packet with current delay
+ * @see calculateEarliestDeliveryForPacket(cPacket*, simtime_t)
+ * @see currentDelay()
+ * @param packet Packet to calculate earliest delivery for
+ */
 void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 	this->calculateEarliestDeliveryForPacket(packet, this->currentDelay());
 }
 
+/**
+ * Calculates earliest delivery time for packet with delay.
+ * @param packet Packet to calculate earliest delivery for
+ * @param delay Delay to use
+ */
 void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime_t delay) {
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
 	ASSERT2(controlInfo, "Invalid control info on packet!");
@@ -52,6 +68,10 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime
 	EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ")" << std::endl;
 }
 
+/**
+ * Current delay by iterating over saved values and weighting them according to their presence as head of value queue.
+ * @return Aggregated weighted delay over all saved values
+ */
 simtime_t TbusDelayQueue::currentDelay() {
 	ASSERT2(!values.empty(), "Empty values array!");
 	// Calculations according to/adapted from Tobias Krauthoffs work

@@ -1,19 +1,19 @@
 //
 // (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #include "TbusDelayQueueTester.h"
 #include "TbusQueueDelayValue.h"
@@ -24,6 +24,9 @@
 
 Define_Module(TbusDelayQueueTester);
 
+/**
+ * Initialize base instance with this instance and add tests.
+ */
 TbusDelayQueueTester::TbusDelayQueueTester() : TbusTestBase(this) {
 	addTest(&TbusDelayQueueTester::testConstantDelay, &TbusDelayQueueTester::handleConstantDelay, "Constant Delay Test");
 	addTest(&TbusDelayQueueTester::testNoDelay, &TbusDelayQueueTester::handleNoDelay, "No Delay Test");
@@ -31,10 +34,15 @@ TbusDelayQueueTester::TbusDelayQueueTester() : TbusTestBase(this) {
 
 }
 
-TbusDelayQueueTester::~TbusDelayQueueTester() {
-	// TODO Auto-generated destructor stub
-}
+/**
+ * Empty destructor.
+ */
+TbusDelayQueueTester::~TbusDelayQueueTester() {}
 
+/**
+ * Simulation initialization.
+ * Get gate ids and init queue. Then start first test.
+ */
 void TbusDelayQueueTester::initialize() {
 	inGate = findGate("inGate");
 	outGate = findGate("outGate");
@@ -44,6 +52,9 @@ void TbusDelayQueueTester::initialize() {
 	runNextTest();
 }
 
+/**
+ * Test a constant delay.
+ */
 void TbusDelayQueueTester::testConstantDelay() {
 	// Reset values
 	queue->updateValue(NULL);
@@ -66,6 +77,10 @@ void TbusDelayQueueTester::testConstantDelay() {
 	scheduleAt(simTime() + 2.0, new cMessage(CONSTANT_DELAY_END, 0));
 }
 
+/**
+ * Message handler for constant delay test.
+ * @param msg Message to handle
+ */
 void TbusDelayQueueTester::handleConstantDelay(cMessage* msg) {
 	static uint32_t arrivals = 0;
 
@@ -83,6 +98,9 @@ void TbusDelayQueueTester::handleConstantDelay(cMessage* msg) {
 	delete msg;
 }
 
+/**
+ * Test for channel without delay (instant delivery).
+ */
 void TbusDelayQueueTester::testNoDelay() {
 	// Reset values
 	queue->updateValue(NULL);
@@ -105,6 +123,10 @@ void TbusDelayQueueTester::testNoDelay() {
 	scheduleAt(simTime() + 1.0, new cMessage(NO_DELAY_END, 0));
 }
 
+/**
+ * Message handler for test without delay.
+ * @param msg Message to handle
+ */
 void TbusDelayQueueTester::handleNoDelay(cMessage* msg) {
 	static uint32_t arrivals = 0;
 
@@ -122,6 +144,9 @@ void TbusDelayQueueTester::handleNoDelay(cMessage* msg) {
 	delete msg;
 }
 
+/**
+ * Test a channel with changing delay throughout packet transmission.
+ */
 void TbusDelayQueueTester::testChangingDelay() {
 	// Reset values
 	queue->updateValue(NULL);
@@ -143,6 +168,10 @@ void TbusDelayQueueTester::testChangingDelay() {
 	scheduleAt(simTime() + .5, new cMessage(CHANGE_DELAY));
 }
 
+/**
+ * Message handler for changing delay test.
+ * @param msg Message to handle
+ */
 void TbusDelayQueueTester::handleChangingDelay(cMessage* msg) {
 	if (msg->isSelfMessage() && (strcmp(msg->getName(), CHANGE_DELAY) == 0)) {
 		TbusQueueDelayValue* delay2 = new TbusQueueDelayValue();

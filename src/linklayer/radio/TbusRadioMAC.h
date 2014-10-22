@@ -1,19 +1,19 @@
 //
 // (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #ifndef TBUSRADIOMAC_H_
 #define TBUSRADIOMAC_H_
@@ -24,6 +24,9 @@
 #include "INotifiable.h"
 #include "NotificationBoard.h"
 
+/**
+ * MAC layer of TBUS NIC.
+ */
 class TbusRadioMAC : public cSimpleModule, public INotifiable {
 	public:
 		TbusRadioMAC();
@@ -37,15 +40,15 @@ class TbusRadioMAC : public cSimpleModule, public INotifiable {
 		void handleMessage(cMessage* msg);
 
 	private:
-		NotificationBoard* nb;
-		InterfaceEntry* interfaceEntry;
-		MACAddress macAddress;
+		NotificationBoard* nb; ///< Notification board reference
+		InterfaceEntry* interfaceEntry; ///< Interface entry of NIC
+		MACAddress macAddress; ///< MAC address
 
 		// Last IP address byte
-		static int ipByte;
+		static int ipByte; ///< Last byte of IP address. Made static for easier overall distinct assignment
 
-		int upperLayerIn, upperLayerOut;
-		int lowerLayerIn, lowerLayerOut;
+		int upperLayerIn, upperLayerOut; ///< Upper layer gate ids
+		int lowerLayerIn, lowerLayerOut; ///< Lower layer gate ids
 };
 
 #endif /* TBUSRADIOMAC_H_ */

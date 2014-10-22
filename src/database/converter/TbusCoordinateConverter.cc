@@ -22,6 +22,9 @@ Register_GlobalConfigOption(CFGID_TBUS_LIBPROJ_INIT_STRING, "tbus-libproj-init",
 Register_GlobalConfigOption(CFGID_TBUS_SUMO_OFFSET_X, "tbus-sumo-offset-x", CFG_DOUBLE, "0.0", "SUMOs x offset (so that pos.x + offset.x = coord.x)");
 Register_GlobalConfigOption(CFGID_TBUS_SUMO_OFFSET_Y, "tbus-sumo-offset-y", CFG_DOUBLE, "0.0", "SUMOs y offset (so that pos.y + offset.y = coord.y)");
 
+/**
+ * Instantiate with values read from *.ini-file or default values.
+ */
 TbusCoordinateConverter::TbusCoordinateConverter() :
 	offset_x(ev.getConfig()->getAsDouble(CFGID_TBUS_SUMO_OFFSET_X)),
 	offset_y(ev.getConfig()->getAsDouble(CFGID_TBUS_SUMO_OFFSET_Y)) {
@@ -29,18 +32,32 @@ TbusCoordinateConverter::TbusCoordinateConverter() :
 	init(ev.getConfig()->getAsString(CFGID_TBUS_LIBPROJ_INIT_STRING).c_str());
 }
 
+/**
+ * Instantiates with offset values read from *.ini-file or defaul values and projection string initString
+ * @param initString Projection string to use for libproj
+ */
 TbusCoordinateConverter::TbusCoordinateConverter(const char* initString) :
 		offset_x(ev.getConfig()->getAsDouble(CFGID_TBUS_SUMO_OFFSET_X)),
 		offset_y(ev.getConfig()->getAsDouble(CFGID_TBUS_SUMO_OFFSET_Y)) {
 	init(initString);
 }
 
+/**
+ * Singleton access.
+ * Returns the singleton instance of this class with memory automatically handled.
+ * @return Singleton instance
+ */
 TbusCoordinateConverter* TbusCoordinateConverter::getInstance() {
 	static TbusCoordinateConverter instance;
 
 	return &instance;
 }
 
+/**
+ * Initializes projections with latitude/longitude projection and projection defined by initString.
+ * Aborts on libproj failing to initialize.
+ * @param initString Projection string to use for libproj
+ */
 void TbusCoordinateConverter::init(const char* initString) {
 	projLatlong  = pj_init_plus("+proj=latlong");
 	projMercator = pj_init_plus(initString);
@@ -55,13 +72,21 @@ void TbusCoordinateConverter::init(const char* initString) {
 	}
 }
 
-TbusCoordinateConverter::~TbusCoordinateConverter() {
-	// TODO Auto-generated destructor stub
-}
+/**
+ * Empty destructor.
+ */
+TbusCoordinateConverter::~TbusCoordinateConverter() {}
 
+/**
+ * Translates coordinates from projection defined by initString to latitude/longitude values.
+ * Utilizes libproj's pj_transform.
+ * Considers offset if given (default offset is (0,0)).
+ * @param pos Coordinates to translate
+ * @return Translated coordinates in degrees (NOT radiant)
+ */
 Coord TbusCoordinateConverter::translate(const Coord* pos) const {
-	double x = pos->x + offset_x;//pos->x * DEG_TO_RAD;
-	double y = pos->y + offset_y;//pos->y * DEG_TO_RAD;
+	double x = pos->x + offset_x;
+	double y = pos->y + offset_y;
 
 	// UTM -> Latitude/Longitude
 	int result = pj_transform(projMercator, projLatlong, 1, 1, &x, &y, NULL);

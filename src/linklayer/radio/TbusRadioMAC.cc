@@ -1,21 +1,21 @@
 //
 // (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-// 
+//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
-#include <TbusRadioMAC.h>
+#include "TbusRadioMAC.h"
 #include "IInterfaceTable.h"
 #include "InterfaceTableAccess.h"
 #include "INETDefs.h"
@@ -25,25 +25,25 @@
 #include "RoutingTableAccess.h"
 #include "IRoutingTable.h"
 #include "IPRoute.h"
-#include <string.h>
-#include <algorithm>
-#include <locale>
 
 Define_Module(TbusRadioMAC);
 
 int TbusRadioMAC::ipByte = 0;
 
-TbusRadioMAC::TbusRadioMAC() {
-}
-
-TbusRadioMAC::~TbusRadioMAC() {
-}
-
-void TbusRadioMAC::receiveChangeNotification(int category, const cObject* details) {
-}
+/**
+ * Empty constructor.
+ */
+TbusRadioMAC::TbusRadioMAC() {}
 
 /**
- * Adds our TBus NIC to the interface table
+ * Empty destructor.
+ */
+TbusRadioMAC::~TbusRadioMAC() {}
+
+/**
+ * Add TBus NIC to interface table.
+ * - Stage 0: MAC address is generated, assigned and added to interface table.
+ * - Stage 1: IP address is generated, assigned and added to routing table.
  */
 void TbusRadioMAC::initialize(int stage) {
 	if (stage == 0) {
@@ -66,10 +66,6 @@ void TbusRadioMAC::initialize(int stage) {
 		if (interfaceTable) {
 			interfaceTable->addInterface(interfaceEntry, this);
 		}
-
-		nb = NotificationBoardAccess().getIfExists();
-		nb->subscribe(this, NF_INTERFACE_CREATED);
-		nb->subscribe(this, NF_SUBSCRIBERLIST_CHANGED);
 
 		upperLayerIn = findGate("upperLayerIn");
 		upperLayerOut = findGate("upperLayerOut");
@@ -96,6 +92,11 @@ void TbusRadioMAC::initialize(int stage) {
 	}
 }
 
+/**
+ * Handle incoming messages.
+ * Control info is removed and message is sent to corresponding lower/upper layer.
+ * @param msg Message to handle
+ */
 void TbusRadioMAC::handleMessage(cMessage* msg) {
 	cObject* controlInfo = msg->removeControlInfo();
 

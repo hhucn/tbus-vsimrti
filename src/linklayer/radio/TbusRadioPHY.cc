@@ -5,15 +5,15 @@
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // This program is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU Lesser General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU Lesser General Public License
 // along with this program.  If not, see http://www.gnu.org/licenses/.
-// 
+//
 
 #include "TbusChannelControl.h"
 #include "ChannelControl.h"
@@ -23,17 +23,24 @@
 
 Define_Module(TbusRadioPHY);
 
+/**
+ * Constructor.
+ * Invalidate host reference.
+ */
 TbusRadioPHY::TbusRadioPHY() {
 	myHostRef = NULL;
 }
 
-TbusRadioPHY::~TbusRadioPHY() {
-    // TODO Auto-generated destructor stub
-}
+/**
+ * Empty destructor.
+ */
+TbusRadioPHY::~TbusRadioPHY() {}
 
 /**
- * Initializes the module
- * @param stage init stage level
+ * Simulation initialization.
+ * - Stage 0: Gate id assignment, subscribe to position updates, get references
+ * - Stage 2: Register IP
+ * @param stage Init stage level
  */
 void TbusRadioPHY::initialize(int stage) {
 	ChannelAccess::initialize(stage);
@@ -53,30 +60,31 @@ void TbusRadioPHY::initialize(int stage) {
 	}
 }
 
-void TbusRadioPHY::finish() {
-}
-
-void TbusRadioPHY::handleSelfMessage(cMessage* msg) {
-	// TODO Do a barrel roll
-}
-
+/**
+ * Handle message from upper layer.
+ * @param msg Message to handle
+ */
 void TbusRadioPHY::handleUpperMessage(cMessage* msg) {
-//	Enter_Method("handleUpperMessage()");
-
 	sendToChannel(msg);
 }
 
+/**
+ * Handle message from lower layer.
+ * @param msg Message to handle
+ */
 void TbusRadioPHY::handleLowerMessage(cMessage* msg) {
-//	Enter_Method("handleLowerMessage()");
-
 	send(msg, upperLayerOut);
 }
 
+/**
+ * Handle incoming message.
+ * @param msg Message to handle
+ */
 void TbusRadioPHY::handleMessage(cMessage* msg) {
 	EV << "TbusRadioPHY received message on " << msg->getArrivalGate()->getName() << endl;
 	if (msg->isSelfMessage()) {
 		// Self message
-		handleSelfMessage(msg);
+		delete msg;
 	} else if (msg->arrivedOn(upperLayerIn)) {
 		// Message from upper layer
 		handleUpperMessage(msg);
@@ -86,10 +94,19 @@ void TbusRadioPHY::handleMessage(cMessage* msg) {
 	}
 }
 
+/**
+ * Send message to channel via channel control.
+ * @param msg Message to send
+ */
 void TbusRadioPHY::sendToChannel(cMessage* msg) {
 	tbusCC->sendToChannel(msg, myHostRef);
 }
 
+/**
+ * Receives host position changes and informs queue control to update network characteristics.
+ * @param category ChangeNotification category
+ * @param details ChangeNotification details
+ */
 void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {
 	if (category == NF_HOSTPOSITION_UPDATED) {
 		if (myHostRef) {

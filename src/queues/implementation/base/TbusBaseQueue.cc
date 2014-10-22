@@ -22,10 +22,9 @@
 
 /**
  * Set up.
+ * Instantiates selfMessage with name #TBUS_BASE_QUEUE_SELFMESSAGE
  */
-template<class T> TbusBaseQueue<T>::TbusBaseQueue() :
-	selfMessage(TBUS_BASE_QUEUE_SELFMESSAGE, 0) {
-}
+template<class T> TbusBaseQueue<T>::TbusBaseQueue() : selfMessage(TBUS_BASE_QUEUE_SELFMESSAGE, 0) {}
 
 /**
  * Clean up.
@@ -44,7 +43,7 @@ template<class T> void TbusBaseQueue<T>::initialize() {
 
 /**
  * Handles the message accordingly if it is a self message or a packet.
- * @param msg message to handle
+ * @param msg Message to handle
  */
 template<class T> void TbusBaseQueue<T>::handleMessage(cMessage* msg) {
 	if (msg->isSelfMessage()) {
@@ -162,6 +161,11 @@ template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 	}
 }
 
+/**
+ * Called upon simulation end.
+ * Releases selfmessage and cancels any future self message events.
+ * Clears the queue of packets.
+ */
 template<class T> void TbusBaseQueue<T>::finish() {
 		// Simulation Cleanup
 		if (selfMessage.isScheduled()) {
