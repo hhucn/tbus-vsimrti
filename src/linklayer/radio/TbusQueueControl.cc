@@ -68,7 +68,7 @@ void TbusQueueControl::updateQueues(const Coord& newCoords) {
 	TbusQueueDelayValue* sendDelay = dbHandler->getUploadDelay(translated);
 	TbusQueueDelayValue* receiveDelay = dbHandler->getDownloadDelay(translated);
 
-	std::cout << "sda:" << sendDatarate->datarate << " rda:" << receiveDatarate->datarate << " sde:" << sendDelay->delay << " rde:" << receiveDelay->delay << std::endl;
+	//std::cout << "sda:" << sendDatarate->datarate << " rda:" << receiveDatarate->datarate << " sde:" << sendDelay->delay << " rde:" << receiveDelay->delay << std::endl;
 
 	cdrq->updateValue(receiveDelay);
 	crrq->updateValue(receiveDatarate);
