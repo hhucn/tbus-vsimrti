@@ -47,10 +47,15 @@ bool SumoInformationChannel::connectToServer(std::string host, int port) {
 		return false;
 	}
 
+	for (uint32_t i = 0; i < 4; ++i) {
+		std::cout << (int) server->h_addr_list[0][i];
+	}
+	std::cout << std::endl;
+
 	memset( (char*)&servaddr, 0, sizeof(servaddr) );
 	servaddr.sin_family = AF_INET;
 	servaddr.sin_port = htons(port);
-	memcpy(&servaddr.sin_addr.s_addr, &server->h_addr, server->h_length);
+	memcpy(&servaddr.sin_addr.s_addr, server->h_addr_list[0], server->h_length);
 
 	if (connect(sock, (struct sockaddr*) &servaddr, sizeof(servaddr)) < 0) {
 		std::cerr << __FILE__ << ":" << __LINE__ << " Cannot connect to " << host << " on port " << port << std::endl;
