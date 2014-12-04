@@ -30,7 +30,9 @@ Define_Module(TbusChannelControl);
 /**
  * Empty constructor
  */
-TbusChannelControl::TbusChannelControl() {}
+TbusChannelControl::TbusChannelControl() {
+	si.initialize(4);
+}
 
 /**
  * Empty destructor

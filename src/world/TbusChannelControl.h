@@ -22,6 +22,8 @@
 #include "ChannelAccess.h"
 #include "IPAddress.h"
 
+#include "SumoInformation.h"
+
 class TbusRadioPHY;
 
 /**
@@ -31,6 +33,8 @@ class TbusChannelControl : public ChannelControl {
 private:
 	int routerInGate; ///< Router input gate
 	int routerOutGate; ///< Router output gate
+
+	SumoInformation si; ///< Additional Channel for SUMO lane information
 
 	std::map<IPAddress, ChannelControl::HostRef> hostMap; ///< Map for mapping IP address to a host
 
