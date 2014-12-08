@@ -18,6 +18,14 @@
 #include <iostream>
 #include <vector>
 
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+#define SocketErrno errno
+
+#define INVALID_SOCKET -1
+
 #define SUMO_INFORMATION_DEBUG
 
 SumoInformationChannel::SumoInformationChannel() {
@@ -28,39 +36,41 @@ SumoInformationChannel::~SumoInformationChannel() {
 	if (sock >= 0) {
 		close(sock);
 		sock = -1;
+
+#ifdef SUMO_INFORMATION_DEBUG
+	std::cout << "Successfully closed socket" << std::endl;
+#endif
 	}
 }
 
-bool SumoInformationChannel::connectToServer(std::string host, int port) {
-	struct sockaddr_in servaddr;
-	struct hostent* server;
+bool SumoInformationChannel::connectToServer(std::string host, std::string port) {
+	struct addrinfo* server;
+	struct addrinfo hints;
 
-	sock = socket(AF_INET, SOCK_STREAM, 0);
+	memset(&hints, 0x00, sizeof(hints));
+	hints.ai_family = AF_INET;
+	hints.ai_socktype = SOCK_STREAM;
+
+	int result = getaddrinfo(host.c_str(), port.c_str(), &hints, &server);
+	if (result != 0) {
+		std::cerr << __FILE__ << ":" << __LINE__ << " getaddrinfo error: " << gai_strerror(result) << std::endl;
+		return false;
+	}
+
+	sock = socket(server->ai_family, server->ai_socktype, server->ai_protocol);
 	if (sock < 0) {
 		std::cerr << __FILE__ << ":" << __LINE__ << " Cannot create socket!" << std::endl;
 		return false;
 	}
 
-	server = gethostbyname(host.c_str());
-	if (server == NULL) {
-		std::cerr << __FILE__ << ":" << __LINE__ << " No such host:" << host << std::endl;
-		return false;
-	}
-
-	for (uint32_t i = 0; i < 4; ++i) {
-		std::cout << (int) server->h_addr_list[0][i];
-	}
-	std::cout << std::endl;
-
-	memset( (char*)&servaddr, 0, sizeof(servaddr) );
-	servaddr.sin_family = AF_INET;
-	servaddr.sin_port = htons(port);
-	memcpy(&servaddr.sin_addr.s_addr, server->h_addr_list[0], server->h_length);
-
-	if (connect(sock, (struct sockaddr*) &servaddr, sizeof(servaddr)) < 0) {
+	if (connect(sock, server->ai_addr, server->ai_addrlen) < 0) {
 		std::cerr << __FILE__ << ":" << __LINE__ << " Cannot connect to " << host << " on port " << port << std::endl;
 		return false;
 	}
+
+#ifdef SUMO_INFORMATION_DEBUG
+	std::cout << "Successfully connected to " << host << " on port " << port << std::endl;
+#endif
 
 	return true;
 }
@@ -132,6 +142,10 @@ lanePos_t SumoInformationChannel::readLanePosition() {
 	pos.vehicleId = readString();
 	pos.laneId    = readString();
 	pos.distance  = readDouble();
+
+#ifdef SUMO_INFORMATION_DEBUG
+	std::cout << "Read Lane Position: {vehicleId: " << pos.vehicleId << ", laneId: " << pos.laneId << ", distance: " << pos.distance << "}" << std::endl;
+#endif
 
 	return pos;
 }

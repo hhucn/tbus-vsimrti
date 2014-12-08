@@ -20,20 +20,12 @@
 #error "This Class is not intended to be used with Microsoft Windows!"
 #endif
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <netinet/tcp.h>
-#include <arpa/inet.h>
-
-#define SocketErrno errno
-
-#define SOCKET int
-#define INVALID_SOCKET -1
-
 #include <string.h>
+#include <stdint.h>
 #include <float.h>
 #include "LanePosition.h"
+
+#define SOCKET int
 
 class SumoInformationChannel {
 	private:
@@ -47,7 +39,7 @@ class SumoInformationChannel {
 		SumoInformationChannel();
 		virtual ~SumoInformationChannel();
 
-		bool connectToServer(std::string host, int port);
+		bool connectToServer(std::string host, std::string port);
 		lanePos_t readLanePosition();
 };
 

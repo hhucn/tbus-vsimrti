@@ -28,7 +28,7 @@ void* SumoInformation::run(void* instance) {
 	SumoInformationChannel sichannel;
 
 	pthread_mutex_lock(&si->startMutex);
-	if (!sichannel.connectToServer("localhost", 3330)) {
+	if (!sichannel.connectToServer("localhost", "3330")) {
 		cRuntimeError("Cannot connect to TBUS VSimRTI Application for SUMO information!");
 		return NULL;
 	}
