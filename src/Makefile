@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libtbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/util -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -lproj -lsqlite3 -linet -KINETMANET_PROJ=../../inetmanet
+#  opp_makemake -f --deep --make-so -O out -I/home/bialon/workspace/omnetpp-federate/src/mob -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/util -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -lproj -lsqlite3 -linet -KINETMANET_PROJ=../../inetmanet
 #
 
 # Name of target to be created (-o option)
@@ -10,6 +10,7 @@ TARGET = libtbus-vsimrti$(SHARED_LIB_SUFFIX)
 
 # C++ include paths (with -I)
 INCLUDE_PATH = \
+    -I/home/bialon/workspace/omnetpp-federate/src/mob \
     -I../../inetmanet/src/networklayer/arp \
     -I../../inetmanet/src/transport/sctp \
     -I../../inetmanet/src/transport/contract \
@@ -83,6 +84,8 @@ OBJS = \
     $O/linklayer/radio/TbusRadioMAC.o \
     $O/linklayer/radio/TbusQueueControl.o \
     $O/linklayer/radio/TbusRadio.o \
+    $O/nodes/mobile/VSimRTIExtendedMobilityNode.o \
+    $O/nodes/mobile/TbusMobileNode.o \
     $O/nodes/router/TbusRouterNode.o \
     $O/queues/download/TbusCDRQ.o \
     $O/queues/download/TbusCRRQ.o \
@@ -310,6 +313,11 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	util/LanePosition.h \
 	util/SumoInformation.h \
 	world/TbusChannelControl.h
+$O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
+	nodes/mobile/TbusMobileNode.h \
+	nodes/mobile/VSimRTIExtendedMobilityNode.h
+$O/nodes/mobile/VSimRTIExtendedMobilityNode.o: nodes/mobile/VSimRTIExtendedMobilityNode.cc \
+	nodes/mobile/VSimRTIExtendedMobilityNode.h
 $O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
 	nodes/router/TbusRouterNode.h
 $O/queues/download/TbusCDRQ.o: queues/download/TbusCDRQ.cc \

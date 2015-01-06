@@ -72,6 +72,8 @@ bool SumoInformationChannel::connectToServer(std::string host, std::string port)
 	std::cout << "Successfully connected to " << host << " on port " << port << std::endl;
 #endif
 
+	freeaddrinfo(server);
+
 	return true;
 }
 
