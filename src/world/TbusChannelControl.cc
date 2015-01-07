@@ -31,7 +31,6 @@ Define_Module(TbusChannelControl);
  * Empty constructor
  */
 TbusChannelControl::TbusChannelControl() {
-	si.initialize(4);
 }
 
 /**

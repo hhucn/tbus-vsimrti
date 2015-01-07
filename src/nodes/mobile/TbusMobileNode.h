@@ -17,9 +17,12 @@
 #define TBUSMOBILENODE_H_
 
 #include "VSimRTIExtendedMobilityNode.h"
+#include "TbusQueueControl.h"
 #include "csimplemodule.h"
 
 class TbusMobileNode : public VSimRTIExtendedMobilityNode, public cSimpleModule {
+	private:
+		TbusQueueControl* qc;
 	public:
 		TbusMobileNode();
 		virtual ~TbusMobileNode();

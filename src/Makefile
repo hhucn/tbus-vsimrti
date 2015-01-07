@@ -60,7 +60,6 @@ INCLUDE_PATH = \
     -Iqueues/implementation/test/ned \
     -Iqueues/ned \
     -Iqueues/upload \
-    -Iutil \
     -Iworld
 
 # Additional object and library files to link with
@@ -78,7 +77,6 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 # Object files for local .cc and .msg files
 OBJS = \
     $O/database/SqliteDatabaseHandler.o \
-    $O/database/DatabaseHandler.o \
     $O/database/converter/TbusCoordinateConverter.o \
     $O/linklayer/radio/TbusRadioPHY.o \
     $O/linklayer/radio/TbusRadioMAC.o \
@@ -100,8 +98,6 @@ OBJS = \
     $O/queues/implementation/test/delay/TbusDelayQueueTester.o \
     $O/queues/upload/TbusCDSQ.o \
     $O/queues/upload/TbusCRSQ.o \
-    $O/util/SumoInformation.o \
-    $O/util/SumoInformationChannel.o \
     $O/world/TbusChannelControl.o \
     $O/queues/implementation/test/base/testPacket_m.o
 
@@ -206,7 +202,6 @@ clean:
 	$(Q)-rm -f queues/implementation/test/ned/*_m.cc queues/implementation/test/ned/*_m.h
 	$(Q)-rm -f queues/ned/*_m.cc queues/ned/*_m.h
 	$(Q)-rm -f queues/upload/*_m.cc queues/upload/*_m.h
-	$(Q)-rm -f util/*_m.cc util/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
 
 cleanall: clean
@@ -214,17 +209,9 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/ned/*.cc queues/upload/*.cc util/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/ned/*.cc queues/upload/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/database/DatabaseHandler.o: database/DatabaseHandler.cc \
-	$(INETMANET_PROJ)/src/base/Coord.h \
-	$(INETMANET_PROJ)/src/base/INETDefs.h \
-	$(INETMANET_PROJ)/src/util/FWMath.h \
-	database/DatabaseHandler.h \
-	queues/implementation/base/TbusQueueValue.h \
-	queues/implementation/datarate/TbusQueueDatarateValue.h \
-	queues/implementation/delay/TbusQueueDelayValue.h
 $O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
@@ -310,12 +297,28 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
-	util/LanePosition.h \
-	util/SumoInformation.h \
 	world/TbusChannelControl.h
 $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
+	$(INETMANET_PROJ)/src/base/Coord.h \
+	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
+	$(INETMANET_PROJ)/src/util/FWMath.h \
+	database/DatabaseHandler.h \
+	database/converter/TbusCoordinateConverter.h \
+	linklayer/radio/TbusQueueControl.h \
 	nodes/mobile/TbusMobileNode.h \
-	nodes/mobile/VSimRTIExtendedMobilityNode.h
+	nodes/mobile/VSimRTIExtendedMobilityNode.h \
+	queues/download/TbusCDRQ.h \
+	queues/download/TbusCRRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/upload/TbusCDSQ.h \
+	queues/upload/TbusCRSQ.h
 $O/nodes/mobile/VSimRTIExtendedMobilityNode.o: nodes/mobile/VSimRTIExtendedMobilityNode.cc \
 	nodes/mobile/VSimRTIExtendedMobilityNode.h
 $O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
@@ -412,13 +415,6 @@ $O/queues/upload/TbusCRSQ.o: queues/upload/TbusCRSQ.cc \
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h
-$O/util/SumoInformation.o: util/SumoInformation.cc \
-	util/LanePosition.h \
-	util/SumoInformation.h \
-	util/SumoInformationChannel.h
-$O/util/SumoInformationChannel.o: util/SumoInformationChannel.cc \
-	util/LanePosition.h \
-	util/SumoInformationChannel.h
 $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \
@@ -458,7 +454,5 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
-	util/LanePosition.h \
-	util/SumoInformation.h \
 	world/TbusChannelControl.h
 

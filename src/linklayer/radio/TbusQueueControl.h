@@ -46,6 +46,7 @@ class TbusQueueControl : public cSimpleModule {
 		TbusQueueControl();
 
 		void updateQueues(const Coord& newCoords);
+		void updateQueues(const char* const roadId, const float lanePos);
 
 		void initialize();
 };

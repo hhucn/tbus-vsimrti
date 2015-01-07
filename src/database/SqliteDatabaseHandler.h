@@ -87,6 +87,11 @@ class SqliteDatabaseHandler : public DatabaseHandler {
 		sqlite3_stmt* downloadDatarateStatement; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 		sqlite3_stmt* downloadDelayStatement; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 
+		sqlite3_stmt* uploadDatarateStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+		sqlite3_stmt* uploadDelayStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+		sqlite3_stmt* downloadDatarateStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+		sqlite3_stmt* downloadDelayStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+
 		int32_t getDatabaseVersion();
 
 		inline void abort();
@@ -95,17 +100,17 @@ class SqliteDatabaseHandler : public DatabaseHandler {
 		SqliteDatabaseHandler();
 		virtual ~SqliteDatabaseHandler();
 
-	    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos, simtime_t time);
-	    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos);
+		// Coord based
+	    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos, simtime_t time = simTime());
+	    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos, simtime_t time = simTime());
+	    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos, simtime_t time = simTime());
+	    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos, simtime_t time = simTime());
 
-	    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos, simtime_t time);
-	    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos);
-
-	    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos, simtime_t time);
-	    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos);
-
-	    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos, simtime_t time);
-	    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos);
+	    // Edge based
+	    virtual TbusQueueDatarateValue* getUploadDatarate(const char* const roadId, const float lanePos, simtime_t time = simTime());
+	    virtual TbusQueueDelayValue* getUploadDelay(const char* const roadId, const float lanePos, simtime_t time = simTime());
+	    virtual TbusQueueDatarateValue* getDownloadDatarate(const char* const roadId, const float lanePos, simtime_t time = simTime());
+	    virtual TbusQueueDelayValue* getDownloadDelay(const char* const roadId, const float lanePos, simtime_t time = simTime());
 };
 
 #endif /* SQLITEDATABASEHANDLER_H_ */

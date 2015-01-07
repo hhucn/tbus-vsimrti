@@ -59,58 +59,38 @@ public:
     /**
      * Return the upload data- and droprate at position pos and time time.
      * @param pos Position to look at
-     * @param time Time to look at
+     * @param time Time to look at or current time
      * @return Data- and droprate belonging to pos and time
      */
-    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos, simtime_t time) = 0;
-    /**
-     * Return the upload data- and droprate at position pos and current simulation time.
-     * @param pos Position to look at
-     * @return Data- and droprate belonging to pos and current simulation time
-     */
-    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos) = 0;
+    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos, simtime_t time = simTime()) = 0;
 
     /**
      * Return the upload delay at position pos and time time.
      * @param pos Position to look at
-     * @param time Time to look at
+     * @param time Time to look at or current time
      * @return Delay belonging to pos and time
      */
-    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos, simtime_t time) = 0;
-    /**
-     * Return the upload delay at position pos and current simulation time.
-     * @param pos Position to look at
-     * @return Delay belonging to pos and current simulation time
-     */
-    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos) = 0;
+    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos, simtime_t time = simTime()) = 0;
 
     /**
      * Return the download data- and droprate at position pos and time time.
      * @param pos Position to look at
-     * @param time Time to look at
+     * @param time Time to look at or current time
      * @return Data- and droprate belonging to pos and time
      */
-    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos, simtime_t time) = 0;
-    /**
-     * Return the download data- and droprate at position pos and current simulation time.
-     * @param pos Position to look at
-     * @return Data- and droprate belonging to pos and current simulation time
-     */
-    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos) = 0;
+    virtual TbusQueueDatarateValue* getDownloadDatarate(const Coord& pos, simtime_t time = simTime()) = 0;
 
     /**
-     * Return the download delay at position pos and time time.
-     * @param pos Position to look at
-     * @param time Time to look at
-     * @return Delay belonging to pos and time
-     */
-    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos, simtime_t time) = 0;
-    /**
      * Return the download delay at position pos and current simulation time.
-     * @param pos Position to look at
+     * @param pos Position to look at or current time
      * @return Delay belonging to pos and current simulation time
      */
-    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos) = 0;
+    virtual TbusQueueDelayValue* getDownloadDelay(const Coord& pos, simtime_t time = simTime()) = 0;
+
+    virtual TbusQueueDatarateValue* getUploadDatarate(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;
+    virtual TbusQueueDelayValue* getUploadDelay(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;
+    virtual TbusQueueDatarateValue* getDownloadDatarate(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;
+    virtual TbusQueueDelayValue* getDownloadDelay(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;
 };
 
 #endif /* DATABASEHANDLER_H_ */

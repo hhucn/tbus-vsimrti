@@ -14,11 +14,13 @@
 //
 
 #include "TbusMobileNode.h"
+#include "ModuleAccess.h"
 #include <iostream>
 
 Define_Module(TbusMobileNode);
 
 TbusMobileNode::TbusMobileNode() : VSimRTIExtendedMobilityNode() {
+	qc = ModuleAccess<TbusQueueControl>("queueControl").get();
 }
 
 TbusMobileNode::~TbusMobileNode() {
@@ -26,4 +28,5 @@ TbusMobileNode::~TbusMobileNode() {
 
 void TbusMobileNode::extendedMobilityUpdated() {
 	std::cout << "Received new extended mobility: (" << getRoadId() << " , " << getLanePos() << ")" << std::endl;
+	//TODO: Inform queue control
 }

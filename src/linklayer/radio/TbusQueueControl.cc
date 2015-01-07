@@ -48,30 +48,38 @@ void TbusQueueControl::initialize() {
  * Translates the given coordinates into latitute/longitude.
  * Then retrieves the belonging datarate, droprate and delay values from the database Handler.
  * Then the new values are updated on the belonging queue.
- * @see TbusCoordinateConverter::translate(const Coord&)
- * @see DatabaseHandler::getUploadDatarate(const Coord&)
- * @see DatabaseHandler::getDownloadDatarate(const Coord&)
- * @see DatabaseHandler::getUploadDelay(const Coord&)
- * @see DatabaseHandler::getDownloadDelay(const Coord&)
+ *
  * @param newCoords The new node position
  */
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
 	// Act like this is part of our PHY layer
 	Enter_Method_Silent();
 
-	EV << "TbusQueueControl updating queues for coordinates " << newCoords << endl;
-
 	Coord translated = converter->translate(&newCoords);
 
-	TbusQueueDatarateValue* sendDatarate = dbHandler->getUploadDatarate(translated);
-	TbusQueueDatarateValue* receiveDatarate = dbHandler->getDownloadDatarate(translated);
-	TbusQueueDelayValue* sendDelay = dbHandler->getUploadDelay(translated);
-	TbusQueueDelayValue* receiveDelay = dbHandler->getDownloadDelay(translated);
+	EV << "TbusQueueControl updating queues for coordinates " << newCoords << " (" << translated << ")" << endl;
 
-	//std::cout << "sda:" << sendDatarate->datarate << " rda:" << receiveDatarate->datarate << " sde:" << sendDelay->delay << " rde:" << receiveDelay->delay << std::endl;
+	cdrq->updateValue(dbHandler->getDownloadDelay(translated));
+	crrq->updateValue(dbHandler->getDownloadDatarate(translated));
+	cdsq->updateValue(dbHandler->getUploadDelay(translated));
+	crsq->updateValue(dbHandler->getUploadDatarate(translated));
+}
 
-	cdrq->updateValue(receiveDelay);
-	crrq->updateValue(receiveDatarate);
-	crsq->updateValue(sendDatarate);
-	cdsq->updateValue(sendDelay);
+/**
+ * Retrieves delay, data- and droprate from the database handler for the place given by roadId and lanePos.
+ * The new values are updated on the belonging queue.
+ *
+ * @param roadId The new edge to look at
+ * @param lanePos The new position on the edge to look at
+ */
+void TbusQueueControl::updateQueues(const char* const roadId, float lanePos) {
+	// Act like this is part of out PHY layer
+	Enter_Method_Silent();
+
+	EV << "TbusQueueControl updating queues for road id " << roadId  << " and lane position " << lanePos << endl;
+
+	cdrq->updateValue(dbHandler->getDownloadDelay(roadId, lanePos));
+	crrq->updateValue(dbHandler->getDownloadDatarate(roadId, lanePos));
+	cdsq->updateValue(dbHandler->getUploadDelay(roadId, lanePos));
+	crsq->updateValue(dbHandler->getUploadDatarate(roadId, lanePos));
 }
