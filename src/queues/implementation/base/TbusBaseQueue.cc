@@ -54,7 +54,7 @@ template<class T> void TbusBaseQueue<T>::handleMessage(cMessage* msg) {
 		if (packet) {
 			this->addPacketToQueue(packet);
 		} else {
-			opp_error("received invalid message - only self messages or packets accepted!");
+			throw cRuntimeError("received invalid message - only self messages or packets accepted!");
 			delete msg;
 		}
 	}
@@ -80,7 +80,7 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 			this->adaptSelfMessage();
 		}
 	} else {
-		opp_error("Received invalid self message!");
+		throw cRuntimeError("Received invalid self message!");
 	}
 }
 

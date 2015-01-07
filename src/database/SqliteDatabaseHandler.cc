@@ -6,26 +6,36 @@
  */
 
 #include "SqliteDatabaseHandler.h"
+#include <string>
+#include <sstream>
+#include <iostream>
+
+Register_GlobalConfigOption(CFGID_TBUS_DATABASE_FILE, "tbus-database", CFG_FILENAME, "", "Filename of TBUS database")
+
+Define_Module(SqliteDatabaseHandler)
 
 /**
  * Creates a new database connection by opening TBUS_SQLITE_DATABASE and checks the database version.
- * Aborts on error with exit code 1 and message on stderr and closes the database connection.
+ * Aborts on error and closes the database connection.
  */
 SqliteDatabaseHandler::SqliteDatabaseHandler() {
 	int result = 0;
+	std::string databaseFile = ev.getConfig()->getAsFilename(CFGID_TBUS_DATABASE_FILE);
 
-	result = sqlite3_open(TBUS_SQLITE_DATABASE, &database);
+	result = sqlite3_open(databaseFile.c_str(), &database);
 
 	if (result) {
-		std::cerr << "Unable to open database " << TBUS_SQLITE_DATABASE << "! Exiting..." << std::endl;
-		this->abort();
+		abort();
+		throw cRuntimeError("Unable to open database %s", databaseFile.c_str());
+	} else {
+		EV << "Successfully opened database " << databaseFile << std::endl;
 	}
 
 	// Check databases' user_version for compatibility
 	int32_t version = getDatabaseVersion();
 	if (version != TBUS_SQLITE_USER_VERSION) {
-		std::cerr << "Expected database version " << TBUS_SQLITE_USER_VERSION << ", but found version "<< version << "! Exiting..." << std::endl;
-		this->abort();
+		abort();
+		throw cRuntimeError("Expected database version %d but found version %d!", TBUS_SQLITE_USER_VERSION, version);
 	}
 
 	// Prepare statements
@@ -42,13 +52,13 @@ SqliteDatabaseHandler::SqliteDatabaseHandler() {
 
 	// Edge based
 	// Upload datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), min(abs(time - ?3)) where roadId = ?2 from upload_datarate;", -1 , &uploadDatarateStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), min(abs(timestamp - ?3)) from upload_datarate where roadId = ?2 limit 1;", -1 , &uploadDatarateStatementEdge, NULL);
 	// Upload delay
-	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), min(abs(time - ?3)) where roadId = ?2 from upload_delay;", -1 , &uploadDelayStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), min(abs(timestamp - ?3)) from upload_delay where roadId = ?2 limit 1;", -1 , &uploadDelayStatementEdge, NULL);
 	// Download datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), min(abs(time - ?3)) where roadId = ?2 from download_datarate;", -1 , &downloadDatarateStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), min(abs(timestamp - ?3)) from download_datarate where roadId = ?2 limit 1;", -1 , &downloadDatarateStatementEdge, NULL);
 	// Download delay
-	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), min(abs(time - ?3)) where roadId = ?2 from download_delay;", -1 , &downloadDelayStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), min(abs(timestamp - ?3)) from download_delay where roadId = ?2 limit 1;", -1 , &downloadDelayStatementEdge, NULL);
 }
 
 /**
@@ -94,7 +104,6 @@ int32_t SqliteDatabaseHandler::getDatabaseVersion() {
  */
 void SqliteDatabaseHandler::abort() {
 	sqlite3_close(database);
-	exit(1);
 }
 
 /**

@@ -63,12 +63,12 @@ void TbusCoordinateConverter::init(const char* initString) {
 	projMercator = pj_init_plus(initString);
 
 	if (!projLatlong) {
-		opp_error("Failed to initialize PROJ.4 with latlong projection!");
+		throw cRuntimeError("Failed to initialize PROJ.4 with latlong projection!");
 	}
 	if (!projMercator) {
 		std::ostringstream ostream;
 		ostream << "Failed to initialize PROJ.4 with initialization string \"" << initString << "\"!";
-		opp_error(ostream.str().c_str());
+		throw cRuntimeError(ostream.str().c_str());
 	}
 }
 
@@ -94,7 +94,7 @@ Coord TbusCoordinateConverter::translate(const Coord* pos) const {
 	if (result != 0) {
 		std::ostringstream ostream;
 		ostream << "Translating coordinates failed with error code " << result << ": " << pj_strerrno(result) << "!";
-		opp_error(ostream.str().c_str());
+		throw cRuntimeError(ostream.str().c_str());
 	}
 
 	// Radiant -> Degrees

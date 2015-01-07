@@ -14,12 +14,9 @@
 #define SQLITEDATABASEHANDLER_H_
 
 #include <sqlite3.h>
+#include "csimplemodule.h"
 #include "DatabaseHandler.h"
 
-/**
- * SQLite database file name
- */
-#define TBUS_SQLITE_DATABASE "test.sqlite"
 /**
  * SQLite user_version database version for version check
  */
@@ -39,10 +36,10 @@
 
 /**
  * @class SqliteDatabaseHandler
- * Database handler for SQLite database. For SQL database structure, see tbus.sql or below.
- * @code
- *     SQLite database structure:
+ * Database handler for SQLite database.
  *
+ * For Coord based SQL database structure, see tbus.sql or below.
+ * @code
  *      CREATE TABLE upload_datarate (
  *     		id INTEGER PRIMARY KEY,
  *     		latitude REAL NOT NULL,
@@ -77,8 +74,46 @@
  *     		delay REAL
  *     	);
  * @endcode
+ *
+ * For edge based SQL database structure, see tbus_edge.sql or below
+ *
+ * @code
+ * CREATE TABLE upload_datarate (
+ *		id INTEGER PRIMARY KEY,
+ *		timestamp INTEGER NOT NULL,
+ *		roadId TEXT,
+ *		lanePos REAL,
+ *		datarate REAL,
+ *		droprate REAL
+ * );
+ *
+ * CREATE TABLE download_datarate (
+ *		id INTEGER PRIMARY KEY,
+ *		timestamp INTEGER NOT NULL,
+ *		roadId TEXT,
+ *		lanePos REAL,
+ *		datarate REAL,
+ *		droprate REAL
+ * );
+ *
+ *CREATE TABLE upload_delay (
+ *		id INTEGER PRIMARY KEY,
+ *		timestamp INTEGER NOT NULL,
+ *		roadId TEXT,
+ *		lanePos REAL,
+ *		delay REAL
+ * );
+ *
+ * CREATE TABLE download_delay (
+ *		id INTEGER PRIMARY KEY,
+ *		timestamp INTEGER NOT NULL,
+ *		roadId TEXT,
+ *		lanePos REAL,
+ *		delay REAL
+ * );
+ * @endcode
  */
-class SqliteDatabaseHandler : public DatabaseHandler {
+class SqliteDatabaseHandler : public DatabaseHandler, public cSimpleModule {
 	private:
 		sqlite3* database; ///< Database connection
 

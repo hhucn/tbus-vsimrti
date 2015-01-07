@@ -114,7 +114,7 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 			sendDirect(msg->dup(), destinationHost->radioInGate);
 		}
 	} else {
-		opp_error("Tbus Channel Control received non-IPDatagram packet!");
+		throw cRuntimeError("Tbus Channel Control received non-IPDatagram packet!");
 	}
 
 	drop(msg);

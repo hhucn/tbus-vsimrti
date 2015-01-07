@@ -108,9 +108,9 @@ void TbusRadioPHY::sendToChannel(cMessage* msg) {
  * @param details ChangeNotification details
  */
 void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {
-	if (category == NF_HOSTPOSITION_UPDATED) {
-		if (myHostRef) {
-			queueControl->updateQueues(myHostRef->pos);
-		}
-	}
+//	if (category == NF_HOSTPOSITION_UPDATED) {
+//		if (myHostRef) {
+//			queueControl->updateQueues(myHostRef->pos);
+//		}
+//	}
 }

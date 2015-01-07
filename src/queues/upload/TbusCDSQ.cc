@@ -121,6 +121,6 @@ void TbusCDSQ::handleSelfMessage(cMessage* msg) {
 			this->adaptSelfMessage();
 		}
 	} else {
-		opp_error("Received invalid self message!");
+		throw cRuntimeError("Received invalid self message!");
 	}
 }
