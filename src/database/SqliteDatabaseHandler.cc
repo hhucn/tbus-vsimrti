@@ -12,8 +12,6 @@
 
 Register_GlobalConfigOption(CFGID_TBUS_DATABASE_FILE, "tbus-database", CFG_FILENAME, "", "Filename of TBUS database")
 
-Define_Module(SqliteDatabaseHandler)
-
 /**
  * Creates a new database connection by opening TBUS_SQLITE_DATABASE and checks the database version.
  * Aborts on error and closes the database connection.
@@ -110,6 +108,7 @@ void SqliteDatabaseHandler::abort() {
  * Retrieves upload data- and droprate for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
  * on the two-dimensional position plane and one-dimensional timeline.
  * The returned object has to be destroyed by the caller.
+ * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
  * @param pos The position to look at
  * @param time The time to look at
  * @return Data- and droprate as a TbusQueueDatarateValue object
@@ -140,6 +139,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& po
  * Retrieves upload delay for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
  * on the two-dimensional position plane and one-dimensional timeline.
  * The returned object has to be destroyed by the caller.
+ * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
  * @param pos The position to look at
  * @param time The time to look at
  * @return Delay as a TbusQueueDelayValue object
@@ -168,6 +168,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
  * Retrieves download data- and droprate for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
  * on the two-dimensional position plane and one-dimensional timeline.
  * The returned object has to be destroyed by the caller.
+ * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
  * @param pos The position to look at
  * @param time The time to look at
  * @return Data- and droprate as a TbusQueueDatarateValue object
@@ -198,6 +199,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& 
  * Retrieves download delay for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
  * on the two-dimensional position plane and one-dimensional timeline.
  * The returned object has to be destroyed by the caller.
+ * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
  * @param pos The position to look at
  * @param time The time to look at
  * @return Delay as a TbusQueueDelayValue object

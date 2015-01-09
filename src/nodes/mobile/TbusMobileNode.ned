@@ -30,6 +30,7 @@ import federate.msg.VSimRTIUnreliableApp;
 
 module TbusMobileNode {
     parameters:
+        @class(TbusMobileNode);
         @node();
         @display("bgb=351,348");
 

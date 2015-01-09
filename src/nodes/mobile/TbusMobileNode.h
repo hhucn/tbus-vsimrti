@@ -18,14 +18,16 @@
 
 #include "VSimRTIExtendedMobilityNode.h"
 #include "TbusQueueControl.h"
-#include "csimplemodule.h"
 
-class TbusMobileNode : public VSimRTIExtendedMobilityNode, public cSimpleModule {
+class TbusMobileNode : public VSimRTIExtendedMobilityNode {
 	private:
 		TbusQueueControl* qc;
 	public:
 		TbusMobileNode();
 		virtual ~TbusMobileNode();
+
+		virtual void initialize(int stage);
+		virtual int numInitStages() const { return 1; }
 
 		virtual void extendedMobilityUpdated();
 };

@@ -19,14 +19,16 @@
 
 Define_Module(TbusMobileNode);
 
-TbusMobileNode::TbusMobileNode() : VSimRTIExtendedMobilityNode() {
-	qc = ModuleAccess<TbusQueueControl>("queueControl").get();
-}
+TbusMobileNode::TbusMobileNode() : VSimRTIExtendedMobilityNode() {}
 
-TbusMobileNode::~TbusMobileNode() {
+TbusMobileNode::~TbusMobileNode() {}
+
+void TbusMobileNode::initialize(int stage) {
+	if (stage == 0) {
+		qc = ModuleAccess<TbusQueueControl>("queueControl").get();
+	}
 }
 
 void TbusMobileNode::extendedMobilityUpdated() {
-	std::cout << "Received new extended mobility: (" << getRoadId() << " , " << getLanePos() << ")" << std::endl;
-	//TODO: Inform queue control
+	qc->updateQueues(getRoadId(), getLanePos());
 }

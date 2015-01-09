@@ -14,7 +14,6 @@
 #define SQLITEDATABASEHANDLER_H_
 
 #include <sqlite3.h>
-#include "csimplemodule.h"
 #include "DatabaseHandler.h"
 
 /**
@@ -113,7 +112,7 @@
  * );
  * @endcode
  */
-class SqliteDatabaseHandler : public DatabaseHandler, public cSimpleModule {
+class SqliteDatabaseHandler : public DatabaseHandler {
 	private:
 		sqlite3* database; ///< Database connection
 

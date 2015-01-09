@@ -82,7 +82,6 @@ OBJS = \
     $O/linklayer/radio/TbusRadioMAC.o \
     $O/linklayer/radio/TbusQueueControl.o \
     $O/linklayer/radio/TbusRadio.o \
-    $O/nodes/mobile/VSimRTIExtendedMobilityNode.o \
     $O/nodes/mobile/TbusMobileNode.o \
     $O/nodes/router/TbusRouterNode.o \
     $O/queues/download/TbusCDRQ.o \
@@ -307,7 +306,6 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/TbusQueueControl.h \
 	nodes/mobile/TbusMobileNode.h \
-	nodes/mobile/VSimRTIExtendedMobilityNode.h \
 	queues/download/TbusCDRQ.h \
 	queues/download/TbusCRRQ.h \
 	queues/implementation/base/TbusBaseQueue.h \
@@ -319,8 +317,6 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h
-$O/nodes/mobile/VSimRTIExtendedMobilityNode.o: nodes/mobile/VSimRTIExtendedMobilityNode.cc \
-	nodes/mobile/VSimRTIExtendedMobilityNode.h
 $O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
 	nodes/router/TbusRouterNode.h
 $O/queues/download/TbusCDRQ.o: queues/download/TbusCDRQ.cc \
