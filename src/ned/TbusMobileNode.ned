@@ -15,9 +15,9 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.nodes.mobile;
+package tbus.ned;
 
-import tbus.linklayer.radio.TbusRadio;
+import tbus.ned.TbusMobileRadio;
 
 import inet.base.NotificationBoard;
 import inet.transport.udp.UDP;
@@ -65,7 +65,7 @@ module TbusMobileNode {
         routingTable: RoutingTable {
                 @display("p=58,89");
         }
-        radio: TbusRadio {
+        radio: TbusMobileRadio {
             @display("p=295,65");
         }
         mobility: VSimRTIMobility {

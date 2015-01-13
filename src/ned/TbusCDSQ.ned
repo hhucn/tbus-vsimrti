@@ -15,9 +15,9 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.queues.ned;
+package tbus.ned;
 
-simple TbusCRSQ {
+simple TbusCDSQ {
     parameters:
 	
 	gates:

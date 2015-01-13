@@ -15,7 +15,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio.mobile;
+package tbus.ned;
 
 simple TbusMobilePHY {
     parameters:

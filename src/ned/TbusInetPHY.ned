@@ -1,6 +1,4 @@
 //
-// (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-// 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,4 +13,14 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.nodes.mobile;
+package tbus.ned;
+
+simple TbusInetPHY {
+    parameters:
+        @class(TbusInetPHY);
+        
+	gates:
+	    input  upperLayerIn;
+	    output upperLayerOut;
+	    input radioIn @directIn;
+}

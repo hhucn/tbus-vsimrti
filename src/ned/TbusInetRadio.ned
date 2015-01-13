@@ -1,6 +1,4 @@
 //
-// (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-// 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,9 +13,33 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio.mobile;
+package tbus.ned;
 
-simple TbusQueueControl {
-	parameters:
-		@display("");
+import tbus.ned.TbusInetMAC;
+import tbus.ned.TbusInetPHY;
+
+module TbusInetRadio
+{
+    parameters:
+        @display("i=block/ifcard;bgb=99,193");
+
+    gates:
+        input upperLayerIn;
+        output upperLayerOut;
+        input radioIn @directIn;
+
+    submodules:
+        mac: TbusInetMAC;
+        phy: TbusInetPHY {
+            @display("p=50,123");
+        }
+
+    connections:
+        radioIn --> phy.radioIn;
+
+        phy.upperLayerOut --> mac.lowerLayerIn;
+        phy.upperLayerIn <-- mac.lowerLayerOut;
+
+        mac.upperLayerOut --> upperLayerOut;
+        mac.upperLayerIn <-- upperLayerIn;
 }

@@ -15,12 +15,15 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.queues.ned;
+package tbus.ned;
 
-simple TbusCDSQ {
+simple TbusMobileMAC {
     parameters:
-	
+        @class("TbusMobileMAC");
+        
 	gates:
-	    input inGate;
-	    output outGate;
+	    input upperLayerIn;
+	    output upperLayerOut;
+	    input lowerLayerIn;
+	    output lowerLayerOut;
 }

@@ -1,6 +1,4 @@
 //
-// (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-// 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,12 +13,15 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.queues.ned;
+package tbus.ned;
 
-simple TbusCDRQ {
+import inet.world.ChannelControl;
+
+simple TbusChannelControl extends ChannelControl
+{
     parameters:
-	
-	gates:
-	    input inGate;
-	    output outGate;
+    	@class(TbusChannelControl);
+    gates:
+        input routerInGate @loose;
+        output routerOutGate @loose;
 }

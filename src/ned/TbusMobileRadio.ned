@@ -15,15 +15,15 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio.mobile;
+package tbus.ned;
 
-import tbus.linklayer.radio.mobile.TbusMobilePHY;
-import tbus.linklayer.radio.mobile.TbusMobileMAC;
-import tbus.linklayer.radio.mobile.TbusQueueControl;
-import tbus.queues.ned.TbusCDRQ;
-import tbus.queues.ned.TbusCDSQ;
-import tbus.queues.ned.TbusCRRQ;
-import tbus.queues.ned.TbusCRSQ;
+import tbus.ned.TbusMobilePHY;
+import tbus.ned.TbusMobileMAC;
+import tbus.ned.TbusQueueControl;
+import tbus.ned.TbusCDRQ;
+import tbus.ned.TbusCDSQ;
+import tbus.ned.TbusCRRQ;
+import tbus.ned.TbusCRSQ;
 
 module TbusMobileRadio
 {

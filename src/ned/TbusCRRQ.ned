@@ -15,4 +15,12 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.nodes.router;
+package tbus.ned;
+
+simple TbusCRSQ {
+    parameters:
+	
+	gates:
+	    input inGate;
+	    output outGate;
+}
