@@ -17,24 +17,24 @@
 
 #include "TbusChannelControl.h"
 #include "ChannelControl.h"
-#include "TbusRadioPHY.h"
+#include "TbusMobilePHY.h"
 #include "ModuleAccess.h"
 #include "TbusQueueControl.h"
 
-Define_Module(TbusRadioPHY);
+Define_Module(TbusMobilePHY);
 
 /**
  * Constructor.
  * Invalidate host reference.
  */
-TbusRadioPHY::TbusRadioPHY() {
+TbusMobilePHY::TbusMobilePHY() {
 	myHostRef = NULL;
 }
 
 /**
  * Empty destructor.
  */
-TbusRadioPHY::~TbusRadioPHY() {}
+TbusMobilePHY::~TbusMobilePHY() {}
 
 /**
  * Simulation initialization.
@@ -42,7 +42,7 @@ TbusRadioPHY::~TbusRadioPHY() {}
  * - Stage 2: Register IP
  * @param stage Init stage level
  */
-void TbusRadioPHY::initialize(int stage) {
+void TbusMobilePHY::initialize(int stage) {
 	ChannelAccess::initialize(stage);
 
 	if (stage == 0) {
@@ -64,7 +64,7 @@ void TbusRadioPHY::initialize(int stage) {
  * Handle message from upper layer.
  * @param msg Message to handle
  */
-void TbusRadioPHY::handleUpperMessage(cMessage* msg) {
+void TbusMobilePHY::handleUpperMessage(cMessage* msg) {
 	sendToChannel(msg);
 }
 
@@ -72,7 +72,7 @@ void TbusRadioPHY::handleUpperMessage(cMessage* msg) {
  * Handle message from lower layer.
  * @param msg Message to handle
  */
-void TbusRadioPHY::handleLowerMessage(cMessage* msg) {
+void TbusMobilePHY::handleLowerMessage(cMessage* msg) {
 	send(msg, upperLayerOut);
 }
 
@@ -80,7 +80,7 @@ void TbusRadioPHY::handleLowerMessage(cMessage* msg) {
  * Handle incoming message.
  * @param msg Message to handle
  */
-void TbusRadioPHY::handleMessage(cMessage* msg) {
+void TbusMobilePHY::handleMessage(cMessage* msg) {
 	EV << "TbusRadioPHY received message on " << msg->getArrivalGate()->getName() << endl;
 	if (msg->isSelfMessage()) {
 		// Self message
@@ -98,7 +98,7 @@ void TbusRadioPHY::handleMessage(cMessage* msg) {
  * Send message to channel via channel control.
  * @param msg Message to send
  */
-void TbusRadioPHY::sendToChannel(cMessage* msg) {
+void TbusMobilePHY::sendToChannel(cMessage* msg) {
 	tbusCC->sendToChannel(msg, myHostRef);
 }
 
@@ -106,8 +106,10 @@ void TbusRadioPHY::sendToChannel(cMessage* msg) {
  * Receives host position changes and informs queue control to update network characteristics.
  * @param category ChangeNotification category
  * @param details ChangeNotification details
+ * @deprecated VSimRTI's extended mobility information is used instead!
  */
-void TbusRadioPHY::receiveChangeNotification(int category, const cObject *details) {
+void TbusMobilePHY::receiveChangeNotification(int category, const cObject *details) {
+	// We use VSimRTI's extended mobility information
 //	if (category == NF_HOSTPOSITION_UPDATED) {
 //		if (myHostRef) {
 //			queueControl->updateQueues(myHostRef->pos);

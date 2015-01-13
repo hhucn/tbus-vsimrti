@@ -15,7 +15,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#include "TbusRadioMAC.h"
+#include "TbusMobileMAC.h"
 #include "IInterfaceTable.h"
 #include "InterfaceTableAccess.h"
 #include "INETDefs.h"
@@ -25,27 +25,27 @@
 #include "RoutingTableAccess.h"
 #include "IRoutingTable.h"
 #include "IPRoute.h"
+#include "IpAddressHelper.h"
 
-Define_Module(TbusRadioMAC);
-
-int TbusRadioMAC::ipByte = 0;
+Define_Module(TbusMobileMAC);
 
 /**
  * Empty constructor.
  */
-TbusRadioMAC::TbusRadioMAC() {}
+TbusMobileMAC::TbusMobileMAC() {}
 
 /**
  * Empty destructor.
  */
-TbusRadioMAC::~TbusRadioMAC() {}
+TbusMobileMAC::~TbusMobileMAC() {}
 
 /**
  * Add TBus NIC to interface table.
  * - Stage 0: MAC address is generated, assigned and added to interface table.
  * - Stage 1: IP address is generated, assigned and added to routing table.
+ * @param stage Initialization stage
  */
-void TbusRadioMAC::initialize(int stage) {
+void TbusMobileMAC::initialize(int stage) {
 	if (stage == 0) {
 		interfaceEntry = new InterfaceEntry();
 		macAddress = MACAddress::generateAutoAddress();
@@ -73,19 +73,13 @@ void TbusRadioMAC::initialize(int stage) {
 		lowerLayerOut = findGate("lowerLayerOut");
 	} else if (stage == 2) {
 		// Set IP Address
-		interfaceEntry->ipv4Data()->setIPAddress(IPAddress(192, 168, 0, ++TbusRadioMAC::ipByte));
+		interfaceEntry->ipv4Data()->setIPAddress(IpAddressHelper::getNextIpAddress());
 		interfaceEntry->ipv4Data()->setNetmask(IPAddress::ALLONES_ADDRESS);
 
 		// Add default route
 		IRoutingTable* routingTable = RoutingTableAccess().getIfExists();
 		if (routingTable) {
-			IPRoute* route = new IPRoute();
-			route->setHost(IPAddress(192, 168, 0, 0));
-			route->setNetmask(IPAddress(255, 255, 255, 0));
-			route->setInterface(interfaceEntry);
-			route->setSource(IPRoute::MANUAL);
-
-			routingTable->addRoute(route);
+			routingTable->addRoute(IpAddressHelper::getDefaultRoute(interfaceEntry));
 		}
 
 		EV << "Interface "<< this->getParentModule()->getFullName() << " now has IP address " << interfaceEntry->ipv4Data()->getIPAddress() << endl;
@@ -97,7 +91,7 @@ void TbusRadioMAC::initialize(int stage) {
  * Control info is removed and message is sent to corresponding lower/upper layer.
  * @param msg Message to handle
  */
-void TbusRadioMAC::handleMessage(cMessage* msg) {
+void TbusMobileMAC::handleMessage(cMessage* msg) {
 	cObject* controlInfo = msg->removeControlInfo();
 
 	EV << "removed control info " << controlInfo << std::endl;

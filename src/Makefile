@@ -42,10 +42,13 @@ INCLUDE_PATH = \
     -Idatabase \
     -Idatabase/converter \
     -Ilinklayer \
+    -Ilinklayer/helper \
     -Ilinklayer/radio \
+    -Ilinklayer/radio/inet \
+    -Ilinklayer/radio/mobile \
     -Inodes \
+    -Inodes/inet \
     -Inodes/mobile \
-    -Inodes/router \
     -Iqueues \
     -Iqueues/download \
     -Iqueues/implementation \
@@ -78,12 +81,15 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 OBJS = \
     $O/database/SqliteDatabaseHandler.o \
     $O/database/converter/TbusCoordinateConverter.o \
-    $O/linklayer/radio/TbusRadioPHY.o \
-    $O/linklayer/radio/TbusRadioMAC.o \
-    $O/linklayer/radio/TbusQueueControl.o \
-    $O/linklayer/radio/TbusRadio.o \
+    $O/linklayer/helper/IpAddressHelper.o \
+    $O/linklayer/radio/inet/TbusInetPHY.o \
+    $O/linklayer/radio/inet/TbusInetMAC.o \
+    $O/linklayer/radio/mobile/TbusMobilePHY.o \
+    $O/linklayer/radio/mobile/TbusMobileMAC.o \
+    $O/linklayer/radio/mobile/TbusMobileRadio.o \
+    $O/linklayer/radio/mobile/TbusQueueControl.o \
+    $O/nodes/inet/TbusInetNode.o \
     $O/nodes/mobile/TbusMobileNode.o \
-    $O/nodes/router/TbusRouterNode.o \
     $O/queues/download/TbusCDRQ.o \
     $O/queues/download/TbusCRRQ.o \
     $O/queues/implementation/base/TbusBaseQueue.o \
@@ -183,10 +189,13 @@ clean:
 	$(Q)-rm -f database/*_m.cc database/*_m.h
 	$(Q)-rm -f database/converter/*_m.cc database/converter/*_m.h
 	$(Q)-rm -f linklayer/*_m.cc linklayer/*_m.h
+	$(Q)-rm -f linklayer/helper/*_m.cc linklayer/helper/*_m.h
 	$(Q)-rm -f linklayer/radio/*_m.cc linklayer/radio/*_m.h
+	$(Q)-rm -f linklayer/radio/inet/*_m.cc linklayer/radio/inet/*_m.h
+	$(Q)-rm -f linklayer/radio/mobile/*_m.cc linklayer/radio/mobile/*_m.h
 	$(Q)-rm -f nodes/*_m.cc nodes/*_m.h
+	$(Q)-rm -f nodes/inet/*_m.cc nodes/inet/*_m.h
 	$(Q)-rm -f nodes/mobile/*_m.cc nodes/mobile/*_m.h
-	$(Q)-rm -f nodes/router/*_m.cc nodes/router/*_m.h
 	$(Q)-rm -f queues/*_m.cc queues/*_m.h
 	$(Q)-rm -f queues/download/*_m.cc queues/download/*_m.h
 	$(Q)-rm -f queues/implementation/*_m.cc queues/implementation/*_m.h
@@ -208,7 +217,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/radio/*.cc nodes/*.cc nodes/mobile/*.cc nodes/router/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/ned/*.cc queues/upload/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/ned/*.cc queues/upload/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
@@ -225,29 +234,53 @@ $O/database/converter/TbusCoordinateConverter.o: database/converter/TbusCoordina
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	database/converter/TbusCoordinateConverter.h
-$O/linklayer/radio/TbusQueueControl.o: linklayer/radio/TbusQueueControl.cc \
+$O/linklayer/helper/IpAddressHelper.o: linklayer/helper/IpAddressHelper.cc \
+	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
+	$(INETMANET_PROJ)/src/linklayer/contract/MACAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceEntry.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceToken.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPRoute.h \
+	linklayer/helper/IpAddressHelper.h
+$O/linklayer/radio/inet/TbusInetMAC.o: linklayer/radio/inet/TbusInetMAC.cc \
+	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/INotifiable.h \
+	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
+	$(INETMANET_PROJ)/src/base/NotificationBoard.h \
+	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
+	$(INETMANET_PROJ)/src/linklayer/contract/MACAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/common/IInterfaceTable.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceEntry.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceTable.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceTableAccess.h \
+	$(INETMANET_PROJ)/src/networklayer/common/InterfaceToken.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPProtocolId_m.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPRoute.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPRouteRule.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IPv4InterfaceData.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/IRoutingTable.h \
+	$(INETMANET_PROJ)/src/networklayer/ipv4/RoutingTableAccess.h \
+	linklayer/helper/IpAddressHelper.h \
+	linklayer/radio/inet/TbusInetMAC.h
+$O/linklayer/radio/inet/TbusInetPHY.o: linklayer/radio/inet/TbusInetPHY.cc \
+	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/INotifiable.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
+	$(INETMANET_PROJ)/src/base/NotificationBoard.h \
+	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
+	$(INETMANET_PROJ)/src/linklayer/mfcore/AirFrame_m.h \
+	$(INETMANET_PROJ)/src/linklayer/mfcore/ModulationType.h \
+	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
-	database/DatabaseHandler.h \
-	database/SqliteDatabaseHandler.h \
-	database/converter/TbusCoordinateConverter.h \
-	linklayer/radio/TbusQueueControl.h \
-	queues/download/TbusCDRQ.h \
-	queues/download/TbusCRRQ.h \
-	queues/implementation/base/TbusBaseQueue.h \
-	queues/implementation/base/TbusQueueValue.h \
-	queues/implementation/control_info/TbusQueueControlInfo.h \
-	queues/implementation/datarate/TbusDatarateQueue.h \
-	queues/implementation/datarate/TbusQueueDatarateValue.h \
-	queues/implementation/delay/TbusDelayQueue.h \
-	queues/implementation/delay/TbusQueueDelayValue.h \
-	queues/upload/TbusCDSQ.h \
-	queues/upload/TbusCRSQ.h
-$O/linklayer/radio/TbusRadio.o: linklayer/radio/TbusRadio.cc \
-	linklayer/radio/TbusRadio.h
-$O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
+	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
+	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	linklayer/radio/inet/TbusInetPHY.h \
+	world/TbusChannelControl.h
+$O/linklayer/radio/mobile/TbusMobileMAC.o: linklayer/radio/mobile/TbusMobileMAC.cc \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/INotifiable.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
@@ -266,8 +299,9 @@ $O/linklayer/radio/TbusRadioMAC.o: linklayer/radio/TbusRadioMAC.cc \
 	$(INETMANET_PROJ)/src/networklayer/ipv4/IRoutingTable.h \
 	$(INETMANET_PROJ)/src/networklayer/ipv4/RoutingTableAccess.h \
 	$(INETMANET_PROJ)/src/util/opp_utils.h \
-	linklayer/radio/TbusRadioMAC.h
-$O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
+	linklayer/helper/IpAddressHelper.h \
+	linklayer/radio/mobile/TbusMobileMAC.h
+$O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.cc \
 	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
@@ -283,8 +317,8 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
-	linklayer/radio/TbusQueueControl.h \
-	linklayer/radio/TbusRadioPHY.h \
+	linklayer/radio/mobile/TbusMobilePHY.h \
+	linklayer/radio/mobile/TbusQueueControl.h \
 	queues/download/TbusCDRQ.h \
 	queues/download/TbusCRRQ.h \
 	queues/implementation/base/TbusBaseQueue.h \
@@ -297,6 +331,30 @@ $O/linklayer/radio/TbusRadioPHY.o: linklayer/radio/TbusRadioPHY.cc \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
 	world/TbusChannelControl.h
+$O/linklayer/radio/mobile/TbusMobileRadio.o: linklayer/radio/mobile/TbusMobileRadio.cc \
+	linklayer/radio/mobile/TbusMobileRadio.h
+$O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueControl.cc \
+	$(INETMANET_PROJ)/src/base/Coord.h \
+	$(INETMANET_PROJ)/src/base/INETDefs.h \
+	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
+	$(INETMANET_PROJ)/src/util/FWMath.h \
+	database/DatabaseHandler.h \
+	database/SqliteDatabaseHandler.h \
+	database/converter/TbusCoordinateConverter.h \
+	linklayer/radio/mobile/TbusQueueControl.h \
+	queues/download/TbusCDRQ.h \
+	queues/download/TbusCRRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/upload/TbusCDSQ.h \
+	queues/upload/TbusCRSQ.h
+$O/nodes/inet/TbusInetNode.o: nodes/inet/TbusInetNode.cc \
+	nodes/inet/TbusInetNode.h
 $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
@@ -304,7 +362,7 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
-	linklayer/radio/TbusQueueControl.h \
+	linklayer/radio/mobile/TbusQueueControl.h \
 	nodes/mobile/TbusMobileNode.h \
 	queues/download/TbusCDRQ.h \
 	queues/download/TbusCRRQ.h \
@@ -317,8 +375,6 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h
-$O/nodes/router/TbusRouterNode.o: nodes/router/TbusRouterNode.cc \
-	nodes/router/TbusRouterNode.h
 $O/queues/download/TbusCDRQ.o: queues/download/TbusCDRQ.cc \
 	queues/download/TbusCDRQ.h \
 	queues/implementation/base/TbusBaseQueue.h \
@@ -437,8 +493,8 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
-	linklayer/radio/TbusQueueControl.h \
-	linklayer/radio/TbusRadioPHY.h \
+	linklayer/radio/mobile/TbusMobilePHY.h \
+	linklayer/radio/mobile/TbusQueueControl.h \
 	queues/download/TbusCDRQ.h \
 	queues/download/TbusCRRQ.h \
 	queues/implementation/base/TbusBaseQueue.h \

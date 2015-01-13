@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef TBUSRADIOMAC_H_
-#define TBUSRADIOMAC_H_
+#ifndef TBUSMOBILEMAC_H_
+#define TBUSMOBILEMAC_H_
 
 #include "InterfaceEntry.h"
 #include "MACAddress.h"
@@ -27,12 +27,16 @@
 /**
  * MAC layer of TBUS NIC.
  */
-class TbusRadioMAC : public cSimpleModule {
+class TbusMobileMAC : public cSimpleModule {
 	public:
-		TbusRadioMAC();
-		virtual ~TbusRadioMAC();
+		TbusMobileMAC();
+		virtual ~TbusMobileMAC();
 
 		void initialize(int stage);
+		/**
+		 * Number of needed initialization stages, this class needs stage 0 and 2
+		 * @return 3
+		 */
 		int numInitStages() const { return 3; }
 
 		void handleMessage(cMessage* msg);
@@ -42,11 +46,8 @@ class TbusRadioMAC : public cSimpleModule {
 		InterfaceEntry* interfaceEntry; ///< Interface entry of NIC
 		MACAddress macAddress; ///< MAC address
 
-		// Last IP address byte
-		static int ipByte; ///< Last byte of IP address. Made static for easier overall distinct assignment
-
 		int upperLayerIn, upperLayerOut; ///< Upper layer gate ids
 		int lowerLayerIn, lowerLayerOut; ///< Lower layer gate ids
 };
 
-#endif /* TBUSRADIOMAC_H_ */
+#endif /* TBUSMOBILEMAC_H_ */

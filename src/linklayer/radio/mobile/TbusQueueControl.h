@@ -18,7 +18,7 @@
 #ifndef TBUSQUEUECONTROL_H_
 #define TBUSQUEUECONTROL_H_
 
-#include <csimplemodule.h>
+#include "csimplemodule.h"
 
 #include "TbusCDRQ.h"
 #include "TbusCRRQ.h"

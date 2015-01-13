@@ -15,28 +15,31 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+package tbus.linklayer.radio.mobile;
 
-import tbus.linklayer.radio.TbusRadioPHY;
-import tbus.linklayer.radio.TbusRadioMAC;
+import tbus.linklayer.radio.mobile.TbusMobilePHY;
+import tbus.linklayer.radio.mobile.TbusMobileMAC;
+import tbus.linklayer.radio.mobile.TbusQueueControl;
 import tbus.queues.ned.TbusCDRQ;
 import tbus.queues.ned.TbusCDSQ;
 import tbus.queues.ned.TbusCRRQ;
 import tbus.queues.ned.TbusCRSQ;
 
-module TbusRadio
+module TbusMobileRadio
 {
     parameters:
         @display("i=block/ifcard");
+        
     gates:
         input upperLayerIn;
         output upperLayerOut;
         input radioIn @directIn;
+        
     submodules:
-        phy: TbusRadioPHY {
+        phy: TbusMobilePHY {
             @display("p=278,248");
         }
-        mac: TbusRadioMAC {
+        mac: TbusMobileMAC {
             @display("p=278,63");
         }
         queueControl: TbusQueueControl {
@@ -53,6 +56,7 @@ module TbusRadio
         crsq: TbusCRSQ {
             @display("p=389,102");
         }
+        
     connections:
         upperLayerIn --> mac.upperLayerIn;
         upperLayerOut <-- mac.upperLayerOut;
@@ -66,7 +70,5 @@ module TbusRadio
         cdrq.inGate <-- phy.upperLayerOut;
         cdsq.outGate --> phy.upperLayerIn;
 
-        //        mac.lowerLayerIn <-- phy.upperLayerOut;
-        //        mac.lowerLayerOut --> phy.upperLayerIn;
         radioIn --> phy.radioIn;
 }

@@ -15,7 +15,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 // 
 
-package tbus.linklayer.radio;
+package tbus.linklayer.radio.mobile;
 
 simple TbusQueueControl {
 	parameters:

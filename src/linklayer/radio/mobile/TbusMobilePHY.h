@@ -15,8 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef TBUSRADIO_H_
-#define TBUSRADIO_H_
+#ifndef TBUSMOBILEPHY_H_
+#define TBUSMOBILEPHY_H_
 
 #include "ChannelAccess.h"
 #include "Coord.h"
@@ -26,7 +26,7 @@
 /**
  * PHY layer of TBUS NIC.
  */
-class TbusRadioPHY : public ChannelAccess {
+class TbusMobilePHY : public ChannelAccess {
 private:
 	int upperLayerIn; ///< Upper layer input gate id
 	int upperLayerOut; ///< Upper layer output gate id
@@ -42,14 +42,14 @@ protected:
 	void sendToChannel(cMessage* msg);
 
 public:
-    TbusRadioPHY();
-    virtual ~TbusRadioPHY();
+    TbusMobilePHY();
+    virtual ~TbusMobilePHY();
 
-    void initialize(int stage);
-    int numInitStages() const { return 3; }
-    void handleMessage(cMessage* msg);
+    virtual void initialize(int stage);
+    virtual int numInitStages() const { return 3; }
+    virtual void handleMessage(cMessage* msg);
 
-    void receiveChangeNotification(int category, const cObject *details);
+    virtual void receiveChangeNotification(int category, const cObject *details);
 };
 
-#endif /* TBUSRADIO_H_ */
+#endif /* TBUSMOBILEPHY_H_ */
