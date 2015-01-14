@@ -41,7 +41,7 @@ class TbusQueueValue : public cObject {
 		 * @param other Object to compare against
 		 * @return Comparison value
 		 */
-		virtual bool operator!=(TbusQueueValue& other) = 0;
+		virtual inline bool operator!=(TbusQueueValue& other) = 0;
 };
 
 #endif /* TBUSQUEUEVALUE_H_ */

@@ -36,16 +36,13 @@ TbusCDSQ::TbusCDSQ() : TbusDelayQueue(), saveValues(false) {
  */
 void TbusCDSQ::updateValue(TbusQueueDelayValue* newValue) {
 	Enter_Method("updateValue()");
-	if (saveValues && values.front() != newValue) {
+	if (saveValues && (values.empty() || values.front() != newValue)) {
 		// Store new value
 		values.push_front(newValue);
-
-		EV << this->getName() << ": Updated value at " << simTime() << std::endl;
 	} else if (!saveValues) {
+		// Replace existing value
 		delete values[0];
 		values[0] = newValue;
-
-		EV << this->getName() << ": Updated value at " << simTime() << std::endl;
 	} else {
 		// Cleanup
 		delete newValue;

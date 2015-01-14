@@ -18,11 +18,12 @@ Register_GlobalConfigOption(CFGID_TBUS_DATABASE_FILE, "tbus-database", CFG_FILEN
  */
 SqliteDatabaseHandler::SqliteDatabaseHandler() {
 	int result = 0;
-	std::string databaseFile = ev.getConfig()->getAsFilename(CFGID_TBUS_DATABASE_FILE);
+	database = NULL;
+	const std::string databaseFile = ev.getConfig()->getAsFilename(CFGID_TBUS_DATABASE_FILE);
 
 	result = sqlite3_open(databaseFile.c_str(), &database);
 
-	if (result) {
+	if (result != SQLITE_OK) {
 		abort();
 		throw cRuntimeError("Unable to open database %s", databaseFile.c_str());
 	} else {
@@ -37,6 +38,15 @@ SqliteDatabaseHandler::SqliteDatabaseHandler() {
 	}
 
 	// Prepare statements
+	uploadDatarateStatement = NULL;
+	uploadDelayStatement = NULL;
+	downloadDatarateStatement = NULL;
+	downloadDelayStatement = NULL;
+
+	uploadDatarateStatementEdge = NULL;
+	uploadDelayStatementEdge = NULL;
+	downloadDatarateStatementEdge = NULL;
+	downloadDelayStatementEdge = NULL;
 
 	// Coord based
 	// Upload datarate

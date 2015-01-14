@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libtbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I/home/bialon/workspace/omnetpp-federate/src/mob -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/util -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -lproj -lsqlite3 -linet -KINETMANET_PROJ=../../inetmanet
+#  opp_makemake -f --deep --make-so -O out -I/home/bialon/workspace/omnetpp-federate/src/mob -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/util -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -I../../inetmanet/src/applications/udpapp -I../../inetmanet/src/applications/tcpapp -I../../omnetpp-federate/src/msg -I../../inetmanet/src/mobility -I../../inetmanet/src -L../../inetmanet/out/$$\(CONFIGNAME\)/src -lproj -lsqlite3 -linet -KINETMANET_PROJ=../../inetmanet -KOMNETPP_FEDERATE_PROJ=../../omnetpp-federate
 #
 
 # Name of target to be created (-o option)
@@ -10,7 +10,7 @@ TARGET = libtbus-vsimrti$(SHARED_LIB_SUFFIX)
 
 # C++ include paths (with -I)
 INCLUDE_PATH = \
-    -I/home/bialon/workspace/omnetpp-federate/src/mob \
+    -I$(OMNETPP_FEDERATE_PROJ)/src/mob \
     -I../../inetmanet/src/networklayer/arp \
     -I../../inetmanet/src/transport/sctp \
     -I../../inetmanet/src/transport/contract \
@@ -38,6 +38,11 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/networklayer/manetrouting/base \
     -I../../inetmanet/src/networklayer/mpls \
     -I../../inetmanet/src/linklayer/contract \
+    -I../../inetmanet/src/applications/udpapp \
+    -I../../inetmanet/src/applications/tcpapp \
+    -I../../omnetpp-federate/src/msg \
+    -I../../inetmanet/src/mobility \
+    -I../../inetmanet/src \
     -I. \
     -Idatabase \
     -Idatabase/converter \
@@ -46,6 +51,7 @@ INCLUDE_PATH = \
     -Ilinklayer/radio \
     -Ilinklayer/radio/inet \
     -Ilinklayer/radio/mobile \
+    -Ined \
     -Inodes \
     -Inodes/inet \
     -Inodes/mobile \
@@ -61,7 +67,6 @@ INCLUDE_PATH = \
     -Iqueues/implementation/test/datarate \
     -Iqueues/implementation/test/delay \
     -Iqueues/implementation/test/ned \
-    -Iqueues/ned \
     -Iqueues/upload \
     -Iworld
 
@@ -112,6 +117,7 @@ MSGFILES = \
 
 # Other makefile variables (-K)
 INETMANET_PROJ=../../inetmanet
+OMNETPP_FEDERATE_PROJ=../../omnetpp-federate
 
 #------------------------------------------------------------------------------
 
@@ -193,6 +199,7 @@ clean:
 	$(Q)-rm -f linklayer/radio/*_m.cc linklayer/radio/*_m.h
 	$(Q)-rm -f linklayer/radio/inet/*_m.cc linklayer/radio/inet/*_m.h
 	$(Q)-rm -f linklayer/radio/mobile/*_m.cc linklayer/radio/mobile/*_m.h
+	$(Q)-rm -f ned/*_m.cc ned/*_m.h
 	$(Q)-rm -f nodes/*_m.cc nodes/*_m.h
 	$(Q)-rm -f nodes/inet/*_m.cc nodes/inet/*_m.h
 	$(Q)-rm -f nodes/mobile/*_m.cc nodes/mobile/*_m.h
@@ -208,7 +215,6 @@ clean:
 	$(Q)-rm -f queues/implementation/test/datarate/*_m.cc queues/implementation/test/datarate/*_m.h
 	$(Q)-rm -f queues/implementation/test/delay/*_m.cc queues/implementation/test/delay/*_m.h
 	$(Q)-rm -f queues/implementation/test/ned/*_m.cc queues/implementation/test/ned/*_m.h
-	$(Q)-rm -f queues/ned/*_m.cc queues/ned/*_m.h
 	$(Q)-rm -f queues/upload/*_m.cc queues/upload/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
 
@@ -217,7 +223,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/ned/*.cc queues/upload/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
@@ -360,6 +366,7 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
+	$(OMNETPP_FEDERATE_PROJ)/src/mob/VSimRTIExtendedMobilityNode.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
@@ -491,6 +498,7 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	$(OMNETPP_FEDERATE_PROJ)/src/msg/VSimRTIAppPacket_m.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \

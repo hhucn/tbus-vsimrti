@@ -73,9 +73,12 @@ void TbusCoordinateConverter::init(const char* initString) {
 }
 
 /**
- * Empty destructor.
+ * Free projection objects.
  */
-TbusCoordinateConverter::~TbusCoordinateConverter() {}
+TbusCoordinateConverter::~TbusCoordinateConverter() {
+	pj_free(projLatlong);
+	pj_free(projMercator);
+}
 
 /**
  * Translates coordinates from projection defined by initString to latitude/longitude values.

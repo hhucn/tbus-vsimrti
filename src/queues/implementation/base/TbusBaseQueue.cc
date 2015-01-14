@@ -141,7 +141,7 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
  */
 template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 	Enter_Method("updateValue()");
-	if (values.front() != newValue) {
+	if (values.empty() || values.front() != newValue) {
 		// Clear old values
 		if (queue.isEmpty()) {
 			values.clear();
@@ -149,8 +149,6 @@ template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 
 		// Store new value
 		values.push_front(newValue);
-
-		EV << this->getName() << ": Updated value at " << simTime() << std::endl;
 
 		// If there are ongoing transmissions, update their earliest deliveries
 		if (!queue.isEmpty()) {

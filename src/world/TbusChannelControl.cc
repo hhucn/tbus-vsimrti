@@ -22,7 +22,8 @@
 #include "InterfaceEntry.h"
 #include "IPv4InterfaceData.h"
 #include "IPDatagram_m.h"
-#include "TbusRadioPHY.h"
+#include "TbusMobilePHY.h"
+#include "VSimRTIAppPacket_m.h"
 #include <map>
 
 Define_Module(TbusChannelControl);
@@ -30,8 +31,7 @@ Define_Module(TbusChannelControl);
 /**
  * Empty constructor
  */
-TbusChannelControl::TbusChannelControl() {
-}
+TbusChannelControl::TbusChannelControl() {}
 
 /**
  * Empty destructor
@@ -91,10 +91,12 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 	Enter_Method_Silent();
 	take(msg);
 
-	IPDatagram* packet = check_and_cast<IPDatagram*>(msg);
+	// We only support VSimRTIAppPacket from now on
+	//IPDatagram* packet = check_and_cast<IPDatagram*>(msg);
+	VSimRTIAppPacket* packet = check_and_cast<VSimRTIAppPacket*>(msg);
 
 	if (packet) {
-		IPAddress ip = packet->getDestAddress();
+		IPAddress ip = packet->getDestAddr();
 
 		if (ip == IPAddress::ALLONES_ADDRESS) {
 			// Broadcast
@@ -107,11 +109,14 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 			}
 		} else {
 			// We suppose unicast here
-			EV << "Unicasting message " << msg->getFullName() << endl;
 
-			ChannelControl::HostRef destinationHost = hostMap.find(ip)->second;
-
-			sendDirect(msg->dup(), destinationHost->radioInGate);
+			ip2hostMap::iterator dest = hostMap.find(ip);
+			if (dest == hostMap.end()) {
+				EV << "ERROR: Cannot find host with IP address " << ip << ", discarding packet" << endl;
+			} else {
+				EV << "Unicasting message " << msg->getFullName() << " to " << ip << endl;
+				sendDirect(msg->dup(), dest->second->radioInGate);
+			}
 		}
 	} else {
 		throw cRuntimeError("Tbus Channel Control received non-IPDatagram packet!");
@@ -128,5 +133,4 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
  */
 void TbusChannelControl::updateHostPosition(HostRef h, const Coord& pos) {
     ChannelControl::updateHostPosition(h, pos);
-    EV << "New Host Position (" << pos.x << "," << pos.y << ") for host " << h->host->getFullName() << std::endl;
 }

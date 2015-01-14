@@ -21,9 +21,9 @@
 #include "ccompoundmodule.h"
 
 /**
- * A TBUS router node.
+ * A TBUS inet node.
  */
-class TbusRouterNode : public cCompoundModule {
+class TbusInetNode : public cCompoundModule {
 	private:
 		int channelInGate; ///< Channel input gate id
 		int channelOutGate; ////< Channel output gate id
@@ -33,8 +33,8 @@ class TbusRouterNode : public cCompoundModule {
 		int upperOutGate; ///< Upper layer output gate id
 
 	public:
-		TbusRouterNode();
-		virtual ~TbusRouterNode();
+		TbusInetNode();
+		virtual ~TbusInetNode();
 
 		void initialize(int stage);
 		void handleMessage(cMessage* msg);

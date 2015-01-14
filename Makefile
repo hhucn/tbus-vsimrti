@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for tbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --nolink -O out -d src -X. -L../inetmanet/out/$$\(CONFIGNAME\)/src -L./out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../inetmanet
+#  opp_makemake -f --deep --nolink -O out -d src -X. -I/home/bialon/workspace/omnetpp-federate/src/msg -L../inetmanet/out/$$\(CONFIGNAME\)/src -L./out/$$\(CONFIGNAME\)/src -linet -KINETMANET_PROJ=../inetmanet -KOMNETPP_FEDERATE_PROJ=../omnetpp-federate
 #
 
 # Output directory
@@ -12,6 +12,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Other makefile variables (-K)
 INETMANET_PROJ=../inetmanet
+OMNETPP_FEDERATE_PROJ=../omnetpp-federate
 
 #------------------------------------------------------------------------------
 

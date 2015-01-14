@@ -50,6 +50,7 @@ void TbusQueueControl::initialize() {
  * Then the new values are updated on the belonging queue.
  *
  * @param newCoords The new node position
+ * @deprecated Use edge and position instead
  */
 void TbusQueueControl::updateQueues(const Coord& newCoords) {
 	// Act like this is part of our PHY layer
@@ -57,7 +58,7 @@ void TbusQueueControl::updateQueues(const Coord& newCoords) {
 
 	Coord translated = converter->translate(&newCoords);
 
-	EV << "TbusQueueControl updating queues for coordinates " << newCoords << " (" << translated << ")" << endl;
+	EV << "TbusQueueControl updating queues for coordinates " << newCoords << " (" << translated << ")\n";
 
 	cdrq->updateValue(dbHandler->getDownloadDelay(translated));
 	crrq->updateValue(dbHandler->getDownloadDatarate(translated));
@@ -76,7 +77,7 @@ void TbusQueueControl::updateQueues(const char* const roadId, float lanePos) {
 	// Act like this is part of out PHY layer
 	Enter_Method_Silent();
 
-	EV << "TbusQueueControl updating queues for road id " << roadId  << " and lane position " << lanePos << endl;
+	EV << "TbusQueueControl updating queues for road id " << roadId  << " and lane position " << lanePos << "\n";
 
 	cdrq->updateValue(dbHandler->getDownloadDelay(roadId, lanePos));
 	crrq->updateValue(dbHandler->getDownloadDatarate(roadId, lanePos));

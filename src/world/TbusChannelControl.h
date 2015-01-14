@@ -22,7 +22,7 @@
 #include "ChannelAccess.h"
 #include "IPAddress.h"
 
-class TbusRadioPHY;
+class TbusMobilePHY;
 
 /**
  * Provides a Control layer for NICs attached to the air interface
@@ -32,7 +32,8 @@ private:
 	int routerInGate; ///< Router input gate
 	int routerOutGate; ///< Router output gate
 
-	std::map<IPAddress, ChannelControl::HostRef> hostMap; ///< Map for mapping IP address to a host
+	typedef std::map<IPAddress, ChannelControl::HostRef> ip2hostMap; ///< Typedef of the IP to host hashmap
+	ip2hostMap hostMap; ///< Map for mapping IP address to a host
 
 	typedef std::pair<IPAddress, ChannelControl::HostRef> ip2host; ///< Tuple of IP address and host
 public:

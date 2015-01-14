@@ -36,7 +36,7 @@ public:
 	 * @return Singleton instance of type T
 	 */
 	template<class T> static DatabaseHandler* getInstance() {
-		static DatabaseHandler* instance = 0; ///< static singleton instance. Used for guaranteed memory cleanup.
+		static DatabaseHandler* instance = NULL; ///< static singleton instance. Used for guaranteed memory cleanup.
 
 		if (!instance) {
 			instance = dynamic_cast<DatabaseHandler*>(new T());

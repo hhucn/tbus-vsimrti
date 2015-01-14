@@ -15,31 +15,31 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#include "TbusRouterNode.h"
+#include "TbusInetNode.h"
 #include "omnetpp.h"
 
-Define_Module(TbusRouterNode)
+Define_Module(TbusInetNode)
 
 /**
  * Empty constructor.
  */
-TbusRouterNode::TbusRouterNode() {}
+TbusInetNode::TbusInetNode() {}
 
 /**
  * Empty destructor.
  */
-TbusRouterNode::~TbusRouterNode() {}
+TbusInetNode::~TbusInetNode() {}
 
 /**
  * Simulation initialization.
  * Currently empty.
  * @param stage Initialization stage
  */
-void TbusRouterNode::initialize(int stage) {}
+void TbusInetNode::initialize(int stage) {}
 
 /**
  * Message handling.
  * Currently empty.
  * @param msg Message to handle
  */
-void TbusRouterNode::handleMessage(cMessage* msg) {}
+void TbusInetNode::handleMessage(cMessage* msg) {}

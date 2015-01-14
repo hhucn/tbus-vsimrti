@@ -33,12 +33,10 @@ TbusCDRQ::TbusCDRQ() : TbusDelayQueue() {
  */
 void TbusCDRQ::updateValue(TbusQueueDelayValue* newValue) {
 	Enter_Method("updateValue()");
-	if (values.front() != newValue) {
+	if (values.empty() || values.front() != newValue) {
 		// Store only new value
 		delete values[0];
 		values[0] = newValue;
-
-		EV << this->getName() << ": Updated value at " << simTime() << std::endl;
 
 		// No update on ongoing transmissions, because we simply use the value as the packet arrives
 	} else {
