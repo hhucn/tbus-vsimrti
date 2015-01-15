@@ -1,6 +1,4 @@
 //
-// (c) 2014 Raphael Bialon <Raphael.Bialon@hhu.de>
-//
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU Lesser General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,37 +13,33 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#include "TbusMobileMAC.h"
-#include "IInterfaceTable.h"
-#include "InterfaceTableAccess.h"
-#include "INETDefs.h"
-#include "opp_utils.h"
-#include "IPAddress.h"
-#include "IPv4InterfaceData.h"
-#include "RoutingTableAccess.h"
-#include "IRoutingTable.h"
-#include "IPRoute.h"
+#include "TbusInetMAC.h"
 #include "IpAddressHelper.h"
+#include "IInterfaceTable.h"
+#include "InterfaceTable.h"
+#include "InterfaceTableAccess.h"
+#include "RoutingTableAccess.h"
+#include "IPv4InterfaceData.h"
 
-Define_Module(TbusMobileMAC);
+Define_Module(TbusInetMAC)
 
 /**
- * Empty constructor.
+ * Empty constructor
  */
-TbusMobileMAC::TbusMobileMAC() {}
+TbusInetMAC::TbusInetMAC() {}
 
 /**
- * Empty destructor.
+ * Empty destructor
  */
-TbusMobileMAC::~TbusMobileMAC() {}
+TbusInetMAC::~TbusInetMAC() {}
 
 /**
- * Add TBus NIC to interface table.
+* Add TBus NIC to interface table.
  * - Stage 0: MAC address is generated, assigned and added to interface table.
  * - Stage 1: IP address is generated, assigned and added to routing table.
  * @param stage Initialization stage
  */
-void TbusMobileMAC::initialize(int stage) {
+void TbusInetMAC::initialize(int stage) {
 	if (stage == 0) {
 		interfaceEntry = new InterfaceEntry();
 		macAddress = MACAddress::generateAutoAddress();
@@ -73,7 +67,7 @@ void TbusMobileMAC::initialize(int stage) {
 		lowerLayerOut = findGate("lowerLayerOut");
 	} else if (stage == 2) {
 		// Set IP Address
-		interfaceEntry->ipv4Data()->setIPAddress(IpAddressHelper::getNextVehicleIpAddress());
+		interfaceEntry->ipv4Data()->setIPAddress(IpAddressHelper::getNextRsuIpAddress());
 		interfaceEntry->ipv4Data()->setNetmask(IPAddress::ALLONES_ADDRESS);
 
 		// Add default route
@@ -87,15 +81,10 @@ void TbusMobileMAC::initialize(int stage) {
 }
 
 /**
- * Handle incoming messages.
- * Control info is removed and message is sent to corresponding lower/upper layer.
- * @param msg Message to handle
+ * Forwards message msg to the next layer
+ * @param msg Message to forward
  */
-void TbusMobileMAC::handleMessage(cMessage* msg) {
-	cObject* controlInfo = msg->removeControlInfo();
-
-	EV << "removed control info " << controlInfo << std::endl;
-
+void TbusInetMAC::handleMessage(cMessage* msg) {
 	if (msg->arrivedOn(upperLayerIn)) {
 		send(msg, lowerLayerOut);
 	} else if (msg->arrivedOn(lowerLayerIn)) {

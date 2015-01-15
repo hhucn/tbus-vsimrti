@@ -91,7 +91,6 @@ OBJS = \
     $O/linklayer/radio/inet/TbusInetMAC.o \
     $O/linklayer/radio/mobile/TbusMobilePHY.o \
     $O/linklayer/radio/mobile/TbusMobileMAC.o \
-    $O/linklayer/radio/mobile/TbusMobileRadio.o \
     $O/linklayer/radio/mobile/TbusQueueControl.o \
     $O/nodes/inet/TbusInetNode.o \
     $O/nodes/mobile/TbusMobileNode.o \
@@ -337,8 +336,6 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
 	world/TbusChannelControl.h
-$O/linklayer/radio/mobile/TbusMobileRadio.o: linklayer/radio/mobile/TbusMobileRadio.cc \
-	linklayer/radio/mobile/TbusMobileRadio.h
 $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueControl.cc \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
