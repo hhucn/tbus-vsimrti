@@ -54,6 +54,9 @@ module TbusInetNode
         networkLayer: NetworkLayer {
             parameters:
                 proxyARP = false;
+                arp.globalARP = true;
+                ip.forceBroadcast = false;
+                ip.procDelay = 0s;
                 @display("p=182,150");
             gates:
                 ifIn[1];

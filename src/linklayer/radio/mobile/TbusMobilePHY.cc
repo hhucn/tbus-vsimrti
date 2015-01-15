@@ -39,7 +39,7 @@ TbusMobilePHY::~TbusMobilePHY() {}
 /**
  * Simulation initialization.
  * - Stage 0: Gate id assignment, subscribe to position updates, get references
- * - Stage 2: Register IP
+ * - Stage 3: Register IP
  * @param stage Init stage level
  */
 void TbusMobilePHY::initialize(int stage) {
@@ -54,7 +54,7 @@ void TbusMobilePHY::initialize(int stage) {
 
 		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
 		queueControl = ModuleAccess<TbusQueueControl>("queueControl").get();
-	} else if (stage == 2) {
+	} else if (stage == 3) {
 		// Register ip address at channel control
 		tbusCC->registerIP(myHostRef);
 	}

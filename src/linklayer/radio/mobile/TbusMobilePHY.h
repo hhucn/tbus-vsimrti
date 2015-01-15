@@ -46,7 +46,12 @@ public:
     virtual ~TbusMobilePHY();
 
     virtual void initialize(int stage);
-    virtual int numInitStages() const { return 3; }
+    /**
+     * Number of needed initialization stages.
+     * This module needs stage 0 and 3.
+     * @return 4
+     */
+    virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage* msg);
 
     virtual void receiveChangeNotification(int category, const cObject *details);

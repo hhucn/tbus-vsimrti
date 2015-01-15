@@ -79,8 +79,13 @@ void TbusQueueControl::updateQueues(const char* const roadId, float lanePos) {
 
 	EV << "TbusQueueControl updating queues for road id " << roadId  << " and lane position " << lanePos << "\n";
 
-	cdrq->updateValue(dbHandler->getDownloadDelay(roadId, lanePos));
-	crrq->updateValue(dbHandler->getDownloadDatarate(roadId, lanePos));
-	cdsq->updateValue(dbHandler->getUploadDelay(roadId, lanePos));
-	crsq->updateValue(dbHandler->getUploadDatarate(roadId, lanePos));
+//	cdrq->updateValue(dbHandler->getDownloadDelay(roadId, lanePos));
+//	crrq->updateValue(dbHandler->getDownloadDatarate(roadId, lanePos));
+//	cdsq->updateValue(dbHandler->getUploadDelay(roadId, lanePos));
+//	crsq->updateValue(dbHandler->getUploadDatarate(roadId, lanePos));
+
+	cdrq->updateValue(dbHandler->getDownloadDelay("roadId", lanePos));
+	crrq->updateValue(dbHandler->getDownloadDatarate("roadId", lanePos));
+	cdsq->updateValue(dbHandler->getUploadDelay("roadId", lanePos));
+	crsq->updateValue(dbHandler->getUploadDatarate("roadId", lanePos));
 }

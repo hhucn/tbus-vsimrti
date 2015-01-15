@@ -43,7 +43,7 @@ void TbusInetPHY::initialize(int stage) {
 		radioIn 		= findGate("radioIn");
 
 		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
-	} else if (stage == 2) {
+	} else if (stage == 3) {
 		// Register ip address at channel control
 		tbusCC->registerIP(myHostRef);
 	}

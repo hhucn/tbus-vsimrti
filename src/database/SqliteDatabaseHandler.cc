@@ -259,7 +259,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const char* con
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_NSEC_TO_SEC;
+		result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(uploadDatarateStatementEdge, 1);
 	}
 
@@ -321,7 +321,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const char* c
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_NSEC_TO_SEC;
+		result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(downloadDatarateStatementEdge, 1);
 	}
 

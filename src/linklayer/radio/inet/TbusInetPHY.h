@@ -39,10 +39,10 @@ class TbusInetPHY : public ChannelAccess {
 
 		virtual void initialize(int stage);
 		/**
-		 * Number of initialization stages. This class needs stage 0 and 2.
+		 * Number of initialization stages. This class needs stage 0 and 3.
 		 * @return 3
 		 */
-		virtual int numInitStages() const { return 3; }
+		virtual int numInitStages() const { return 4; }
 		virtual void handleMessage(cMessage* msg);
 };
 

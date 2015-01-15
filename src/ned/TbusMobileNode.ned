@@ -54,7 +54,7 @@ module TbusMobileNode {
         networkLayer: NetworkLayer {
             parameters:
                 proxyARP = true;
-                arp.globalARP = false;
+                arp.globalARP = true;
                 ip.forceBroadcast = false;
                 ip.procDelay = 0s;
                 @display("p=295,136");

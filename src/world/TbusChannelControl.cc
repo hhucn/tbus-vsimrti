@@ -68,9 +68,12 @@ void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
 
 	ASSERT2(ie != NULL, "No non-loopback interface found!");
 
-	hostMap.insert(ip2host(ie->ipv4Data()->getIPAddress(), hostRef));
-
-	EV << "Registered " << hostRef->host->getFullName() << " with address " << ie->ipv4Data()->getIPAddress() << endl;
+	bool result = hostMap.insert(ip2host(ie->ipv4Data()->getIPAddress(), hostRef)).second;
+	if (!result) {
+		EV << "ERROR: Could not register host " << hostRef->host->getFullName() << " to TbusChannelControl, this host will not receive any data" << endl;
+	} else {
+		EV << "Registered " << hostRef->host->getFullName() << " with address " << ie->ipv4Data()->getIPAddress() << endl;
+	}
 }
 
 /**
@@ -92,11 +95,11 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 	take(msg);
 
 	// We only support VSimRTIAppPacket from now on
-	//IPDatagram* packet = check_and_cast<IPDatagram*>(msg);
-	VSimRTIAppPacket* packet = check_and_cast<VSimRTIAppPacket*>(msg);
+	IPDatagram* packet = check_and_cast<IPDatagram*>(msg);
+//	VSimRTIAppPacket* packet = check_and_cast<VSimRTIAppPacket*>(msg);
 
 	if (packet) {
-		IPAddress ip = packet->getDestAddr();
+		IPAddress ip = packet->getDestAddress();
 
 		if (ip == IPAddress::ALLONES_ADDRESS) {
 			// Broadcast
@@ -109,7 +112,6 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 			}
 		} else {
 			// We suppose unicast here
-
 			ip2hostMap::iterator dest = hostMap.find(ip);
 			if (dest == hostMap.end()) {
 				EV << "ERROR: Cannot find host with IP address " << ip << ", discarding packet" << endl;
