@@ -1,5 +1,5 @@
 /*
- * IpAddressHelper.cpp
+ * IpAddressHelper.cc
  *
  *  Created on: 12.01.2015
  *      Author: bialon
@@ -34,6 +34,10 @@ IPRoute* IpAddressHelper::getDefaultRoute(InterfaceEntry* ie) {
 	return route;
 }
 
+/**
+ * Get the next unassigned vehicle ip address (That is, the next unassigned ip from range 0.0.0.0/8).
+ * @return An unassigned ip address
+ */
 IPAddress IpAddressHelper::getNextVehicleIpAddress() {
 	#define TBUS_VEH_SUBNET ((uint32_t) 0x00 << 24)
 
@@ -42,6 +46,10 @@ IPAddress IpAddressHelper::getNextVehicleIpAddress() {
 	return IPAddress(TBUS_CLEAR_FIRST_BYTE(ip++) | TBUS_VEH_SUBNET);
 }
 
+/**
+ * Get the next unassigned RSU ip address (That is, the next unassigned ip from range 1.0.0.0/8).
+ * @return An unassigned ip address
+ */
 IPAddress IpAddressHelper::getNextRsuIpAddress() {
 	#define TBUS_RSU_SUBNET ((uint32_t) 0x01 << 24)
 

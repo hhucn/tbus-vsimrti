@@ -15,10 +15,10 @@
 #define TBUS_NET_ID       IPAddress(0, 0, 0, 0) ///< VSimRTI only knows one Subnet, the WHOLE range
 #define TBUS_NET_MASK     IPAddress(0, 0, 0, 0) ///< Netmask of given subnet (The WHOLE IPv4 address range)
 
-#define TBUS_VEH_PREFIX "veh_"
-#define TBUS_RSU_PREFIX "rsu_"
+#define TBUS_VEH_PREFIX "veh_" ///< Vehicle name prefix
+#define TBUS_RSU_PREFIX "rsu_" ///< RSU name prefix
 
-#define TBUS_CLEAR_FIRST_BYTE(X) ((uint32_t) (0x00ffffff & X))
+#define TBUS_CLEAR_FIRST_BYTE(X) ((uint32_t) (0x00ffffff & X)) ///< Clears the first byte of the 32bit IP address X
 
 /**
  * Helper class for ip address assigning.
