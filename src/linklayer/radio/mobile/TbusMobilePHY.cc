@@ -20,6 +20,7 @@
 #include "TbusMobilePHY.h"
 #include "ModuleAccess.h"
 #include "TbusQueueControl.h"
+#include "TbusQueueControlInfo.h"
 
 Define_Module(TbusMobilePHY);
 
@@ -62,17 +63,24 @@ void TbusMobilePHY::initialize(int stage) {
 
 /**
  * Handle message from upper layer.
+ * Removes control info and forwards message.
  * @param msg Message to handle
  */
 void TbusMobilePHY::handleUpperMessage(cMessage* msg) {
+	// Remove control info
+	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(msg->removeControlInfo());
+	delete controlInfo;
+
 	sendToChannel(msg);
 }
 
 /**
  * Handle message from lower layer.
+ * Adds control info and forwards message.
  * @param msg Message to handle
  */
 void TbusMobilePHY::handleLowerMessage(cMessage* msg) {
+	msg->setControlInfo(new TbusQueueControlInfo());
 	send(msg, upperLayerOut);
 }
 

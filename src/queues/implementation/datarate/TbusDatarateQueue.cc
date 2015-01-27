@@ -51,12 +51,13 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 
 		if (values.size() > 1) {
 			// What time shall we use?
-			simtime_t starttime = std::max(values[1]->time.dbl(), controlInfo->getQueueArrival().dbl());
+			simtime_t starttime = SimTime(std::max(values[1]->time.inUnit(SIMTIME_NS), controlInfo->getHeadOfQueue().inUnit(SIMTIME_NS)), SIMTIME_NS);
 			simtime_t runtime = simTime() - starttime;
 
 			bitsSent += (int64) floor(runtime.dbl() * values[1]->datarate);
 		}
 
+		ASSERT2(bitsSent <= packet->getBitLength(), "Invalid amount of bits sent!");
 		delay = this->currentDatarateDelay(packet->getBitLength() - bitsSent);
 
 		// Add current time to delay
@@ -71,14 +72,12 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
  * Send the head of queue packet considering aggregated drop rates. Also clears the value deque for the next packet.
  */
 void TbusDatarateQueue::sendFrontOfQueue() {
-	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
-	cPacket* packet = queue.pop();
+	cPacket* packet = getAndRemoveHeadOfQueue();
 
-	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->removeControlInfo());
+	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
 	ASSERT2(controlInfo, "Invalid control info on packet!");
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
 	EV << "Dispatched packet " << packet << " after delay " << (simTime() - controlInfo->getQueueArrival()) << " (Entered Queue at " << controlInfo->getQueueArrival() << ")" << std::endl;
-	delete controlInfo;
 
 	// Check for drop
 	if (dblrand() >= this->currentLossProbability()) {
@@ -92,6 +91,9 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 
 	// Remove the previous value
 	TbusQueueDatarateValue* currentValue = new TbusQueueDatarateValue(*(values.front()));
+	for (std::deque<TbusQueueDatarateValue*>::iterator it = values.begin(); it != values.end(); ++it) {
+		delete *it;
+	}
 	values.clear();
 	values.push_back(currentValue);
 
@@ -116,7 +118,7 @@ double TbusDatarateQueue::currentLossProbability() {
 		rValueIterator it;
 		for (it = values.rbegin(); it != values.rend(); ++it) {
 			starttime = (*it)->time;
-			loss += (*it)->droprate * (endtime - starttime) / runtime;
+			loss += (*it)->droprate * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
 			endtime = starttime;
 		}
 	} else {
@@ -135,5 +137,7 @@ double TbusDatarateQueue::currentLossProbability() {
 simtime_t TbusDatarateQueue::currentDatarateDelay(int64_t bitLength) {
 	ASSERT2(!values.empty(), "Empty values array!");
 
-	return ((double) bitLength / values.front()->datarate);
+	std::cout << "Calculated delay " << (((double) bitLength) / values.front()->datarate) << " for packet length " << bitLength << " and datarate " << values.front()->datarate << endl;
+
+	return (((double) bitLength) / values.front()->datarate);
 }

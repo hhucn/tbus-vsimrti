@@ -23,11 +23,11 @@
 /**
  * MBit to Bit conversion, used by multiplication
  */
-#define TBUS_MBIT_TO_BIT	(1024*1024)
+#define TBUS_MBIT_TO_BIT	1024 //(1024*1024)
 /**
- * nanosecond to second conversion, used by multiplication
+ * Byte to bit conversion
  */
-#define TBUS_NSEC_TO_SEC	10e-9
+#define TBUS_BYTE_TO_BIT	8
 /**
  * Error macro if query returns anything but a row
  */

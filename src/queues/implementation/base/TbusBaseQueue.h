@@ -65,6 +65,7 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		virtual void calculateEarliestDeliveryForPacket(cPacket* packet) = 0;
 
 		virtual void sendFrontOfQueue();
+		cPacket* getAndRemoveHeadOfQueue();
 };
 
 #endif /* TBUSBASEQUEUE_H_ */

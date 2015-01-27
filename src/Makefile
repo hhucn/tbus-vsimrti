@@ -305,7 +305,8 @@ $O/linklayer/radio/mobile/TbusMobileMAC.o: linklayer/radio/mobile/TbusMobileMAC.
 	$(INETMANET_PROJ)/src/networklayer/ipv4/RoutingTableAccess.h \
 	$(INETMANET_PROJ)/src/util/opp_utils.h \
 	linklayer/helper/IpAddressHelper.h \
-	linklayer/radio/mobile/TbusMobileMAC.h
+	linklayer/radio/mobile/TbusMobileMAC.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h
 $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.cc \
 	$(INETMANET_PROJ)/src/base/BasicModule.h \
 	$(INETMANET_PROJ)/src/base/Coord.h \

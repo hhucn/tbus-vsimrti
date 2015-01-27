@@ -85,12 +85,10 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 }
 
 /**
- * Adds a TbusQueueControlInfo to the packet and inserts it into the queue, then starts the sending process (if there is none).
+ * Adds a packet to the queue, then starts the sending process (if there is none).
  * @param packet packet to add
  */
 template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
-	packet->setControlInfo(new TbusQueueControlInfo());
-
 	queue.insert(packet);
 	this->calculateEarliestDeliveryForPacket(packet);
 
@@ -122,17 +120,27 @@ template<class T> void TbusBaseQueue<T>::adaptSelfMessage() {
  * Also clears all but the current value.
  */
 template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
-	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
-	cPacket* packet = queue.pop();
+	cPacket* packet = getAndRemoveHeadOfQueue();
 
-	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->removeControlInfo());
+	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
 	ASSERT2(controlInfo, "Invalid control info on packet!");
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
-	delete controlInfo;
 
 	EV << this->getName() << ": dispatched packet " << packet << " at " << simTime() << std::endl;
 
 	send(packet, outGate);
+}
+
+template<class T> cPacket* TbusBaseQueue<T>::getAndRemoveHeadOfQueue() {
+	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
+	cPacket* packet = queue.pop();
+
+	// Update head of queue time on next packet (if there is any)
+	if (!queue.empty()) {
+		((TbusQueueControlInfo*) queue.front()->getControlInfo())->setHeadOfQueue(simTime());
+	}
+
+	return packet;
 }
 
 /**

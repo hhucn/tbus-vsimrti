@@ -28,14 +28,19 @@ class TbusQueueControlInfo : public cObject {
 	private:
 		simtime_t queueArrival; ///< Simulation time of queue arrival
 		simtime_t earliestDelivery; ///< Simulation time of earliest queue dispatch
+		simtime_t headOfQueue; ///> Simulation time of head of queue
+
 	public:
 		TbusQueueControlInfo();
 		virtual ~TbusQueueControlInfo();
 
 		simtime_t getQueueArrival();
 		simtime_t getEarliestDelivery();
+		simtime_t getHeadOfQueue();
 
+		void setQueueArrival(simtime_t time);
 		void setEarliestDelivery(simtime_t time);
+		void setHeadOfQueue(simtime_t time);
 };
 
 #endif /* TBUSQUEUECONTROLINFO_H_ */

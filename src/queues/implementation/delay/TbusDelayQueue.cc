@@ -59,6 +59,8 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime
 	simtime_t delayGone = simTime() - controlInfo->getQueueArrival();
 	simtime_t delayWait = delay - delayGone;
 
+	EV << this->getName() << ": Delay: " << delay << ", delayGone: " << delayGone << ", delayWait: " << delayWait << endl;
+
 	if (delayWait < simtime_t()) {
 		controlInfo->setEarliestDelivery(simTime());
 	} else {

@@ -16,6 +16,7 @@
 //
 
 #include "TbusMobileMAC.h"
+#include "TbusQueueControlInfo.h"
 #include "IInterfaceTable.h"
 #include "InterfaceTableAccess.h"
 #include "INETDefs.h"
@@ -97,8 +98,14 @@ void TbusMobileMAC::handleMessage(cMessage* msg) {
 	EV << "removed control info " << controlInfo << std::endl;
 
 	if (msg->arrivedOn(upperLayerIn)) {
+		// Add control info
+		msg->setControlInfo(new TbusQueueControlInfo());
 		send(msg, lowerLayerOut);
 	} else if (msg->arrivedOn(lowerLayerIn)) {
+		// Remove control info
+		TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(msg->removeControlInfo());
+		delete controlInfo;
+
 		send(msg, upperLayerOut);
 	}
 }

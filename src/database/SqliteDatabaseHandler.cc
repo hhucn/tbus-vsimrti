@@ -138,7 +138,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& po
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * TBUS_MBIT_TO_BIT;
+		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(uploadDatarateStatement, 1);
 	}
 
@@ -168,7 +168,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
 		result->delay = 0.0;
 	} else {
 		// Retrieve values from database
-		result->delay = sqlite3_column_double(uploadDelayStatement, 0) * TBUS_NSEC_TO_SEC;
+		result->delay = SimTime(sqlite3_column_int64(uploadDelayStatement, 0), SIMTIME_NS);
 	}
 
 	return result;
@@ -198,7 +198,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& 
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(downloadDatarateStatement, 0) * TBUS_MBIT_TO_BIT;
+		result->datarate = sqlite3_column_double(downloadDatarateStatement, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(downloadDatarateStatement, 1);
 	}
 
@@ -225,10 +225,10 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, s
 	if (sqlite3_step(downloadDelayStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->delay = 0.0;
+		result->delay = 0;
 	} else {
 		// Retrieve values from database
-		result->delay = sqlite3_column_double(downloadDelayStatement, 0) * TBUS_NSEC_TO_SEC;
+		result->delay = SimTime(sqlite3_column_int64(downloadDelayStatement, 0), SIMTIME_NS);
 	}
 
 	return result;
@@ -259,9 +259,11 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const char* con
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_MBIT_TO_BIT;
+		result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(uploadDatarateStatementEdge, 1);
 	}
+
+	EV << "Got upload datarate: " << result->datarate << "MBit/s" << endl;
 
 	return result;
 }
@@ -287,10 +289,10 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const char* const roa
 	if (sqlite3_step(uploadDelayStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->delay = 0.0;
+		result->delay = 0;
 	} else {
 		// Retrieve value from database
-		result->delay = sqlite3_column_double(uploadDelayStatementEdge, 0) * TBUS_NSEC_TO_SEC;
+		result->delay = SimTime(sqlite3_column_int64(uploadDelayStatementEdge, 0), SIMTIME_NS);
 	}
 
 	return result;
@@ -321,7 +323,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const char* c
 		result->droprate = 0.0;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_MBIT_TO_BIT;
+		result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(downloadDatarateStatementEdge, 1);
 	}
 
@@ -349,10 +351,10 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const char* const r
 	if (sqlite3_step(downloadDelayStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->delay = 0.0;
+		result->delay = 0;
 	} else {
 		// Retrieve value from database
-		result->delay = sqlite3_column_double(downloadDelayStatementEdge, 0) * TBUS_NSEC_TO_SEC;
+		result->delay = SimTime(sqlite3_column_int64(downloadDelayStatementEdge, 0), SIMTIME_NS);
 	}
 
 	return result;
