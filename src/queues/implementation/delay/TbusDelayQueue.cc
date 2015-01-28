@@ -61,13 +61,16 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime
 
 	EV << this->getName() << ": Delay: " << delay << ", delayGone: " << delayGone << ", delayWait: " << delayWait << endl;
 
-	if (delayWait < simtime_t()) {
+	if (delayWait < SIMTIME_ZERO) {
 		controlInfo->setEarliestDelivery(simTime());
 	} else {
 		controlInfo->setEarliestDelivery(simTime() + delayWait);
 	}
-
 	EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ")" << std::endl;
+	std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ")" << std::endl;
+
+	// Adapt our self message
+	adaptSelfMessage();
 }
 
 /**
@@ -87,7 +90,7 @@ simtime_t TbusDelayQueue::currentDelay() {
 		rValueIterator it;
 		for (it = values.rbegin(); it != values.rend(); ++it) {
 			starttime = (*it)->time;
-			delay += (*it)->delay.dbl() * (endtime - starttime) / runtime;
+			delay += (*it)->delay.dbl() * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
 			endtime = starttime;
 		}
 	} else {

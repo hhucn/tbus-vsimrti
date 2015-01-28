@@ -70,14 +70,14 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 		this->sendFrontOfQueue();
 
 		//Only leave current value
-		T* currentValue(values.front());
-		values.clear();
+		T* currentValue = new T(*values.front());
+		clearAndDeleteValues();
 		values.push_front(currentValue);
 
 		// Then check the next one and/or reschedule
 		if (queue.length() > 0) {
 			// Re-calculate earliest deliveries
-			this->adaptSelfMessage();
+			calculateEarliestDeliveries();
 		}
 	} else {
 		throw cRuntimeError("Received invalid self message!");
@@ -89,11 +89,13 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
  * @param packet packet to add
  */
 template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
+	// Update queue arrival time
+	((TbusQueueControlInfo*) packet->getControlInfo())->setQueueArrival(simTime());
 	queue.insert(packet);
 	this->calculateEarliestDeliveryForPacket(packet);
 
 	if (!selfMessage.isScheduled()) {
-		scheduleAt(((TbusQueueControlInfo*) packet->getControlInfo())->getEarliestDelivery(), &selfMessage);
+		adaptSelfMessage();
 	}
 }
 
@@ -102,17 +104,18 @@ template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
  */
 template<class T> void TbusBaseQueue<T>::adaptSelfMessage() {
 	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
-
-	if (selfMessage.isScheduled()) {
-		cancelEvent(&selfMessage);
-	}
-
-	this->calculateEarliestDeliveries();
-
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(queue.front()->getControlInfo());
 	ASSERT2(controlInfo, "Invalid control info on packet!");
 
-	scheduleAt(controlInfo->getEarliestDelivery(), &selfMessage);
+	if (selfMessage.getArrivalTime() != controlInfo->getEarliestDelivery()) {
+		if (selfMessage.isScheduled()) {
+			cancelEvent(&selfMessage);
+		}
+
+		// Take now or a future time as next schedule
+		simtime_t nextSchedule = SimTime(std::max(simTime().inUnit(SIMTIME_NS), controlInfo->getEarliestDelivery().inUnit(SIMTIME_NS)), SIMTIME_NS);
+		scheduleAt(nextSchedule, &selfMessage);
+	}
 }
 
 /**
@@ -126,7 +129,7 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
 	ASSERT2(controlInfo, "Invalid control info on packet!");
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
 
-	EV << this->getName() << ": dispatched packet " << packet << " at " << simTime() << std::endl;
+	EV << this->getName() << ": dispatching packet " << packet << " at " << simTime() << std::endl;
 
 	send(packet, outGate);
 }
@@ -152,7 +155,7 @@ template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 	if (values.empty() || values.front() != newValue) {
 		// Clear old values
 		if (queue.isEmpty()) {
-			values.clear();
+			clearAndDeleteValues();
 		}
 
 		// Store new value
@@ -160,11 +163,21 @@ template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 
 		// If there are ongoing transmissions, update their earliest deliveries
 		if (!queue.isEmpty()) {
-			this->adaptSelfMessage();
+			calculateEarliestDeliveries();
 		}
 	} else {
 		delete newValue;
 	}
+}
+
+/**
+ * Deletes all value objects and clears the deque
+ */
+template<class T> void TbusBaseQueue<T>::clearAndDeleteValues() {
+	for (valueIterator it = values.begin(); it != values.end(); ++it) {
+		delete *it;
+	}
+	values.clear();
 }
 
 /**
@@ -178,6 +191,7 @@ template<class T> void TbusBaseQueue<T>::finish() {
 			cancelEvent(&selfMessage);
 		}
 
+		clearAndDeleteValues();
 		queue.clear();
 }
 

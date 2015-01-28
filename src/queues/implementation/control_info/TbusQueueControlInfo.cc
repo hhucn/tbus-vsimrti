@@ -18,9 +18,9 @@
 #include <control_info/TbusQueueControlInfo.h>
 
 /**
- * Saves simulation time on creation in queueArrival
+ * Empty constructor
  */
-TbusQueueControlInfo::TbusQueueControlInfo() : queueArrival(simTime()) {}
+TbusQueueControlInfo::TbusQueueControlInfo() {}
 
 /**
  * Empty destructor
@@ -36,7 +36,7 @@ simtime_t TbusQueueControlInfo::getEarliestDelivery() {
 }
 
 /**
- * Arrival time at queue (=> Object creation time)
+ * Arrival time at queue
  * @return arrival time
  */
 simtime_t TbusQueueControlInfo::getQueueArrival() {

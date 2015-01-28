@@ -46,7 +46,6 @@ void TbusCDSQ::updateValue(TbusQueueDelayValue* newValue) {
 		delete values[0];
 		values[0] = newValue;
 	} else {
-		// Cleanup
 		delete newValue;
 	}
 }
@@ -112,12 +111,12 @@ void TbusCDSQ::handleMessage(cMessage* msg) {
 void TbusCDSQ::handleSelfMessage(cMessage* msg) {
 	if (strcmp(msg->getName(), TBUS_BASE_QUEUE_SELFMESSAGE) == 0) {
 		// First, send the front packet
-		this->sendFrontOfQueue();
+		sendFrontOfQueue();
 
 		// Then check the next one and/or reschedule
 		if (queue.length() > 0) {
-			// Re-calculate earliest deliveries
-			this->adaptSelfMessage();
+			// Adapt self message for next head of queue
+			adaptSelfMessage();
 		}
 	} else {
 		throw cRuntimeError("Received invalid self message!");

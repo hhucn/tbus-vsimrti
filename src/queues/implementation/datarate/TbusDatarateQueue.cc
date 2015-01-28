@@ -62,8 +62,10 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 
 		// Add current time to delay
 		controlInfo->setEarliestDelivery(simTime() + delay);
-
 		EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ")" << std::endl;
+		std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ")" << std::endl;
+		// Adapt our self message
+		adaptSelfMessage();
 	}
 }
 
@@ -91,10 +93,7 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 
 	// Remove the previous value
 	TbusQueueDatarateValue* currentValue = new TbusQueueDatarateValue(*(values.front()));
-	for (std::deque<TbusQueueDatarateValue*>::iterator it = values.begin(); it != values.end(); ++it) {
-		delete *it;
-	}
-	values.clear();
+	clearAndDeleteValues();
 	values.push_back(currentValue);
 
 	// Reset the bytes sent
@@ -136,8 +135,6 @@ double TbusDatarateQueue::currentLossProbability() {
  */
 simtime_t TbusDatarateQueue::currentDatarateDelay(int64_t bitLength) {
 	ASSERT2(!values.empty(), "Empty values array!");
-
-	std::cout << "Calculated delay " << (((double) bitLength) / values.front()->datarate) << " for packet length " << bitLength << " and datarate " << values.front()->datarate << endl;
 
 	return (((double) bitLength) / values.front()->datarate);
 }

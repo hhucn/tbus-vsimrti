@@ -57,6 +57,8 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		typedef typename std::deque<T*>::reverse_iterator rValueIterator; ///< Value deque reversed iterator
 		typedef typename std::deque<T*>::iterator valueIterator; ///< Value deque iterator
 
+		inline void clearAndDeleteValues();
+
 		virtual void handleSelfMessage(cMessage* msg);
 		virtual void addPacketToQueue(cPacket* packet);
 
