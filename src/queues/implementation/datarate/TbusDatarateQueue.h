@@ -37,7 +37,7 @@ class TbusDatarateQueue : public TbusBaseQueue<TbusQueueDatarateValue> {
 
 		virtual void sendFrontOfQueue();
 
-		double inline currentLossProbability();
+		double inline currentLossProbability(simtime_t packetQueueArrivalTime);
 		simtime_t inline currentDatarateDelay(int64_t byteLength);
 };
 

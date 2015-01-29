@@ -23,11 +23,11 @@
 /**
  * MBit to Bit conversion, used by multiplication
  */
-#define TBUS_MBIT_TO_BIT	1024 //(1024*1024)
+#define TBUS_MBIT_TO_BIT	(1024.0) //(1024*1024)
 /**
- * Byte to bit conversion
+ * Byte to bit conversion, used by multiplication
  */
-#define TBUS_BYTE_TO_BIT	8
+#define TBUS_BYTE_TO_BIT	(8.0)
 /**
  * Error macro if query returns anything but a row
  */
@@ -100,7 +100,7 @@
  *		timestamp INTEGER NOT NULL,
  *		roadId TEXT,
  *		lanePos REAL,
- *		delay REAL
+ *		delay INTEGER
  * );
  *
  * CREATE TABLE download_delay (
@@ -108,7 +108,7 @@
  *		timestamp INTEGER NOT NULL,
  *		roadId TEXT,
  *		lanePos REAL,
- *		delay REAL
+ *		delay INTEGER
  * );
  * @endcode
  */

@@ -62,6 +62,7 @@ INCLUDE_PATH = \
     -Iqueues/implementation/control_info \
     -Iqueues/implementation/datarate \
     -Iqueues/implementation/delay \
+    -Iqueues/implementation/packetqueue \
     -Iqueues/implementation/test \
     -Iqueues/implementation/test/base \
     -Iqueues/implementation/test/datarate \
@@ -102,6 +103,7 @@ OBJS = \
     $O/queues/implementation/datarate/TbusQueueDatarateValue.o \
     $O/queues/implementation/delay/TbusDelayQueue.o \
     $O/queues/implementation/delay/TbusQueueDelayValue.o \
+    $O/queues/implementation/packetqueue/TbusPacketQueue.o \
     $O/queues/implementation/test/base/TbusTestBase.o \
     $O/queues/implementation/test/datarate/TbusDatarateQueueTester.o \
     $O/queues/implementation/test/delay/TbusDelayQueueTester.o \
@@ -209,6 +211,7 @@ clean:
 	$(Q)-rm -f queues/implementation/control_info/*_m.cc queues/implementation/control_info/*_m.h
 	$(Q)-rm -f queues/implementation/datarate/*_m.cc queues/implementation/datarate/*_m.h
 	$(Q)-rm -f queues/implementation/delay/*_m.cc queues/implementation/delay/*_m.h
+	$(Q)-rm -f queues/implementation/packetqueue/*_m.cc queues/implementation/packetqueue/*_m.h
 	$(Q)-rm -f queues/implementation/test/*_m.cc queues/implementation/test/*_m.h
 	$(Q)-rm -f queues/implementation/test/base/*_m.cc queues/implementation/test/base/*_m.h
 	$(Q)-rm -f queues/implementation/test/datarate/*_m.cc queues/implementation/test/datarate/*_m.h
@@ -222,7 +225,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
@@ -334,6 +337,7 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
 	world/TbusChannelControl.h
@@ -355,6 +359,7 @@ $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueCo
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h
 $O/nodes/inet/TbusInetNode.o: nodes/inet/TbusInetNode.cc \
@@ -378,6 +383,7 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h
 $O/queues/download/TbusCDRQ.o: queues/download/TbusCDRQ.cc \
@@ -386,20 +392,23 @@ $O/queues/download/TbusCDRQ.o: queues/download/TbusCDRQ.cc \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/delay/TbusDelayQueue.h \
-	queues/implementation/delay/TbusQueueDelayValue.h
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/download/TbusCRRQ.o: queues/download/TbusCRRQ.cc \
 	queues/download/TbusCRRQ.h \
 	queues/implementation/base/TbusBaseQueue.h \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/datarate/TbusDatarateQueue.h \
-	queues/implementation/datarate/TbusQueueDatarateValue.h
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/implementation/base/TbusBaseQueue.o: queues/implementation/base/TbusBaseQueue.cc \
 	queues/implementation/base/TbusBaseQueue.h \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
-	queues/implementation/delay/TbusQueueDelayValue.h
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/implementation/control_info/TbusQueueControlInfo.o: queues/implementation/control_info/TbusQueueControlInfo.cc \
 	queues/implementation/control_info/TbusQueueControlInfo.h
 $O/queues/implementation/datarate/TbusDatarateQueue.o: queues/implementation/datarate/TbusDatarateQueue.cc \
@@ -407,7 +416,8 @@ $O/queues/implementation/datarate/TbusDatarateQueue.o: queues/implementation/dat
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/datarate/TbusDatarateQueue.h \
-	queues/implementation/datarate/TbusQueueDatarateValue.h
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/implementation/datarate/TbusQueueDatarateValue.o: queues/implementation/datarate/TbusQueueDatarateValue.cc \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/datarate/TbusQueueDatarateValue.h
@@ -416,10 +426,14 @@ $O/queues/implementation/delay/TbusDelayQueue.o: queues/implementation/delay/Tbu
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/delay/TbusDelayQueue.h \
-	queues/implementation/delay/TbusQueueDelayValue.h
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/implementation/delay/TbusQueueDelayValue.o: queues/implementation/delay/TbusQueueDelayValue.cc \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h
+$O/queues/implementation/packetqueue/TbusPacketQueue.o: queues/implementation/packetqueue/TbusPacketQueue.cc \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/implementation/test/base/TbusTestBase.o: queues/implementation/test/base/TbusTestBase.cc \
 	queues/implementation/base/TbusBaseQueue.h \
 	queues/implementation/base/TbusQueueValue.h \
@@ -428,6 +442,7 @@ $O/queues/implementation/test/base/TbusTestBase.o: queues/implementation/test/ba
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/implementation/test/base/TbusTestBase.h \
 	queues/implementation/test/datarate/TbusDatarateQueueTester.h \
 	queues/implementation/test/delay/TbusDelayQueueTester.h
@@ -441,6 +456,7 @@ $O/queues/implementation/test/datarate/TbusDatarateQueueTester.o: queues/impleme
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/datarate/TbusDatarateQueue.h \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/implementation/test/base/TbusTestBase.h \
 	queues/implementation/test/base/testPacket_m.h \
 	queues/implementation/test/datarate/TbusDatarateQueueTester.h
@@ -452,6 +468,7 @@ $O/queues/implementation/test/delay/TbusDelayQueueTester.o: queues/implementatio
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/implementation/test/base/TbusTestBase.h \
 	queues/implementation/test/base/testPacket_m.h \
 	queues/implementation/test/delay/TbusDelayQueueTester.h
@@ -461,6 +478,7 @@ $O/queues/upload/TbusCDSQ.o: queues/upload/TbusCDSQ.cc \
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h
 $O/queues/upload/TbusCRSQ.o: queues/upload/TbusCRSQ.cc \
 	queues/implementation/base/TbusBaseQueue.h \
@@ -470,6 +488,7 @@ $O/queues/upload/TbusCRSQ.o: queues/upload/TbusCRSQ.cc \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h
 $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
@@ -510,6 +529,7 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusDelayQueue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
 	world/TbusChannelControl.h

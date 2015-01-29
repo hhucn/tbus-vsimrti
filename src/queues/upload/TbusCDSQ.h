@@ -23,6 +23,10 @@
 #ifndef TBUSCDSQ_H_
 #define TBUSCDSQ_H_
 
+
+#include "TbusDelayQueue.h"
+#include "TbusQueueDelayValue.h"
+
 /**
  * cMessage name for control messages to start saving incoming values.
  */
@@ -31,13 +35,6 @@
  * cMessage name for control messages to stop saving incoming values.
  */
 #define TBUS_DELAY_QUEUE_STOP_SAVE_VALUES "tbus.delay.queue.stop.save.values"
-/**
- * cMessage name for control messages to reset saved values.
- */
-#define TBUS_DELAY_QUEUE_RESET_VALUES "tbus.delay.queue.reset.values"
-
-#include "TbusDelayQueue.h"
-#include "TbusQueueDelayValue.h"
 
 /**
  * Client Delay Send Queue.
@@ -46,6 +43,7 @@
 class TbusCDSQ : public TbusDelayQueue {
 	private:
 		bool saveValues; ///< Store incoming values?
+		int64_t saveTime; ///< Starttime of stored values
 
 	public:
 		TbusCDSQ();
@@ -54,8 +52,12 @@ class TbusCDSQ : public TbusDelayQueue {
 		virtual void handleMessage(cMessage* msg);
 
 	protected:
+		virtual void addPacketToQueue(cPacket* packet);
+
 		virtual void handleSelfMessage(cMessage* msg);
 		virtual void calculateEarliestDeliveries();
+
+		virtual simtime_t currentDelay();
 };
 
 #endif /* TBUSCDSQ_H_ */

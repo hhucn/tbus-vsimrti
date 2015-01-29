@@ -20,6 +20,8 @@
 #include "TbusQueueDelayValue.h"
 #include "omnetpp.h"
 
+#include <algorithm>
+
 /**
  * Set up.
  * Instantiates selfMessage with name #TBUS_BASE_QUEUE_SELFMESSAGE
@@ -27,11 +29,10 @@
 template<class T> TbusBaseQueue<T>::TbusBaseQueue() : selfMessage(TBUS_BASE_QUEUE_SELFMESSAGE, 0) {}
 
 /**
- * Clean up.
+ * Empty destructor, clean up is done in finish()
+ * @see TbusBaseQueue<T>::finish()
  */
-template<class T> TbusBaseQueue<T>::~TbusBaseQueue() {
-	queue.clear();
-}
+template<class T> TbusBaseQueue<T>::~TbusBaseQueue() {}
 
 /**
  * Sets gate indices.
@@ -50,13 +51,7 @@ template<class T> void TbusBaseQueue<T>::handleMessage(cMessage* msg) {
 		this->handleSelfMessage(msg);
 	} else {
 		cPacket* packet = check_and_cast<cPacket*>(msg);
-
-		if (packet) {
-			this->addPacketToQueue(packet);
-		} else {
-			throw cRuntimeError("received invalid message - only self messages or packets accepted!");
-			delete msg;
-		}
+		addPacketToQueue(packet);
 	}
 }
 
@@ -70,9 +65,7 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 		this->sendFrontOfQueue();
 
 		//Only leave current value
-		T* currentValue = new T(*values.front());
-		clearAndDeleteValues();
-		values.push_front(currentValue);
+		clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
 
 		// Then check the next one and/or reschedule
 		if (queue.length() > 0) {
@@ -89,8 +82,8 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
  * @param packet packet to add
  */
 template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
-	// Update queue arrival time
-	((TbusQueueControlInfo*) packet->getControlInfo())->setQueueArrival(simTime());
+	std::cout << simTime() << " - " << this->getName() << ": Packet " << packet << " arrived (Already " << queue.length() << " packets enqueued)" << endl;
+
 	queue.insert(packet);
 	this->calculateEarliestDeliveryForPacket(packet);
 
@@ -105,7 +98,6 @@ template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
 template<class T> void TbusBaseQueue<T>::adaptSelfMessage() {
 	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(queue.front()->getControlInfo());
-	ASSERT2(controlInfo, "Invalid control info on packet!");
 
 	if (selfMessage.getArrivalTime() != controlInfo->getEarliestDelivery()) {
 		if (selfMessage.isScheduled()) {
@@ -123,27 +115,14 @@ template<class T> void TbusBaseQueue<T>::adaptSelfMessage() {
  * Also clears all but the current value.
  */
 template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
-	cPacket* packet = getAndRemoveHeadOfQueue();
+	cPacket* packet = queue.pop();
 
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
-	ASSERT2(controlInfo, "Invalid control info on packet!");
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
 
 	EV << this->getName() << ": dispatching packet " << packet << " at " << simTime() << std::endl;
 
 	send(packet, outGate);
-}
-
-template<class T> cPacket* TbusBaseQueue<T>::getAndRemoveHeadOfQueue() {
-	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
-	cPacket* packet = queue.pop();
-
-	// Update head of queue time on next packet (if there is any)
-	if (!queue.empty()) {
-		((TbusQueueControlInfo*) queue.front()->getControlInfo())->setHeadOfQueue(simTime());
-	}
-
-	return packet;
 }
 
 /**
@@ -170,14 +149,26 @@ template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 	}
 }
 
+template<class T> void deleteValue(T* value) {
+		delete value;
+}
+
 /**
  * Deletes all value objects and clears the deque
  */
-template<class T> void TbusBaseQueue<T>::clearAndDeleteValues() {
-	for (valueIterator it = values.begin(); it != values.end(); ++it) {
-		delete *it;
+template<class T> void TbusBaseQueue<T>::clearAndDeleteValues(const TbusClearMethod method) {
+	T* firstValue;
+	if (method == TBUS_CLEAR_ALL_EXCEPT_FRONT) {
+		firstValue = new T(*(values.front()));
 	}
+
+	// Remove all values and clear the values
+	std::for_each(values.begin(), values.end(), deleteValue<T>);
 	values.clear();
+
+	if (method == TBUS_CLEAR_ALL_EXCEPT_FRONT) {
+		values.push_front(firstValue);
+	}
 }
 
 /**

@@ -19,8 +19,8 @@
 #define TBUSBASEQUEUE_H_
 
 #include "csimplemodule.h"
-#include "cpacketqueue.h"
 #include "cmessage.h"
+#include "TbusPacketQueue.h"
 #include "TbusQueueControlInfo.h"
 #include "TbusQueueValue.h"
 
@@ -30,6 +30,11 @@
  * Self message name.
  */
 #define TBUS_BASE_QUEUE_SELFMESSAGE "tbus.base.queue.self.message"
+
+enum TbusClearMethod {
+	TBUS_CLEAR_ALL,
+	TBUS_CLEAR_ALL_EXCEPT_FRONT
+};
 
 /**
  * Base class for all TBUS queues.
@@ -47,7 +52,7 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		virtual void updateValue(T* newValue);
 
 	protected:
-		cPacketQueue queue; ///< The packet queue
+		TbusPacketQueue queue; ///< The packet queue
 		cMessage selfMessage; ///< Self message for timed events
 
 		int inGate; ///< Input gate id
@@ -57,7 +62,7 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		typedef typename std::deque<T*>::reverse_iterator rValueIterator; ///< Value deque reversed iterator
 		typedef typename std::deque<T*>::iterator valueIterator; ///< Value deque iterator
 
-		inline void clearAndDeleteValues();
+		inline void clearAndDeleteValues(const TbusClearMethod method = TBUS_CLEAR_ALL);
 
 		virtual void handleSelfMessage(cMessage* msg);
 		virtual void addPacketToQueue(cPacket* packet);

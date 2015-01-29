@@ -34,7 +34,7 @@ class TbusDelayQueue : public TbusBaseQueue<TbusQueueDelayValue> {
 		virtual void calculateEarliestDeliveryForPacket(cPacket* packet);
 		void calculateEarliestDeliveryForPacket(cPacket* packet, simtime_t delay);
 
-		simtime_t currentDelay();
+		virtual simtime_t currentDelay();
 };
 
 #endif /* TBUSDELAYQUEUE_H_ */

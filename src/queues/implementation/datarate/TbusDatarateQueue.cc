@@ -47,8 +47,8 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 
 		simtime_t delay;
 		TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
-		ASSERT2(controlInfo, "Invalid control info on packet!");
 
+		// If two values are present, subtract already sent bytes from bytes to send
 		if (values.size() > 1) {
 			// What time shall we use?
 			simtime_t starttime = SimTime(std::max(values[1]->time.inUnit(SIMTIME_NS), controlInfo->getHeadOfQueue().inUnit(SIMTIME_NS)), SIMTIME_NS);
@@ -63,7 +63,7 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 		// Add current time to delay
 		controlInfo->setEarliestDelivery(simTime() + delay);
 		EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ")" << std::endl;
-		std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ")" << std::endl;
+		std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ", Packet size: " << packet->getBitLength() << "bits, bits already send: " << bitsSent << ", current datarate: " << values.front()->datarate << ")" << std::endl;
 		// Adapt our self message
 		adaptSelfMessage();
 	}
@@ -74,15 +74,14 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
  * Send the head of queue packet considering aggregated drop rates. Also clears the value deque for the next packet.
  */
 void TbusDatarateQueue::sendFrontOfQueue() {
-	cPacket* packet = getAndRemoveHeadOfQueue();
+	cPacket* packet = queue.pop();
 
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
-	ASSERT2(controlInfo, "Invalid control info on packet!");
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
-	EV << "Dispatched packet " << packet << " after delay " << (simTime() - controlInfo->getQueueArrival()) << " (Entered Queue at " << controlInfo->getQueueArrival() << ")" << std::endl;
+	EV << "Dispatching packet " << packet << " after delay " << (simTime() - controlInfo->getQueueArrival()) << " (Entered Queue at " << controlInfo->getQueueArrival() << ")" << std::endl;
 
 	// Check for drop
-	if (dblrand() >= this->currentLossProbability()) {
+	if (dblrand() >= this->currentLossProbability(controlInfo->getQueueArrival())) {
 		// No drop
 		send(packet, outGate);
 	} else {
@@ -91,10 +90,8 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 		delete packet;
 	}
 
-	// Remove the previous value
-	TbusQueueDatarateValue* currentValue = new TbusQueueDatarateValue(*(values.front()));
-	clearAndDeleteValues();
-	values.push_back(currentValue);
+	// Remove all but the first values
+	clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
 
 	// Reset the bytes sent
 	bitsSent = 0;
@@ -102,27 +99,32 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 
 /**
  * Aggregates the droprate over saved values and weights them according their time of presence
+ * @param packetQueueArrivalTime Queue arrival time of the current packet to send
  * @return Aggregated weighted droprate
  */
-double TbusDatarateQueue::currentLossProbability() {
+double TbusDatarateQueue::currentLossProbability(simtime_t packetQueueArrivalTime) {
 	ASSERT2(!values.empty(), "Empty values array!");
 
-	double loss;
-	if (values.size() > 1) {
-		// Calculations according to/adapted from Tobias Krauthoffs work
-		simtime_t starttime;
-		simtime_t endtime = simTime();
-		simtime_t runtime = simTime() - values.back()->time;
+	double loss = 0.0;
+	int64_t now = simTime().inUnit(SIMTIME_NS);
+	int64_t queueArrival = packetQueueArrivalTime.inUnit(SIMTIME_NS);
+	int64_t start;
+	int64_t end = now;
 
-		rValueIterator it;
-		for (it = values.rbegin(); it != values.rend(); ++it) {
-			starttime = (*it)->time;
-			loss += (*it)->droprate * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
-			endtime = starttime;
-		}
-	} else {
-		loss = values.front()->droprate;
+	valueIterator endIterator = values.end();
+	--endIterator;
+
+	for (valueIterator it = values.begin(); it != endIterator; ++it) {
+		start = (*it)->time.inUnit(SIMTIME_NS);
+		loss += (*it)->droprate * ((double) (end - start));
+		end = start;
 	}
+
+	start = queueArrival;
+	loss += values.back()->droprate * ((double) (end - start));
+
+	// Normalize droprate
+	loss /= (double) (now - queueArrival);
 
 	return loss;
 }

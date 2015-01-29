@@ -168,7 +168,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
 		result->delay = 0.0;
 	} else {
 		// Retrieve values from database
-		result->delay = SimTime(sqlite3_column_int64(uploadDelayStatement, 0), SIMTIME_NS);
+		result->delay = sqlite3_column_int64(uploadDelayStatement, 0);
 	}
 
 	return result;
@@ -228,7 +228,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, s
 		result->delay = 0;
 	} else {
 		// Retrieve values from database
-		result->delay = SimTime(sqlite3_column_int64(downloadDelayStatement, 0), SIMTIME_NS);
+		result->delay = sqlite3_column_int64(downloadDelayStatement, 0);
 	}
 
 	return result;
@@ -292,7 +292,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const char* const roa
 		result->delay = 0;
 	} else {
 		// Retrieve value from database
-		result->delay = SimTime(sqlite3_column_int64(uploadDelayStatementEdge, 0), SIMTIME_NS);
+		result->delay = sqlite3_column_int64(uploadDelayStatementEdge, 0);
 	}
 
 	return result;
@@ -354,7 +354,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const char* const r
 		result->delay = 0;
 	} else {
 		// Retrieve value from database
-		result->delay = SimTime(sqlite3_column_int64(downloadDelayStatementEdge, 0), SIMTIME_NS);
+		result->delay = sqlite3_column_int64(downloadDelayStatementEdge, 0);
 	}
 
 	return result;

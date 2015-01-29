@@ -28,7 +28,7 @@ TbusDelayQueue::TbusDelayQueue() : TbusBaseQueue<TbusQueueDelayValue>() {}
  * Calculates earliest delivery times for all packets enqueued.
  */
 void TbusDelayQueue::calculateEarliestDeliveries() {
-	simtime_t delay = this->currentDelay();
+	simtime_t delay = currentDelay();
 
 	// No iterators because OMNeTs iterators are weird
 	for (int i = 0; i < queue.length(); i++) {
@@ -43,7 +43,7 @@ void TbusDelayQueue::calculateEarliestDeliveries() {
  * @param packet Packet to calculate earliest delivery for
  */
 void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
-	this->calculateEarliestDeliveryForPacket(packet, this->currentDelay());
+	this->calculateEarliestDeliveryForPacket(packet, currentDelay());
 }
 
 /**
@@ -53,7 +53,6 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
  */
 void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime_t delay) {
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
-	ASSERT2(controlInfo, "Invalid control info on packet!");
 
 	// Calculations according to Tobias Krauthoffs work
 	simtime_t delayGone = simTime() - controlInfo->getQueueArrival();
@@ -67,7 +66,7 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime
 		controlInfo->setEarliestDelivery(simTime() + delayWait);
 	}
 	EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ")" << std::endl;
-	std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ")" << std::endl;
+	std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ", current Delay: " << values.front()->delay << ")" << std::endl;
 
 	// Adapt our self message
 	adaptSelfMessage();
@@ -79,23 +78,7 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime
  */
 simtime_t TbusDelayQueue::currentDelay() {
 	ASSERT2(!values.empty(), "Empty values array!");
-	// Calculations according to/adapted from Tobias Krauthoffs work
+	// Calculations adapted from Tobias Krauthoffs work
 
-	simtime_t delay;
-	if (values.size() > 1) {
-		simtime_t starttime;
-		simtime_t endtime = simTime();
-		simtime_t runtime = simTime() - values.back()->time;
-
-		rValueIterator it;
-		for (it = values.rbegin(); it != values.rend(); ++it) {
-			starttime = (*it)->time;
-			delay += (*it)->delay.dbl() * (endtime.dbl() - starttime.dbl()) / runtime.dbl();
-			endtime = starttime;
-		}
-	} else {
-		delay = values.front()->delay;
-	}
-
-	return delay;
+	return SimTime(values.front()->delay, SIMTIME_NS);
 }

@@ -26,7 +26,7 @@
  */
 class TbusQueueDelayValue : public TbusQueueValue {
 	public:
-		simtime_t delay; ///< Delay value.
+		int64_t delay; ///< Delay value.
 
 		TbusQueueDelayValue();
 		TbusQueueDelayValue(const TbusQueueDelayValue& other);

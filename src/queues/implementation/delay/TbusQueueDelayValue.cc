@@ -28,7 +28,7 @@ TbusQueueDelayValue::TbusQueueDelayValue() : TbusQueueValue() {}
  */
 TbusQueueDelayValue::TbusQueueDelayValue(const TbusQueueDelayValue& other) :
 	delay(other.delay) {
-	time = other.time;
+	this->time = other.time;
 }
 
 /**

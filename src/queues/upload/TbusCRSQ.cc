@@ -33,7 +33,7 @@ TbusCRSQ::TbusCRSQ() : TbusDatarateQueue() {}
 void TbusCRSQ::addPacketToQueue(cPacket* packet) {
 	// If queue is empty, start collecting values in the next delay queue
 	if (queue.empty()) {
-		send(new cMessage(TBUS_DELAY_QUEUE_START_SAVE_VALUES, 0), outGate);
+		send(new cMessage(TBUS_DELAY_QUEUE_START_SAVE_VALUES), outGate);
 	}
 
 	TbusDatarateQueue::addPacketToQueue(packet);
@@ -46,11 +46,8 @@ void TbusCRSQ::addPacketToQueue(cPacket* packet) {
 void TbusCRSQ::sendFrontOfQueue() {
 	TbusDatarateQueue::sendFrontOfQueue();
 
-	// Tell next queue to delete all values used for last packet
-	// (Because it does not know if it was dropped or sent)
-	send(new cMessage(TBUS_DELAY_QUEUE_RESET_VALUES), outGate);
 	// If queue is empty after sending, stop collecting values in the next delay queue
 	if (queue.empty()) {
-		send(new cMessage(TBUS_DELAY_QUEUE_STOP_SAVE_VALUES, 0), outGate);
+		send(new cMessage(TBUS_DELAY_QUEUE_STOP_SAVE_VALUES), outGate);
 	}
 }
