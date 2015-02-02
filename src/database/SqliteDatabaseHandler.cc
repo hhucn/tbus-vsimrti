@@ -50,23 +50,23 @@ SqliteDatabaseHandler::SqliteDatabaseHandler() {
 
 	// Coord based
 	// Upload datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), min(abs(timestamp - ?3)) from upload_datarate;", -1 , &uploadDatarateStatement, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from upload_datarate;", -1 , &uploadDatarateStatement, NULL);
 	// Upload delay
-	sqlite3_prepare_v2(database, "select delay, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), min(abs(timestamp - ?3)) from upload_delay;", -1 , &uploadDelayStatement, NULL);
+	sqlite3_prepare_v2(database, "select delay, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from upload_delay;", -1 , &uploadDelayStatement, NULL);
 	// Download datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), min(abs(timestamp - ?3)) from download_datarate;", -1 , &downloadDatarateStatement, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from download_datarate;", -1 , &downloadDatarateStatement, NULL);
 	// Download delay
-	sqlite3_prepare_v2(database, "select delay, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), min(abs(timestamp - ?3)) from download_delay;", -1 , &downloadDelayStatement, NULL);
+	sqlite3_prepare_v2(database, "select delay, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from download_delay;", -1 , &downloadDelayStatement, NULL);
 
 	// Edge based
 	// Upload datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), min(abs(timestamp - ?3)) from upload_datarate where roadId = ?2 limit 1;", -1 , &uploadDatarateStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), max(timestamp <= ?3) from upload_datarate where roadId = ?2 limit 1;", -1 , &uploadDatarateStatementEdge, NULL);
 	// Upload delay
-	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), min(abs(timestamp - ?3)) from upload_delay where roadId = ?2 limit 1;", -1 , &uploadDelayStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), max(timestamp <= ?3) from upload_delay where roadId = ?2 limit 1;", -1 , &uploadDelayStatementEdge, NULL);
 	// Download datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), min(abs(timestamp - ?3)) from download_datarate where roadId = ?2 limit 1;", -1 , &downloadDatarateStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), max(timestamp <= ?3) from download_datarate where roadId = ?2 limit 1;", -1 , &downloadDatarateStatementEdge, NULL);
 	// Download delay
-	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), min(abs(timestamp - ?3)) from download_delay where roadId = ?2 limit 1;", -1 , &downloadDelayStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), max(timestamp <= ?3) from download_delay where roadId = ?2 limit 1;", -1 , &downloadDelayStatementEdge, NULL);
 }
 
 /**
@@ -129,7 +129,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& po
 	sqlite3_reset(uploadDatarateStatement);
 	sqlite3_bind_double(uploadDatarateStatement, 1, pos.x);
 	sqlite3_bind_double(uploadDatarateStatement, 2, pos.y);
-	sqlite3_bind_int(uploadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(uploadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(uploadDatarateStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
@@ -160,7 +160,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
 	sqlite3_reset(uploadDelayStatement);
 	sqlite3_bind_double(uploadDelayStatement, 1, pos.x);
 	sqlite3_bind_double(uploadDelayStatement, 2, pos.y);
-	sqlite3_bind_int(uploadDelayStatement, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(uploadDelayStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(uploadDelayStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
@@ -189,7 +189,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& 
 	sqlite3_reset(downloadDatarateStatement);
 	sqlite3_bind_double(downloadDatarateStatement, 1, pos.x);
 	sqlite3_bind_double(downloadDatarateStatement, 2, pos.y);
-	sqlite3_bind_int(downloadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(downloadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(downloadDatarateStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
@@ -220,7 +220,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, s
 	sqlite3_reset(downloadDelayStatement);
 	sqlite3_bind_double(downloadDelayStatement, 1, pos.x);
 	sqlite3_bind_double(downloadDelayStatement, 2, pos.y);
-	sqlite3_bind_int(downloadDelayStatement, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(downloadDelayStatement, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(downloadDelayStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
@@ -250,7 +250,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const char* con
 	sqlite3_reset(uploadDatarateStatementEdge);
 	sqlite3_bind_double(uploadDatarateStatementEdge, 1, lanePos);
 	sqlite3_bind_text(uploadDatarateStatementEdge, 2, roadId, -1, SQLITE_TRANSIENT);
-	sqlite3_bind_int(uploadDatarateStatementEdge, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(uploadDatarateStatementEdge, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(uploadDatarateStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
@@ -284,7 +284,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const char* const roa
 	sqlite3_reset(uploadDelayStatementEdge);
 	sqlite3_bind_double(uploadDelayStatementEdge, 1, lanePos);
 	sqlite3_bind_text(uploadDelayStatementEdge, 2, roadId, -1, SQLITE_TRANSIENT);
-	sqlite3_bind_int(uploadDelayStatementEdge, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(uploadDelayStatementEdge, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(uploadDelayStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
@@ -314,7 +314,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const char* c
 	sqlite3_reset(downloadDatarateStatementEdge);
 	sqlite3_bind_double(downloadDatarateStatementEdge, 1, lanePos);
 	sqlite3_bind_text(downloadDatarateStatementEdge, 2, roadId, -1, SQLITE_TRANSIENT);
-	sqlite3_bind_int(downloadDatarateStatementEdge, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(downloadDatarateStatementEdge, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(downloadDatarateStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
@@ -346,7 +346,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const char* const r
 	sqlite3_reset(downloadDelayStatementEdge);
 	sqlite3_bind_double(downloadDelayStatementEdge, 1, lanePos);
 	sqlite3_bind_text(downloadDelayStatementEdge, 2, roadId, -1, SQLITE_TRANSIENT);
-	sqlite3_bind_int(downloadDelayStatementEdge, 3, time.inUnit(SIMTIME_NS));
+	sqlite3_bind_int64(downloadDelayStatementEdge, 3, time.inUnit(SIMTIME_NS));
 
 	if (sqlite3_step(downloadDelayStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
