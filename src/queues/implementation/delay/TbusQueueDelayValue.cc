@@ -28,7 +28,7 @@ TbusQueueDelayValue::TbusQueueDelayValue() : TbusQueueValue() {}
  */
 TbusQueueDelayValue::TbusQueueDelayValue(const TbusQueueDelayValue& other) :
 	delay(other.delay) {
-	this->time = other.time;
+	time = other.time;
 }
 
 /**
@@ -42,7 +42,7 @@ bool TbusQueueDelayValue::operator!=(TbusQueueValue& other) {
 	TbusQueueDelayValue* cother = check_and_cast<TbusQueueDelayValue*>(&other);
 
 	if (cother) {
-		return (this->delay != cother->delay);
+		return (delay != cother->delay);
 	} else {
 		return true;
 	}

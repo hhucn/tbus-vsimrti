@@ -41,10 +41,18 @@ void TbusCDSQ::updateValue(TbusQueueDelayValue* newValue) {
 	if (saveValues && (values.empty() || values.front() != newValue)) {
 		// Store new value
 		values.push_front(newValue);
+
+		if (!queue.isEmpty()) {
+			calculateEarliestDeliveries();
+		}
 	} else if (!saveValues) {
 		// Replace existing value
 		delete values[0];
 		values[0] = newValue;
+
+		if (!queue.isEmpty()) {
+			calculateEarliestDeliveries();
+		}
 	} else {
 		delete newValue;
 	}
@@ -59,6 +67,8 @@ void TbusCDSQ::addPacketToQueue(cPacket* packet) {
 
 	// Clear and delete all values but the front
 	clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
+	// Set a new saveTime
+	saveTime = simTime().inUnit(SIMTIME_NS);
 }
 
 /**
@@ -123,7 +133,7 @@ simtime_t TbusCDSQ::currentDelay() {
 
 	int64_t delay = 0;
 	int64_t start;
-	int64_t end = simTime().inUnit(SIMTIME_NS);
+	int64_t end = now;
 
 	// We want to iterate up to the second-last element (if any)
 	valueIterator endIterator = values.end();
@@ -141,6 +151,8 @@ simtime_t TbusCDSQ::currentDelay() {
 
 	// Normalize delay
 	delay /= (now - saveTime);
+
+	std::cout << simTime() << " - " << this->getName() << ": Calculated delay " << delay << " from " << values.size() << " values" << endl;
 
 	return SimTime(delay, SIMTIME_NS);
 }

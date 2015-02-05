@@ -15,7 +15,6 @@
 
 #include "TbusMobileNode.h"
 #include "ModuleAccess.h"
-#include <iostream>
 
 Define_Module(TbusMobileNode);
 

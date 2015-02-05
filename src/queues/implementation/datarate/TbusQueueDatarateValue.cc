@@ -43,7 +43,7 @@ bool TbusQueueDatarateValue::operator!=(TbusQueueValue& other) {
 	TbusQueueDatarateValue* cother = check_and_cast<TbusQueueDatarateValue*>(&other);
 
 	if (cother) {
-		return (this->droprate != cother->droprate) || (this->datarate != cother->datarate);
+		return (droprate != cother->droprate) || (datarate != cother->datarate);
 	} else {
 		return true;
 	}

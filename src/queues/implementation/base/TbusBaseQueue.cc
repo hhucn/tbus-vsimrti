@@ -48,7 +48,7 @@ template<class T> void TbusBaseQueue<T>::initialize() {
  */
 template<class T> void TbusBaseQueue<T>::handleMessage(cMessage* msg) {
 	if (msg->isSelfMessage()) {
-		this->handleSelfMessage(msg);
+		handleSelfMessage(msg);
 	} else {
 		cPacket* packet = check_and_cast<cPacket*>(msg);
 		addPacketToQueue(packet);
@@ -62,7 +62,7 @@ template<class T> void TbusBaseQueue<T>::handleMessage(cMessage* msg) {
 template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 	if (strcmp(msg->getName(), TBUS_BASE_QUEUE_SELFMESSAGE) == 0) {
 		// First, send the front packet
-		this->sendFrontOfQueue();
+		sendFrontOfQueue();
 
 		//Only leave current value
 		clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
@@ -82,10 +82,8 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
  * @param packet packet to add
  */
 template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
-	std::cout << simTime() << " - " << this->getName() << ": Packet " << packet << " arrived (Already " << queue.length() << " packets enqueued)" << endl;
-
 	queue.insert(packet);
-	this->calculateEarliestDeliveryForPacket(packet);
+	calculateEarliestDeliveryForPacket(packet);
 
 	if (!selfMessage.isScheduled()) {
 		adaptSelfMessage();
@@ -121,6 +119,7 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
 
 	EV << this->getName() << ": dispatching packet " << packet << " at " << simTime() << std::endl;
+	std::cout << simTime() << " - " << this->getName() << ": " << packet << " sent after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << endl;
 
 	send(packet, outGate);
 }

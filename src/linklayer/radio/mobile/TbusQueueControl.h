@@ -28,6 +28,8 @@
 #include "DatabaseHandler.h"
 #include "TbusCoordinateConverter.h"
 
+#define TBUS_QUEUE_TESTING
+
 /**
  * Queue control class.
  * Distributes network characteristics along the related queues.
@@ -49,6 +51,10 @@ class TbusQueueControl : public cSimpleModule {
 		void updateQueues(const char* const roadId, const float lanePos);
 
 		void initialize();
+
+#ifdef TBUS_QUEUE_TESTING
+		void handleMessage(cMessage* msg);
+#endif
 };
 
 #endif /* TBUSQUEUECONTROL_H_ */

@@ -23,6 +23,10 @@
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
 
+#ifdef TBUS_QUEUE_TESTING
+#include <sqlite3.h>
+#endif
+
 Define_Module(TbusQueueControl);
 
 /**
@@ -42,6 +46,32 @@ void TbusQueueControl::initialize() {
 
 	dbHandler = DatabaseHandler::getInstance<SqliteDatabaseHandler>();
 	converter = TbusCoordinateConverter::getInstance();
+
+#ifdef TBUS_QUEUE_TESTING
+	// TESTING with selected timed updates from the database
+	sqlite3* database;
+	sqlite3_open_v2("test_edge.sqlite", &database, SQLITE_OPEN_READONLY, NULL);
+
+	sqlite3_stmt* timestampSelect;
+	sqlite3_prepare_v2(database, "select timestamp from upload_delay union select timestamp from upload_datarate union select timestamp from download_delay union select timestamp from download_datarate;", -1, &timestampSelect, NULL);
+
+	cMessage* selfMessage;
+	SimTime time;
+	SimTime now = simTime();
+
+	while (sqlite3_step(timestampSelect) == SQLITE_ROW) {
+		// Add self messages
+		selfMessage = new cMessage("timestampmessage", 0);
+		time = SimTime(sqlite3_column_int64(timestampSelect, 0), SIMTIME_NS);
+
+		if (time >= now) {
+			scheduleAt(time, selfMessage);
+		}
+	}
+
+	sqlite3_finalize(timestampSelect);
+	sqlite3_close(database);
+#endif
 }
 
 /**
@@ -84,8 +114,19 @@ void TbusQueueControl::updateQueues(const char* const roadId, float lanePos) {
 //	cdsq->updateValue(dbHandler->getUploadDelay(roadId, lanePos));
 //	crsq->updateValue(dbHandler->getUploadDatarate(roadId, lanePos));
 
+	lanePos = 0.0;
 	cdrq->updateValue(dbHandler->getDownloadDelay("roadId", lanePos));
 	crrq->updateValue(dbHandler->getDownloadDatarate("roadId", lanePos));
 	cdsq->updateValue(dbHandler->getUploadDelay("roadId", lanePos));
 	crsq->updateValue(dbHandler->getUploadDatarate("roadId", lanePos));
 }
+
+#ifdef TBUS_QUEUE_TESTING
+void TbusQueueControl::handleMessage(cMessage* msg) {
+	if (msg->isSelfMessage()) {
+		updateQueues("", 0.0);
+	}
+
+	delete msg;
+}
+#endif

@@ -31,7 +31,7 @@ TbusDatarateQueue::TbusDatarateQueue() : bitsSent(0) {}
 void TbusDatarateQueue::calculateEarliestDeliveries() {
 	// Only calculate for the front of queue
 	if (!queue.empty()) {
-		this->calculateEarliestDeliveryForPacket(queue.front());
+		calculateEarliestDeliveryForPacket(queue.front());
 	}
 }
 
@@ -48,7 +48,7 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 		simtime_t delay;
 		TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
 
-		// If two values are present, subtract already sent bytes from bytes to send
+		// If more than two values are present, subtract already sent bytes from bytes to send
 		if (values.size() > 1) {
 			// What time shall we use?
 			simtime_t starttime = SimTime(std::max(values[1]->time.inUnit(SIMTIME_NS), controlInfo->getHeadOfQueue().inUnit(SIMTIME_NS)), SIMTIME_NS);
@@ -58,12 +58,11 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 		}
 
 		ASSERT2(bitsSent <= packet->getBitLength(), "Invalid amount of bits sent!");
-		delay = this->currentDatarateDelay(packet->getBitLength() - bitsSent);
+		delay = currentDatarateDelay(packet->getBitLength() - bitsSent);
 
 		// Add current time to delay
 		controlInfo->setEarliestDelivery(simTime() + delay);
 		EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ")" << std::endl;
-		std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ", Packet size: " << packet->getBitLength() << "bits, bits already send: " << bitsSent << ", current datarate: " << values.front()->datarate << ")" << std::endl;
 		// Adapt our self message
 		adaptSelfMessage();
 	}
@@ -81,12 +80,14 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 	EV << "Dispatching packet " << packet << " after delay " << (simTime() - controlInfo->getQueueArrival()) << " (Entered Queue at " << controlInfo->getQueueArrival() << ")" << std::endl;
 
 	// Check for drop
-	if (dblrand() >= this->currentLossProbability(controlInfo->getQueueArrival())) {
+	if (dblrand() >= currentLossProbability(controlInfo->getQueueArrival())) {
 		// No drop
 		send(packet, outGate);
+		std::cout << simTime() << " - " << this->getName() << ": " << packet << " sent after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << endl;
 	} else {
 		// Drop
 		EV << "Packet " << packet << " dropped!" << std::endl;
+		std::cout << simTime() << " - " << this->getName() << ": " << packet << " dropped after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << endl;
 		delete packet;
 	}
 

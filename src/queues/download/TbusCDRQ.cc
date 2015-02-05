@@ -38,6 +38,10 @@ void TbusCDRQ::updateValue(TbusQueueDelayValue* newValue) {
 		delete values[0];
 		values[0] = newValue;
 
+		if (!queue.isEmpty()) {
+			calculateEarliestDeliveries();
+		}
+
 		// No update on ongoing transmissions, because we simply use the value as the packet arrives
 	} else {
 		delete newValue;

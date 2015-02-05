@@ -32,7 +32,7 @@ void TbusDelayQueue::calculateEarliestDeliveries() {
 
 	// No iterators because OMNeTs iterators are weird
 	for (int i = 0; i < queue.length(); i++) {
-		this->calculateEarliestDeliveryForPacket(queue.get(i), delay);
+		calculateEarliestDeliveryForPacket(queue.get(i), delay);
 	}
 }
 
@@ -43,7 +43,7 @@ void TbusDelayQueue::calculateEarliestDeliveries() {
  * @param packet Packet to calculate earliest delivery for
  */
 void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
-	this->calculateEarliestDeliveryForPacket(packet, currentDelay());
+	calculateEarliestDeliveryForPacket(packet, currentDelay());
 }
 
 /**
@@ -65,8 +65,7 @@ void TbusDelayQueue::calculateEarliestDeliveryForPacket(cPacket* packet, simtime
 	} else {
 		controlInfo->setEarliestDelivery(simTime() + delayWait);
 	}
-	EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ")" << std::endl;
-	std::cout << simTime() << " - " << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delayWait << ", current Delay: " << values.front()->delay << ")" << std::endl;
+	EV << this->getName() << ": Calculated earliest delivery for packet " << packet << " at " << controlInfo->getEarliestDelivery() << " (Delay: " << delay << ")" << std::endl;
 
 	// Adapt our self message
 	adaptSelfMessage();
