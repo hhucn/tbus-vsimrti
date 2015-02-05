@@ -21,17 +21,26 @@
  */
 #define TBUS_SQLITE_USER_VERSION 0x00000001
 /**
- * MBit to Bit conversion, used by multiplication
+ * KBit to Bit conversion, used by multiplication
  */
-#define TBUS_MBIT_TO_BIT	(1024.0) //(1024*1024)
-/**
- * Byte to bit conversion, used by multiplication
- */
-#define TBUS_BYTE_TO_BIT	(8.0)
+#define TBUS_KBIT_TO_BIT (1024.0 * 8.0)
 /**
  * Error macro if query returns anything but a row
  */
 #define TBUS_NOTAROW(FILE,LINE) std::cerr << FILE << " (" << LINE << "): Unable to retrieve values from database - query result is not a row!" << std::endl << "SQLite error " << sqlite3_errcode(database) << ": " << sqlite3_errmsg(database) << std::endl;
+
+/**
+ * Default datarate value if no value could be retrieved (In Bit/s)
+ */
+#define TBUS_DATARATE_DEFAULT 1.0
+/**
+ * Default droprate value if no value could be retrieved (In percent)
+ */
+#define TBUS_DROPRATE_DEFAULT 1.0
+/**
+ * Default delay value if no value could be retrieved (in ns)
+ */
+#define TBUS_DELAY_DEFAULT 1
 
 /**
  * @class SqliteDatabaseHandler

@@ -21,7 +21,7 @@ SqliteDatabaseHandler::SqliteDatabaseHandler() {
 	database = NULL;
 	const std::string databaseFile = ev.getConfig()->getAsFilename(CFGID_TBUS_DATABASE_FILE);
 
-	result = sqlite3_open(databaseFile.c_str(), &database);
+	result = sqlite3_open_v2(databaseFile.c_str(), &database, SQLITE_OPEN_READONLY, NULL);
 
 	if (result != SQLITE_OK) {
 		abort();
@@ -60,13 +60,13 @@ SqliteDatabaseHandler::SqliteDatabaseHandler() {
 
 	// Edge based
 	// Upload datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), max(timestamp <= ?3) from upload_datarate where roadId = ?2 limit 1;", -1 , &uploadDatarateStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos), max(timestamp) from upload_datarate where roadId = ?2 and lanePos <= ?1 and timestamp <= ?3 limit 1;", -1 , &uploadDatarateStatementEdge, NULL);
 	// Upload delay
-	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), max(timestamp <= ?3) from upload_delay where roadId = ?2 limit 1;", -1 , &uploadDelayStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select delay, max(lanePos), max(timestamp) from upload_delay where roadId = ?2 and lanePos <= ?1 and timestamp <= ?3 limit 1;", -1 , &uploadDelayStatementEdge, NULL);
 	// Download datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos <= ?1), max(timestamp <= ?3) from download_datarate where roadId = ?2 limit 1;", -1 , &downloadDatarateStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos), max(timestamp) from download_datarate where roadId = ?2 and lanePos <= ?1 and timestamp <= ?3 limit 1;", -1 , &downloadDatarateStatementEdge, NULL);
 	// Download delay
-	sqlite3_prepare_v2(database, "select delay, max(lanePos <= ?1), max(timestamp <= ?3) from download_delay where roadId = ?2 limit 1;", -1 , &downloadDelayStatementEdge, NULL);
+	sqlite3_prepare_v2(database, "select delay, max(lanePos), max(timestamp) from download_delay where roadId = ?2 and lanePos <= ?1 and timestamp <= ?3 limit 1;", -1 , &downloadDelayStatementEdge, NULL);
 }
 
 /**
@@ -98,7 +98,9 @@ int32_t SqliteDatabaseHandler::getDatabaseVersion() {
 	sqlite3_prepare_v2(database, "pragma user_version;", -1, &statement, NULL);
 	if (sqlite3_step(statement) != SQLITE_ROW) {
 		std::cerr << "Unable to retrieve database version! Exiting..." << std::endl;
-		this->abort();
+		abort();
+
+		return -1;
 	}
 
 	int32_t version = sqlite3_column_int(statement, 0);
@@ -134,11 +136,11 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& po
 	if (sqlite3_step(uploadDatarateStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->datarate = 0.0;
-		result->droprate = 0.0;
+		result->datarate = TBUS_DATARATE_DEFAULT;
+		result->droprate = TBUS_DROPRATE_DEFAULT;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
+		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * TBUS_KBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(uploadDatarateStatement, 1);
 	}
 
@@ -165,7 +167,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
 	if (sqlite3_step(uploadDelayStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->delay = 0.0;
+		result->delay = TBUS_DELAY_DEFAULT;
 	} else {
 		// Retrieve values from database
 		result->delay = sqlite3_column_int64(uploadDelayStatement, 0);
@@ -194,11 +196,11 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& 
 	if (sqlite3_step(downloadDatarateStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->datarate = 0.0;
-		result->droprate = 0.0;
+		result->datarate = TBUS_DATARATE_DEFAULT;
+		result->droprate = TBUS_DROPRATE_DEFAULT;
 	} else {
 		// Retrieve values from database
-		result->datarate = sqlite3_column_double(downloadDatarateStatement, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
+		result->datarate = sqlite3_column_double(downloadDatarateStatement, 0) * TBUS_KBIT_TO_BIT;
 		result->droprate = sqlite3_column_double(downloadDatarateStatement, 1);
 	}
 
@@ -225,7 +227,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, s
 	if (sqlite3_step(downloadDelayStatement) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->delay = 0;
+		result->delay = TBUS_DELAY_DEFAULT;
 	} else {
 		// Retrieve values from database
 		result->delay = sqlite3_column_int64(downloadDelayStatement, 0);
@@ -255,15 +257,19 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const char* con
 	if (sqlite3_step(uploadDatarateStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->datarate = 0.0;
-		result->droprate = 0.0;
+		result->datarate = TBUS_DATARATE_DEFAULT;
+		result->droprate = TBUS_DROPRATE_DEFAULT;
 	} else {
-		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
-		result->droprate = sqlite3_column_double(uploadDatarateStatementEdge, 1);
+		if (sqlite3_column_type(uploadDatarateStatementEdge, 0) == SQLITE_NULL) {
+			// Aggregation functions returns at least one row, even if it's empty
+			result->datarate = TBUS_DATARATE_DEFAULT;
+			result->droprate = TBUS_DROPRATE_DEFAULT;
+		} else {
+			// Retrieve values from database
+			result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_KBIT_TO_BIT;
+			result->droprate = sqlite3_column_double(uploadDatarateStatementEdge, 1);
+		}
 	}
-
-	EV << "Got upload datarate: " << result->datarate << "MBit/s" << endl;
 
 	return result;
 }
@@ -289,10 +295,15 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const char* const roa
 	if (sqlite3_step(uploadDelayStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->delay = 0;
+		result->delay = TBUS_DELAY_DEFAULT;
 	} else {
-		// Retrieve value from database
-		result->delay = sqlite3_column_int64(uploadDelayStatementEdge, 0);
+		if (sqlite3_column_type(uploadDelayStatementEdge, 0) == SQLITE_NULL) {
+			// Aggregation functions returns at least one row, even if it's empty
+			result->delay = TBUS_DELAY_DEFAULT;
+		} else {
+			// Retrieve value from database
+			result->delay = sqlite3_column_int64(uploadDelayStatementEdge, 0);
+		}
 	}
 
 	return result;
@@ -319,12 +330,18 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const char* c
 	if (sqlite3_step(downloadDatarateStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->datarate = 0.0;
-		result->droprate = 0.0;
+		result->datarate = TBUS_DATARATE_DEFAULT;
+		result->droprate = TBUS_DROPRATE_DEFAULT;
 	} else {
-		// Retrieve values from database
-		result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_BYTE_TO_BIT * TBUS_MBIT_TO_BIT;
-		result->droprate = sqlite3_column_double(downloadDatarateStatementEdge, 1);
+		if (sqlite3_column_type(downloadDatarateStatementEdge, 0) == SQLITE_NULL) {
+			// Aggregation functions returns at least one row, even if it's empty
+			result->datarate = TBUS_DATARATE_DEFAULT;
+			result->droprate = TBUS_DROPRATE_DEFAULT;
+		} else {
+			// Retrieve values from database
+			result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_KBIT_TO_BIT;
+			result->droprate = sqlite3_column_double(downloadDatarateStatementEdge, 1);
+		}
 	}
 
 	return result;
@@ -351,10 +368,16 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const char* const r
 	if (sqlite3_step(downloadDelayStatementEdge) != SQLITE_ROW) {
 		TBUS_NOTAROW(__FILE__, __LINE__)
 		// Set dummy values
-		result->delay = 0;
+		result->delay = TBUS_DELAY_DEFAULT;
 	} else {
-		// Retrieve value from database
-		result->delay = sqlite3_column_int64(downloadDelayStatementEdge, 0);
+
+		if (sqlite3_column_type(downloadDelayStatementEdge, 0) == SQLITE_NULL) {
+			// Aggregation functions returns at least one row, even if it's empty
+			result->delay = TBUS_DELAY_DEFAULT;
+		} else {
+			// Retrieve value from database
+			result->delay = sqlite3_column_int64(downloadDelayStatementEdge, 0);
+		}
 	}
 
 	return result;
