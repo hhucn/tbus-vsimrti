@@ -85,13 +85,14 @@ void TbusCDSQ::calculateEarliestDeliveries() {
  * @param msg Message to handle.
  */
 void TbusCDSQ::handleMessage(cMessage* msg) {
-	if (strcmp(msg->getName(), TBUS_DELAY_QUEUE_START_SAVE_VALUES) == 0) {
+	std::cout << simTime() << " - " <<  this->getName() << ": Received message of kind " << msg->getKind() << endl;
+	if (msg->getKind() == START_RECORDING) {
 		EV << this->getName() << ": Start saving values at " << simTime() << std::endl;
 		delete msg;
 
 		saveValues = true;
 		saveTime = simTime().inUnit(SIMTIME_NS);
-	} else if (strcmp(msg->getName(), TBUS_DELAY_QUEUE_STOP_SAVE_VALUES) == 0) {
+	} else if (msg->getKind() == STOP_RECORDING) {
 		EV << this->getName() << ": Stop saving values at " << simTime() << std::endl;
 		delete msg;
 
@@ -102,22 +103,17 @@ void TbusCDSQ::handleMessage(cMessage* msg) {
 }
 
 /**
- * Handles a #TBUS_BASE_QUEUE_SELFMESSAGE, throws an error upon receiving other self messages.
- * @see #TBUS_BASE_QUEUE_SELFMESSAGE
+ * Handles a self message.
  * @param msg Self message to handle.
  */
 void TbusCDSQ::handleSelfMessage(cMessage* msg) {
-	if (strcmp(msg->getName(), TBUS_BASE_QUEUE_SELFMESSAGE) == 0) {
-		// First, send the front packet
-		sendFrontOfQueue();
+	// First, send the front packet
+	sendFrontOfQueue();
 
-		// Then check the next one and/or reschedule
-		if (queue.length() > 0) {
-			// Adapt self message for next head of queue
-			adaptSelfMessage();
-		}
-	} else {
-		throw cRuntimeError("Received invalid self message!");
+	// Then check the next one and/or reschedule
+	if (queue.length() > 0) {
+		// Adapt self message for next head of queue
+		adaptSelfMessage();
 	}
 }
 
@@ -140,7 +136,7 @@ simtime_t TbusCDSQ::currentDelay() {
 	endIterator--;
 
 	for (valueIterator it = values.begin(); it != endIterator; ++it) {
-		start = (*it)->time.inUnit(SIMTIME_NS);
+		start = (*it)->time;
 		delay += (*it)->delay * (end - start);
 		end = start;
 	}
@@ -151,8 +147,6 @@ simtime_t TbusCDSQ::currentDelay() {
 
 	// Normalize delay
 	delay /= (now - saveTime);
-
-	std::cout << simTime() << " - " << this->getName() << ": Calculated delay " << delay << " from " << values.size() << " values" << endl;
 
 	return SimTime(delay, SIMTIME_NS);
 }

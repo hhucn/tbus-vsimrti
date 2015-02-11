@@ -51,7 +51,7 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 		// If more than two values are present, subtract already sent bytes from bytes to send
 		if (values.size() > 1) {
 			// What time shall we use?
-			simtime_t starttime = SimTime(std::max(values[1]->time.inUnit(SIMTIME_NS), controlInfo->getHeadOfQueue().inUnit(SIMTIME_NS)), SIMTIME_NS);
+			simtime_t starttime = SimTime(std::max(values[1]->time, controlInfo->getHeadOfQueue().inUnit(SIMTIME_NS)), SIMTIME_NS);
 			simtime_t runtime = simTime() - starttime;
 
 			bitsSent += (int64) floor(runtime.dbl() * values[1]->datarate);
@@ -79,15 +79,17 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
 	EV << "Dispatching packet " << packet << " after delay " << (simTime() - controlInfo->getQueueArrival()) << " (Entered Queue at " << controlInfo->getQueueArrival() << ")" << std::endl;
 
+	double currentLoss = currentLossProbability(controlInfo->getQueueArrival());
+
 	// Check for drop
-	if (dblrand() >= currentLossProbability(controlInfo->getQueueArrival())) {
+	if (uniform(0, 1) >= currentLoss) {
 		// No drop
 		send(packet, outGate);
-		std::cout << simTime() << " - " << this->getName() << ": " << packet << " sent after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << endl;
+		std::cout << simTime() << " - " << this->getName() << ": " << packet << " sent after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << " current loss " << currentLoss << endl;
 	} else {
 		// Drop
 		EV << "Packet " << packet << " dropped!" << std::endl;
-		std::cout << simTime() << " - " << this->getName() << ": " << packet << " dropped after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << endl;
+		std::cout << simTime() << " - " << this->getName() << ": " << packet << " dropped after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << " current loss " << currentLoss << endl;
 		delete packet;
 	}
 
@@ -116,7 +118,7 @@ double TbusDatarateQueue::currentLossProbability(simtime_t packetQueueArrivalTim
 	--endIterator;
 
 	for (valueIterator it = values.begin(); it != endIterator; ++it) {
-		start = (*it)->time.inUnit(SIMTIME_NS);
+		start = (*it)->time;
 		loss += (*it)->droprate * ((double) (end - start));
 		end = start;
 	}

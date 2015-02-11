@@ -25,12 +25,12 @@
  */
 class TbusQueueValue : public cObject {
 	public:
-		simtime_t time; ///< Simulation time of object creation
+		int64_t time; ///< Simulation time of object creation
 
 		/**
 		 * Initializes time with the current simulation time.
 		 */
-		TbusQueueValue() : time(simTime()) {};
+		TbusQueueValue() : time(simTime().inUnit(SIMTIME_NS)) {};
 		/**
 		 * Empty destructor.
 		 */

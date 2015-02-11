@@ -23,17 +23,14 @@
 #include "TbusPacketQueue.h"
 #include "TbusQueueControlInfo.h"
 #include "TbusQueueValue.h"
-
 #include <deque>
 
 /**
- * Self message name.
+ * Enum parameter for clearing value list
  */
-#define TBUS_BASE_QUEUE_SELFMESSAGE "tbus.base.queue.self.message"
-
 enum TbusClearMethod {
-	TBUS_CLEAR_ALL,
-	TBUS_CLEAR_ALL_EXCEPT_FRONT
+	TBUS_CLEAR_ALL,            ///< TBUS_CLEAR_ALL
+	TBUS_CLEAR_ALL_EXCEPT_FRONT///< TBUS_CLEAR_ALL_EXCEPT_FRONT
 };
 
 /**
@@ -59,7 +56,6 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		int outGate; ///< output gate id
 
 		std::deque<T*> values; ///< Value deque
-		typedef typename std::deque<T*>::reverse_iterator rValueIterator; ///< Value deque reversed iterator
 		typedef typename std::deque<T*>::iterator valueIterator; ///< Value deque iterator
 
 		inline void clearAndDeleteValues(const TbusClearMethod method = TBUS_CLEAR_ALL);

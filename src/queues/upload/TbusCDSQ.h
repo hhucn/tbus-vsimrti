@@ -23,18 +23,16 @@
 #ifndef TBUSCDSQ_H_
 #define TBUSCDSQ_H_
 
-
 #include "TbusDelayQueue.h"
 #include "TbusQueueDelayValue.h"
 
 /**
- * cMessage name for control messages to start saving incoming values.
+ * Enum for use in cMessage's kind value
  */
-#define TBUS_DELAY_QUEUE_START_SAVE_VALUES "tbus.delay.queue.start.save.values"
-/**
- * cMessage name for control messages to stop saving incoming values.
- */
-#define TBUS_DELAY_QUEUE_STOP_SAVE_VALUES "tbus.delay.queue.stop.save.values"
+enum TbusCDSQSignals {
+	START_RECORDING = 0xfe, ///< START_RECORDING
+	STOP_RECORDING  = 0xff  ///< STOP_RECORDING
+};
 
 /**
  * Client Delay Send Queue.

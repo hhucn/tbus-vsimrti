@@ -19,14 +19,13 @@
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
 #include "omnetpp.h"
-
 #include <algorithm>
 
 /**
  * Set up.
- * Instantiates selfMessage with name #TBUS_BASE_QUEUE_SELFMESSAGE
+ * Instantiates selfMessage
  */
-template<class T> TbusBaseQueue<T>::TbusBaseQueue() : selfMessage(TBUS_BASE_QUEUE_SELFMESSAGE, 0) {}
+template<class T> TbusBaseQueue<T>::TbusBaseQueue() : selfMessage(NULL, 0) {}
 
 /**
  * Empty destructor, clean up is done in finish()
@@ -60,20 +59,16 @@ template<class T> void TbusBaseQueue<T>::handleMessage(cMessage* msg) {
  * @param msg self message
  */
 template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
-	if (strcmp(msg->getName(), TBUS_BASE_QUEUE_SELFMESSAGE) == 0) {
-		// First, send the front packet
-		sendFrontOfQueue();
+	// First, send the front packet
+	sendFrontOfQueue();
 
-		//Only leave current value
-		clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
+	//Only leave current value
+	clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
 
-		// Then check the next one and/or reschedule
-		if (queue.length() > 0) {
-			// Re-calculate earliest deliveries
-			calculateEarliestDeliveries();
-		}
-	} else {
-		throw cRuntimeError("Received invalid self message!");
+	// Then check the next one and/or reschedule
+	if (queue.length() > 0) {
+		// Re-calculate earliest deliveries
+		calculateEarliestDeliveries();
 	}
 }
 
