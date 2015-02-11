@@ -66,7 +66,9 @@ module TbusInetNode
             @display("p=182,220");
         }
         urapp: VSimRTIUnreliableApp {
-            @display("p=182,287");
+            parameters:
+            	@display("p=182,287");
+            	maxProcDelay = 0.0;
         }
         radio: TbusInetRadio;
         mobility: VSimRTIMobility {

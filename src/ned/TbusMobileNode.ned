@@ -43,7 +43,7 @@ module TbusMobileNode {
         }
         urapp: VSimRTIUnreliableApp {
             @display("p=295,291");
-            maxProcDelay = 0;
+            maxProcDelay = 0.0;
         }
         udp: UDP {
             @display("p=295,209");

@@ -89,14 +89,10 @@ void TbusMobileMAC::initialize(int stage) {
 
 /**
  * Handle incoming messages.
- * Control info is removed and message is sent to corresponding lower/upper layer.
+ * The message is sent to the corresponding lower/upper layer.
  * @param msg Message to handle
  */
 void TbusMobileMAC::handleMessage(cMessage* msg) {
-	cObject* controlInfo = msg->removeControlInfo();
-
-	EV << "removed control info " << controlInfo << std::endl;
-
 	if (msg->arrivedOn(upperLayerIn)) {
 		// Add control info
 		msg->setControlInfo(new TbusQueueControlInfo());
