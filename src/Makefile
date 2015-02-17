@@ -69,7 +69,8 @@ INCLUDE_PATH = \
     -Iqueues/implementation/test/delay \
     -Iqueues/implementation/test/ned \
     -Iqueues/upload \
-    -Iworld
+    -Iworld \
+    -Iworld/cellshare
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -110,6 +111,7 @@ OBJS = \
     $O/queues/upload/TbusCDSQ.o \
     $O/queues/upload/TbusCRSQ.o \
     $O/world/TbusChannelControl.o \
+    $O/world/cellshare/TbusTrivialCellShare.o \
     $O/queues/implementation/test/base/testPacket_m.o
 
 # Message files
@@ -219,13 +221,14 @@ clean:
 	$(Q)-rm -f queues/implementation/test/ned/*_m.cc queues/implementation/test/ned/*_m.h
 	$(Q)-rm -f queues/upload/*_m.cc queues/upload/*_m.h
 	$(Q)-rm -f world/*_m.cc world/*_m.h
+	$(Q)-rm -f world/cellshare/*_m.cc world/cellshare/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
@@ -340,7 +343,8 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
-	world/TbusChannelControl.h
+	world/TbusChannelControl.h \
+	world/cellshare/TbusCellShare.h
 $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueControl.cc \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
@@ -361,7 +365,9 @@ $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueCo
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
-	queues/upload/TbusCRSQ.h
+	queues/upload/TbusCRSQ.h \
+	world/cellshare/TbusCellShare.h \
+	world/cellshare/TbusTrivialCellShare.h
 $O/nodes/inet/TbusInetNode.o: nodes/inet/TbusInetNode.cc \
 	nodes/inet/TbusInetNode.h
 $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
@@ -385,7 +391,8 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
-	queues/upload/TbusCRSQ.h
+	queues/upload/TbusCRSQ.h \
+	world/cellshare/TbusCellShare.h
 $O/queues/download/TbusCDRQ.o: queues/download/TbusCDRQ.cc \
 	queues/download/TbusCDRQ.h \
 	queues/implementation/base/TbusBaseQueue.h \
@@ -532,5 +539,11 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	queues/implementation/packetqueue/TbusPacketQueue.h \
 	queues/upload/TbusCDSQ.h \
 	queues/upload/TbusCRSQ.h \
-	world/TbusChannelControl.h
+	world/TbusChannelControl.h \
+	world/cellshare/TbusCellShare.h
+$O/world/cellshare/TbusTrivialCellShare.o: world/cellshare/TbusTrivialCellShare.cc \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	world/cellshare/TbusCellShare.h \
+	world/cellshare/TbusTrivialCellShare.h
 

@@ -22,6 +22,7 @@
 #include "ModuleAccess.h"
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
+#include "TbusTrivialCellShare.h"
 
 #ifdef TBUS_QUEUE_TESTING
 #include <sqlite3.h>
@@ -32,7 +33,11 @@ Define_Module(TbusQueueControl);
 /**
  * Empty constructor.
  */
-TbusQueueControl::TbusQueueControl() {}
+TbusQueueControl::TbusQueueControl() :
+		dbHandler(DatabaseHandler::getInstance<SqliteDatabaseHandler>()),
+		cellShare(TbusCellShare::getInstance<TbusTrivialCellShare>()),
+		currentRoadId(NULL) {
+}
 
 /**
  * Get references to the modules' queues and the global database handler and coordinate converter.
@@ -44,7 +49,6 @@ void TbusQueueControl::initialize() {
 	crsq = ModuleAccess<TbusCRSQ>("crsq").get();
 	cdsq = ModuleAccess<TbusCDSQ>("cdsq").get();
 
-	dbHandler = DatabaseHandler::getInstance<SqliteDatabaseHandler>();
 	converter = TbusCoordinateConverter::getInstance();
 
 #ifdef TBUS_QUEUE_TESTING
@@ -90,10 +94,10 @@ void TbusQueueControl::updateQueues(const Coord& newCoords) {
 
 	EV << "TbusQueueControl updating queues for coordinates " << newCoords << " (" << translated << ")\n";
 
-	cdrq->updateValue(dbHandler->getDownloadDelay(translated));
-	crrq->updateValue(dbHandler->getDownloadDatarate(translated));
-	cdsq->updateValue(dbHandler->getUploadDelay(translated));
-	crsq->updateValue(dbHandler->getUploadDatarate(translated));
+	cdrq->updateValue(dbHandler.getDownloadDelay(translated));
+	crrq->updateValue(dbHandler.getDownloadDatarate(translated));
+	cdsq->updateValue(dbHandler.getUploadDelay(translated));
+	crsq->updateValue(dbHandler.getUploadDatarate(translated));
 }
 
 /**
@@ -109,16 +113,46 @@ void TbusQueueControl::updateQueues(const char* const roadId, float lanePos) {
 
 	EV << "TbusQueueControl updating queues for road id " << roadId  << " and lane position " << lanePos << "\n";
 
-//	cdrq->updateValue(dbHandler->getDownloadDelay(roadId, lanePos));
-//	crrq->updateValue(dbHandler->getDownloadDatarate(roadId, lanePos));
-//	cdsq->updateValue(dbHandler->getUploadDelay(roadId, lanePos));
-//	crsq->updateValue(dbHandler->getUploadDatarate(roadId, lanePos));
+#pragma message "TODO: Use correct road id and lanePos!"
+	// TODO Change roadId and lanePos back!
+//	cdrq->updateValue(dbHandler.getDownloadDelay(roadId, lanePos));
+//	crrq->updateValue(dbHandler.getDownloadDatarate(roadId, lanePos));
+//	cdsq->updateValue(dbHandler.getUploadDelay(roadId, lanePos));
+//	crsq->updateValue(dbHandler.getUploadDatarate(roadId, lanePos));
 
 	lanePos = 0.0;
-	cdrq->updateValue(dbHandler->getDownloadDelay("roadId", lanePos));
-	crrq->updateValue(dbHandler->getDownloadDatarate("roadId", lanePos));
-	cdsq->updateValue(dbHandler->getUploadDelay("roadId", lanePos));
-	crsq->updateValue(dbHandler->getUploadDatarate("roadId", lanePos));
+	cdrq->updateValue(dbHandler.getDownloadDelay("roadId", lanePos));
+	crrq->updateValue(dbHandler.getDownloadDatarate("roadId", lanePos));
+	cdsq->updateValue(dbHandler.getUploadDelay("roadId", lanePos));
+	crsq->updateValue(dbHandler.getUploadDatarate("roadId", lanePos));
+}
+
+void TbusQueueControl::updateCellId(const char* const newRoadId, const float newLanePos) {
+	// Update cell id, compare against old cell id and unregister/register from TbusCellShare
+	cellid_t newCellId = 0;
+
+	if (newCellId != currentCellId) {
+		cellShare.unregisterHost(currentCellId);
+		cellShare.registerHost(newCellId);
+
+		currentCellId = newCellId;
+	}
+}
+
+void TbusQueueControl::cellUpdateCompleteCallback() {
+
+}
+
+void TbusQueueControl::nodeMoved(const char* const newRoadId, const float newLanePos) {
+	delete currentRoadId;
+	currentRoadId = new char[strlen(newRoadId) + 1];
+	strcpy(currentRoadId, newRoadId);
+
+	currentLanePos = newLanePos;
+
+	updateCellId(newRoadId, newLanePos);
+
+	updateQueues(newRoadId, newLanePos);
 }
 
 #ifdef TBUS_QUEUE_TESTING

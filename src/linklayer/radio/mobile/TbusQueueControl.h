@@ -26,6 +26,7 @@
 #include "TbusCDSQ.h"
 #include "Coord.h"
 #include "DatabaseHandler.h"
+#include "TbusCellShare.h"
 #include "TbusCoordinateConverter.h"
 
 #define TBUS_QUEUE_TESTING
@@ -41,14 +42,24 @@ class TbusQueueControl : public cSimpleModule {
 		TbusCRSQ* crsq; ///< Client datarate send queue reference
 		TbusCDSQ* cdsq; ///< Client delay send queue reference
 
-		DatabaseHandler* dbHandler; ///< Database handler reference
+		DatabaseHandler& dbHandler; ///< Database handler reference
+		TbusCellShare& cellShare; ///< Cell share calculation model
 		TbusCoordinateConverter* converter; ///< Coordinate converter reference
+
+		cellid_t currentCellId;
+		char* currentRoadId;
+		float currentLanePos;
 
 	public:
 		TbusQueueControl();
 
 		void updateQueues(const Coord& newCoords);
 		void updateQueues(const char* const roadId, const float lanePos);
+
+		void updateCellId(const char* const newRoadId, const float newLanePos);
+		void cellUpdateCompleteCallback();
+
+		void nodeMoved(const char* const newRoadId, const float newLanePos);
 
 		void initialize();
 
