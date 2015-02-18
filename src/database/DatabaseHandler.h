@@ -31,9 +31,6 @@ class DatabaseHandler {
 		 */
 		DatabaseHandler(const DatabaseHandler&);
 
-		std::set<TbusQueueControl*> callbackHandlers;
-		uint64_t numRegisteredCallbackHandlers = 0;
-
 	protected:
 		/**
 		 * Protected Constructor.
@@ -70,41 +67,12 @@ class DatabaseHandler {
 		virtual ~DatabaseHandler();
 
 		/**
-		 * Increase the number of registered callback handlers: Register a host
+		 * Return the cellid at position roadId and lanePos
+		 * @param roadId Current road id
+		 * @param lanePos Lane position
+		 * @return Cell id
 		 */
-		void increaseCallbackHandlers() {
-			numRegisteredCallbackHandlers++;
-		}
-
-		/**
-		 * Decrease the number of registered callback handlers: Unregister a host
-		 */
-		void decreaseCallbackHandlers() {
-			ASSERT2(numRegisteredCallbackHandlers > 0, "Invalid decrease of registered callback handlers!");
-
-			numRegisteredCallbackHandlers--;
-		}
-
-		cellid_t getCellId(const char* const roadId, const float lanePos, TbusQueueControl* callbackHandler) {
-			callbackHandlers.insert(callbackHandler);
-
-			//TODO: Get cell id from database
-
-			// If every callback handler got its cell id, do the callbacks
-			if (callbackHandlers.size() == numRegisteredCallbackHandlers) {
-				doCallbacks();
-
-				// And clear the list
-				callbackHandlers.clear();
-			}
-		}
-
-		void doCallbacks() {
-			std::set<TbusQueueControl*>::iterator it;
-			for (it = callbackHandlers.begin(); it != callbackHandlers.end(); ++it) {
-				(*it)->cellUpdateCompleteCallback();
-			}
-		}
+		virtual cellid_t getCellId(const char* const roadId, const float lanePos, simtime_t time = simTime());
 
 		/**
 		 * Return the upload data- and droprate at position pos and time time.

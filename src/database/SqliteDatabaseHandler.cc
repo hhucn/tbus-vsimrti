@@ -116,6 +116,10 @@ void SqliteDatabaseHandler::abort() {
 	sqlite3_close(database);
 }
 
+cellid_t SqliteDatabaseHandler::getCellId(const char* const roadId, const float lanePos, simtime_t time) {
+	//TODO
+}
+
 /**
  * Retrieves upload data- and droprate for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
  * on the two-dimensional position plane and one-dimensional timeline.

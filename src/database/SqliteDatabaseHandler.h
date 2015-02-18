@@ -143,6 +143,8 @@ class SqliteDatabaseHandler : public DatabaseHandler {
 		SqliteDatabaseHandler();
 		virtual ~SqliteDatabaseHandler();
 
+		virtual cellid_t getCellId(const char* const roadId, const float lanePos, simtime_t time = simTime());
+
 		// Coord based
 	    virtual TbusQueueDatarateValue* getUploadDatarate(const Coord& pos, simtime_t time = simTime());
 	    virtual TbusQueueDelayValue* getUploadDelay(const Coord& pos, simtime_t time = simTime());
