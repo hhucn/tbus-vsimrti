@@ -239,7 +239,8 @@ $O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
 	database/SqliteDatabaseHandler.h \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
-	queues/implementation/delay/TbusQueueDelayValue.h
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	world/cellshare/TbusCellShare.h
 $O/database/converter/TbusCoordinateConverter.o: database/converter/TbusCoordinateConverter.cc \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \

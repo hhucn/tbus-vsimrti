@@ -45,16 +45,6 @@ class DatabaseHandler {
 		 * @return Singleton instance of type T
 		 */
 		template<class T> static DatabaseHandler& getInstance() {
-			//		static DatabaseHandler* instance = NULL; ///< static singleton instance. Used for guaranteed memory cleanup.
-			//
-			//		if (!instance) {
-			//			instance = dynamic_cast<DatabaseHandler*>(new T());
-			//
-			//			if (!instance) {
-			//				std::cerr << __FILE__ << ":" << __FUNCTION__ << " (" << __LINE__ << ") ERROR! Class DatabaseHandler is no base class of class \"" << typeid(T).name() << "\" ! Aborting..." << std::endl;
-			//				exit(1);
-			//			}
-			//		}
 			static DatabaseHandler instance = T(); ///< static local variable used for singleton cleanup
 
 			return instance;

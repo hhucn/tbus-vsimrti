@@ -140,7 +140,7 @@ void TbusQueueControl::updateCellId(const char* const newRoadId, const float new
 }
 
 void TbusQueueControl::cellUpdateCompleteCallback() {
-
+	updateQueues(currentRoadId, currentLanePos);
 }
 
 void TbusQueueControl::nodeMoved(const char* const newRoadId, const float newLanePos) {
@@ -150,9 +150,7 @@ void TbusQueueControl::nodeMoved(const char* const newRoadId, const float newLan
 
 	currentLanePos = newLanePos;
 
-	updateCellId(newRoadId, newLanePos);
-
-	updateQueues(newRoadId, newLanePos);
+	updateCellId(currentRoadId, currentLanePos);
 }
 
 #ifdef TBUS_QUEUE_TESTING
