@@ -28,6 +28,7 @@
 #include "DatabaseHandler.h"
 #include "TbusCellShare.h"
 #include "TbusCoordinateConverter.h"
+#include "TbusCallbackTarget.h"
 
 #define TBUS_QUEUE_TESTING
 
@@ -35,15 +36,15 @@
  * Queue control class.
  * Distributes network characteristics along the related queues.
  */
-class TbusQueueControl : public cSimpleModule {
+class TbusQueueControl : public cSimpleModule, public TbusCallbackTarget {
 	private:
 		TbusCDRQ* cdrq; ///< Client delay receive queue reference
 		TbusCRRQ* crrq; ///< Client datarate receive queue reference
 		TbusCRSQ* crsq; ///< Client datarate send queue reference
 		TbusCDSQ* cdsq; ///< Client delay send queue reference
 
-		DatabaseHandler& dbHandler; ///< Database handler reference
-		TbusCellShare& cellShare; ///< Cell share calculation model
+		DatabaseHandler* dbHandler; ///< Database handler reference
+		TbusCellShare* cellShare; ///< Cell share calculation model
 		TbusCoordinateConverter* converter; ///< Coordinate converter reference
 
 		cellid_t currentCellId;
@@ -59,9 +60,10 @@ class TbusQueueControl : public cSimpleModule {
 		void updateCellId(const char* const newRoadId, const float newLanePos);
 		void cellUpdateCompleteCallback();
 
-		void nodeMoved(const char* const newRoadId, const float newLanePos);
+		virtual void nodeMoved(const char* const newRoadId, const float newLanePos);
 
-		void initialize();
+		virtual void initialize();
+		virtual void finish();
 
 #ifdef TBUS_QUEUE_TESTING
 		void handleMessage(cMessage* msg);

@@ -44,6 +44,7 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/mobility \
     -I../../inetmanet/src \
     -I. \
+    -Icallback \
     -Idatabase \
     -Idatabase/converter \
     -Ilinklayer \
@@ -195,6 +196,7 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f tbus-vsimrti tbus-vsimrti.exe libtbus-vsimrti.so libtbus-vsimrti.a libtbus-vsimrti.dll libtbus-vsimrti.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
+	$(Q)-rm -f callback/*_m.cc callback/*_m.h
 	$(Q)-rm -f database/*_m.cc database/*_m.h
 	$(Q)-rm -f database/converter/*_m.cc database/converter/*_m.h
 	$(Q)-rm -f linklayer/*_m.cc linklayer/*_m.h
@@ -228,13 +230,14 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc callback/*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
+	callback/TbusCallbackTarget.h \
 	database/DatabaseHandler.h \
 	database/SqliteDatabaseHandler.h \
 	queues/implementation/base/TbusQueueValue.h \
@@ -328,6 +331,7 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	callback/TbusCallbackTarget.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \
@@ -351,6 +355,7 @@ $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueCo
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
+	callback/TbusCallbackTarget.h \
 	database/DatabaseHandler.h \
 	database/SqliteDatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
@@ -377,6 +382,7 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/mob/VSimRTIExtendedMobilityNode.h \
+	callback/TbusCallbackTarget.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
@@ -524,6 +530,7 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/msg/VSimRTIAppPacket_m.h \
+	callback/TbusCallbackTarget.h \
 	database/DatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \
@@ -543,6 +550,7 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	world/TbusChannelControl.h \
 	world/cellshare/TbusCellShare.h
 $O/world/cellshare/TbusTrivialCellShare.o: world/cellshare/TbusTrivialCellShare.cc \
+	callback/TbusCallbackTarget.h \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	world/cellshare/TbusCellShare.h \

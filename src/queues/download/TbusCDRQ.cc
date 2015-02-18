@@ -24,7 +24,7 @@ Define_Module(TbusCDRQ);
  */
 TbusCDRQ::TbusCDRQ() : TbusDelayQueue() {
 	// We only need to store one element
-	values.resize(1);
+//	values.resize(1);
 }
 
 /**
@@ -33,7 +33,10 @@ TbusCDRQ::TbusCDRQ() : TbusDelayQueue() {
  */
 void TbusCDRQ::updateValue(TbusQueueDelayValue* newValue) {
 	Enter_Method("updateValue()");
-	if (values.empty() || values.front() != newValue) {
+	std::cout << "update value (delay): " << newValue->delay << endl;
+	if (values.empty()) {
+		values.push_back(newValue);
+	} else if (values.front() != newValue) {
 		// Store only new value
 		delete values[0];
 		values[0] = newValue;

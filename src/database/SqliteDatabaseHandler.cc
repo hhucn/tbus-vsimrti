@@ -116,8 +116,16 @@ void SqliteDatabaseHandler::abort() {
 	sqlite3_close(database);
 }
 
+/**
+ * Retrieves the cell id for position (roadId, lanePos).
+ * @param roadId Road id
+ * @param lanePos Lane position
+ * @param time Current simulation time
+ * @return Cell id
+ */
 cellid_t SqliteDatabaseHandler::getCellId(const char* const roadId, const float lanePos, simtime_t time) {
-	//TODO
+	// TODO: Get correct value
+	return 1;
 }
 
 /**
@@ -268,6 +276,8 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const char* con
 			// Aggregation functions returns at least one row, even if it's empty
 			result->datarate = TBUS_DATARATE_DEFAULT;
 			result->droprate = TBUS_DROPRATE_DEFAULT;
+
+			EV << "WARNING: Using default upload delay value!" << endl;
 		} else {
 			// Retrieve values from database
 			result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_KBIT_TO_BIT;
@@ -304,6 +314,8 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const char* const roa
 		if (sqlite3_column_type(uploadDelayStatementEdge, 0) == SQLITE_NULL) {
 			// Aggregation functions returns at least one row, even if it's empty
 			result->delay = TBUS_DELAY_DEFAULT;
+
+			EV << "WARNING: Using default upload delay value!" << endl;
 		} else {
 			// Retrieve value from database
 			result->delay = sqlite3_column_int64(uploadDelayStatementEdge, 0);
@@ -341,6 +353,8 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const char* c
 			// Aggregation functions returns at least one row, even if it's empty
 			result->datarate = TBUS_DATARATE_DEFAULT;
 			result->droprate = TBUS_DROPRATE_DEFAULT;
+
+			EV << "WARNING: Using default download datarate value!" << endl;
 		} else {
 			// Retrieve values from database
 			result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_KBIT_TO_BIT;
@@ -378,6 +392,8 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const char* const r
 		if (sqlite3_column_type(downloadDelayStatementEdge, 0) == SQLITE_NULL) {
 			// Aggregation functions returns at least one row, even if it's empty
 			result->delay = TBUS_DELAY_DEFAULT;
+
+			EV << "WARNING: Using default download delay value!" << endl;
 		} else {
 			// Retrieve value from database
 			result->delay = sqlite3_column_int64(downloadDelayStatementEdge, 0);

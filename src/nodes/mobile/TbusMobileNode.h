@@ -22,6 +22,7 @@
 class TbusMobileNode : public VSimRTIExtendedMobilityNode {
 	private:
 		TbusQueueControl* qc;
+
 	public:
 		TbusMobileNode();
 		virtual ~TbusMobileNode();

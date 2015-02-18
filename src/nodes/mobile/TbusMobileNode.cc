@@ -29,5 +29,6 @@ void TbusMobileNode::initialize(int stage) {
 }
 
 void TbusMobileNode::extendedMobilityUpdated() {
-	qc->updateQueues(getRoadId(), getLanePos());
+//	qc->nodeMoved(getRoadId(), getLanePos());
+	qc->nodeMoved("roadId", 0.0);
 }

@@ -23,23 +23,23 @@ TbusTrivialCellShare::~TbusTrivialCellShare() {
 }
 
 /**
- * Register host at cell.
- * @param cellId Cell id
- * @param host Host
+ * Update a hosts connected cell id
+ * @param from Previous cell id (Can be TBUS_INVALID_CELLID)
+ * @param to Current cell id (Can be TBUS_INVALID_CELLID)
+ * @param host Host to update
  */
-void TbusTrivialCellShare::registerHost(cellid_t cellId, cModule* host) {
-	cellToNumHosts[cellId]++;
-}
+void TbusTrivialCellShare::hostMoved(cellid_t from, cellid_t to, cModule* host) {
+	if (from != TBUS_INVALID_CELLID) {
+		ASSERT2(cellToNumHosts[from] > 0, "Invalid move host: No host registered at from cell!");
+		cellToNumHosts[from]--;
+	}
 
-/**
- * Unregister host from cell.
- * @param cellId Cell id
- * @param host Host
- */
-void TbusTrivialCellShare::unregisterHost(cellid_t cellId, cModule* host) {
-	ASSERT2(cellToNumHosts[cellId] > 0, "Invalid unregister, no hosts registered to this cell!");
+	if (to != TBUS_INVALID_CELLID) {
+		cellToNumHosts[to]++;
+	}
 
-	cellToNumHosts[cellId]--;
+	// Call parent for callback handling
+	TbusCellShare::hostMoved(from, to, host);
 }
 
 /**

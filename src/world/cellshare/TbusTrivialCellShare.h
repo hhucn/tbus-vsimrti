@@ -34,8 +34,7 @@ class TbusTrivialCellShare : public TbusCellShare {
 		TbusTrivialCellShare();
 		virtual ~TbusTrivialCellShare();
 
-		virtual void registerHost(cellid_t cellId, cModule* host = NULL);
-		virtual void unregisterHost(cellid_t cellId, cModule* host = NULL);
+		virtual void hostMoved(cellid_t from, cellid_t to, cModule* host = NULL);
 
 		virtual void adaptValue(cellid_t cellId, TbusQueueValue* value, cModule* host = NULL);
 };
