@@ -15,10 +15,8 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-
-#include "SqliteDatabaseHandler.h"
-#include "DatabaseHandler.h"
 #include "TbusQueueControl.h"
+#include "TbusSqliteDatabaseHandler.h"
 #include "ModuleAccess.h"
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
@@ -34,7 +32,7 @@ Define_Module(TbusQueueControl);
  * Empty constructor.
  */
 TbusQueueControl::TbusQueueControl() :
-		dbHandler(DatabaseHandler::getInstance<SqliteDatabaseHandler>()),
+		dbHandler(TbusDatabaseHandler::getInstance<TbusSqliteDatabaseHandler>()),
 		cellShare(TbusCellShare::getInstance<TbusTrivialCellShare>()),
 		currentRoadId(NULL) {
 }

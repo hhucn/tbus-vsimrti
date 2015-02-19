@@ -25,7 +25,7 @@
 #include "TbusCRSQ.h"
 #include "TbusCDSQ.h"
 #include "Coord.h"
-#include "DatabaseHandler.h"
+#include "TbusDatabaseHandler.h"
 #include "TbusCellShare.h"
 #include "TbusCoordinateConverter.h"
 #include "TbusCallbackTarget.h"
@@ -43,7 +43,7 @@ class TbusQueueControl : public cSimpleModule, public TbusCallbackTarget {
 		TbusCRSQ* crsq; ///< Client datarate send queue reference
 		TbusCDSQ* cdsq; ///< Client delay send queue reference
 
-		DatabaseHandler* dbHandler; ///< Database handler reference
+		TbusDatabaseHandler* dbHandler; ///< Database handler reference
 		TbusCellShare* cellShare; ///< Cell share calculation model
 		TbusCoordinateConverter* converter; ///< Coordinate converter reference
 

@@ -1,11 +1,11 @@
 /*
- * SqliteDatabaseHandler.cc
+ * TbusSqliteDatabaseHandler.cc
  *
  *  Created on: 13.10.2014
  *      Author: Raphael Bialon <Raphael.Bialon@hhu.de>
  */
 
-#include "SqliteDatabaseHandler.h"
+#include "TbusSqliteDatabaseHandler.h"
 #include <string>
 #include <sstream>
 #include <iostream>
@@ -16,7 +16,7 @@ Register_GlobalConfigOption(CFGID_TBUS_DATABASE_FILE, "tbus-database", CFG_FILEN
  * Creates a new database connection by opening TBUS_SQLITE_DATABASE and checks the database version.
  * Aborts on error and closes the database connection.
  */
-SqliteDatabaseHandler::SqliteDatabaseHandler() {
+TbusSqliteDatabaseHandler::TbusSqliteDatabaseHandler() {
 	int result = 0;
 	database = NULL;
 	const std::string databaseFile = ev.getConfig()->getAsFilename(CFGID_TBUS_DATABASE_FILE);
@@ -72,7 +72,7 @@ SqliteDatabaseHandler::SqliteDatabaseHandler() {
 /**
  * Finalizes prepared statements and closes database connection.
  */
-SqliteDatabaseHandler::~SqliteDatabaseHandler() {
+TbusSqliteDatabaseHandler::~TbusSqliteDatabaseHandler() {
 	// Coord based
 	sqlite3_finalize(uploadDatarateStatement);
 	sqlite3_finalize(uploadDelayStatement);
@@ -92,7 +92,7 @@ SqliteDatabaseHandler::~SqliteDatabaseHandler() {
  * Retrieves the database version as of SQLites' pragma user_version 32-bit int field.
  * @return The database version
  */
-int32_t SqliteDatabaseHandler::getDatabaseVersion() {
+int32_t TbusSqliteDatabaseHandler::getDatabaseVersion() {
 	sqlite3_stmt* statement;
 
 	sqlite3_prepare_v2(database, "pragma user_version;", -1, &statement, NULL);
@@ -112,7 +112,7 @@ int32_t SqliteDatabaseHandler::getDatabaseVersion() {
 /**
  * Aborts execution by closing the database handler and exiting with value 1
  */
-void SqliteDatabaseHandler::abort() {
+void TbusSqliteDatabaseHandler::abort() {
 	sqlite3_close(database);
 }
 
@@ -123,7 +123,7 @@ void SqliteDatabaseHandler::abort() {
  * @param time Current simulation time
  * @return Cell id
  */
-cellid_t SqliteDatabaseHandler::getCellId(const char* const roadId, const float lanePos, simtime_t time) {
+cellid_t TbusSqliteDatabaseHandler::getCellId(const char* const roadId, const float lanePos, simtime_t time) {
 	// TODO: Get correct value
 	return 1;
 }
@@ -137,7 +137,7 @@ cellid_t SqliteDatabaseHandler::getCellId(const char* const roadId, const float 
  * @param time The time to look at
  * @return Data- and droprate as a TbusQueueDatarateValue object
  */
-TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& pos, simtime_t time) {
+TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getUploadDatarate(const Coord& pos, simtime_t time) {
 	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
 
 	sqlite3_reset(uploadDatarateStatement);
@@ -168,7 +168,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const Coord& po
  * @param time The time to look at
  * @return Delay as a TbusQueueDelayValue object
  */
-TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, simtime_t time) {
+TbusQueueDelayValue* TbusSqliteDatabaseHandler::getUploadDelay(const Coord& pos, simtime_t time) {
 	TbusQueueDelayValue* result = new TbusQueueDelayValue();
 
 	sqlite3_reset(uploadDelayStatement);
@@ -197,7 +197,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const Coord& pos, sim
  * @param time The time to look at
  * @return Data- and droprate as a TbusQueueDatarateValue object
  */
-TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& pos, simtime_t time) {
+TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getDownloadDatarate(const Coord& pos, simtime_t time) {
 	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
 
 	sqlite3_reset(downloadDatarateStatement);
@@ -228,7 +228,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const Coord& 
  * @param time The time to look at
  * @return Delay as a TbusQueueDelayValue object
  */
-TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, simtime_t time) {
+TbusQueueDelayValue* TbusSqliteDatabaseHandler::getDownloadDelay(const Coord& pos, simtime_t time) {
 	TbusQueueDelayValue* result = new TbusQueueDelayValue();
 
 	sqlite3_reset(downloadDelayStatement);
@@ -258,7 +258,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const Coord& pos, s
  * @param time The time to look at (defaults to the current simulation time)
  * @return Data- and Droprate as a TbusQueueDatarateValue object
  */
-TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const char* const roadId, const float lanePos, simtime_t time) {
+TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getUploadDatarate(const char* const roadId, const float lanePos, simtime_t time) {
 	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
 
 	sqlite3_reset(uploadDatarateStatementEdge);
@@ -298,7 +298,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getUploadDatarate(const char* con
  * @param time The time to look at (defaults to the current simulation time)
  * @return Delay as a TbusQueueDelayValue
  */
-TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const char* const roadId, const float lanePos, simtime_t time) {
+TbusQueueDelayValue* TbusSqliteDatabaseHandler::getUploadDelay(const char* const roadId, const float lanePos, simtime_t time) {
 	TbusQueueDelayValue* result = new TbusQueueDelayValue();
 
 	sqlite3_reset(uploadDelayStatementEdge);
@@ -335,7 +335,7 @@ TbusQueueDelayValue* SqliteDatabaseHandler::getUploadDelay(const char* const roa
  * @param time The time to look at (defaults to the current simulation time)
  * @return Data- and Droprate as a TbusQueueDatarateValue object
  */
-TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const char* const roadId, const float lanePos, simtime_t time) {
+TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getDownloadDatarate(const char* const roadId, const float lanePos, simtime_t time) {
 	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
 
 	sqlite3_reset(downloadDatarateStatementEdge);
@@ -375,7 +375,7 @@ TbusQueueDatarateValue* SqliteDatabaseHandler::getDownloadDatarate(const char* c
  * @param time The time to look at (defaults to the current simulation time)
  * @return Delay as a TbusQueueDelayValue
  */
-TbusQueueDelayValue* SqliteDatabaseHandler::getDownloadDelay(const char* const roadId, const float lanePos, simtime_t time) {
+TbusQueueDelayValue* TbusSqliteDatabaseHandler::getDownloadDelay(const char* const roadId, const float lanePos, simtime_t time) {
 	TbusQueueDelayValue* result = new TbusQueueDelayValue();
 
 	sqlite3_reset(downloadDelayStatementEdge);

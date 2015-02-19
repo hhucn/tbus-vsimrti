@@ -19,21 +19,21 @@
  * Abstract base class for all database handlers to be used in TBUS.
  * Provides an interface for accessing data-/droprate and delay from data source.
  */
-class DatabaseHandler {
+class TbusDatabaseHandler {
 	private:
 		/**
 		 * Private copy constructor
 		 * @param
 		 */
-		DatabaseHandler(const DatabaseHandler&);
-		void operator=(const DatabaseHandler&);
+		TbusDatabaseHandler(const TbusDatabaseHandler&);
+		void operator=(const TbusDatabaseHandler&);
 
 	protected:
 		/**
 		 * Protected Constructor.
 		 * Only inheriting is possible.
 		 */
-		DatabaseHandler() {};
+		TbusDatabaseHandler() {};
 
 	public:
 		/**
@@ -41,8 +41,8 @@ class DatabaseHandler {
 		 * This is used for an easy interface throughout the using classes and easy instantiation and maintenance of the belonging data source.
 		 * @return Singleton instance of type T
 		 */
-		template<class T> static DatabaseHandler* getInstance() {
-			static DatabaseHandler* instance = new T(); ///< static local variable used for singleton cleanup
+		template<class T> static TbusDatabaseHandler* getInstance() {
+			static TbusDatabaseHandler* instance = new T(); ///< static local variable used for singleton cleanup
 
 			return instance;
 		}
@@ -51,7 +51,7 @@ class DatabaseHandler {
 		 * Destructor.
 		 * Database cleanup, query finalization and database closing should be handled here by derived classes.
 		 */
-		virtual ~DatabaseHandler() = 0;
+		virtual ~TbusDatabaseHandler() = 0;
 
 		/**
 		 * Return the cellid at position roadId and lanePos

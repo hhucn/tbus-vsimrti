@@ -14,7 +14,7 @@
 #define SQLITEDATABASEHANDLER_H_
 
 #include <sqlite3.h>
-#include "DatabaseHandler.h"
+#include "TbusDatabaseHandler.h"
 
 /**
  * SQLite user_version database version for version check
@@ -43,7 +43,7 @@
 #define TBUS_DELAY_DEFAULT 1
 
 /**
- * @class SqliteDatabaseHandler
+ * @class TbusSqliteDatabaseHandler
  * Database handler for SQLite database.
  *
  * For Coord based SQL database structure, see tbus.sql or below.
@@ -121,7 +121,7 @@
  * );
  * @endcode
  */
-class SqliteDatabaseHandler : public DatabaseHandler {
+class TbusSqliteDatabaseHandler : public TbusDatabaseHandler {
 	private:
 		sqlite3* database; ///< Database connection
 
@@ -140,8 +140,8 @@ class SqliteDatabaseHandler : public DatabaseHandler {
 		inline void abort();
 
 	public:
-		SqliteDatabaseHandler();
-		virtual ~SqliteDatabaseHandler();
+		TbusSqliteDatabaseHandler();
+		virtual ~TbusSqliteDatabaseHandler();
 
 		virtual cellid_t getCellId(const char* const roadId, const float lanePos, simtime_t time = simTime());
 

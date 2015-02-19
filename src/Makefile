@@ -87,7 +87,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
-    $O/database/SqliteDatabaseHandler.o \
+    $O/database/TbusSqliteDatabaseHandler.o \
     $O/database/converter/TbusCoordinateConverter.o \
     $O/linklayer/helper/IpAddressHelper.o \
     $O/linklayer/radio/inet/TbusInetPHY.o \
@@ -233,13 +233,13 @@ depend:
 	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc callback/*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
-$O/database/SqliteDatabaseHandler.o: database/SqliteDatabaseHandler.cc \
+$O/database/TbusSqliteDatabaseHandler.o: database/TbusSqliteDatabaseHandler.cc \
 	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	callback/TbusCallbackTarget.h \
-	database/DatabaseHandler.h \
-	database/SqliteDatabaseHandler.h \
+	database/TbusDatabaseHandler.h \
+	database/TbusSqliteDatabaseHandler.h \
 	queues/implementation/base/TbusQueueValue.h \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
@@ -332,7 +332,7 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	callback/TbusCallbackTarget.h \
-	database/DatabaseHandler.h \
+	database/TbusDatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
@@ -356,8 +356,8 @@ $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueCo
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	callback/TbusCallbackTarget.h \
-	database/DatabaseHandler.h \
-	database/SqliteDatabaseHandler.h \
+	database/TbusDatabaseHandler.h \
+	database/TbusSqliteDatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
 	queues/download/TbusCDRQ.h \
@@ -383,7 +383,7 @@ $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/mob/VSimRTIExtendedMobilityNode.h \
 	callback/TbusCallbackTarget.h \
-	database/DatabaseHandler.h \
+	database/TbusDatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
 	nodes/mobile/TbusMobileNode.h \
@@ -531,7 +531,7 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/msg/VSimRTIAppPacket_m.h \
 	callback/TbusCallbackTarget.h \
-	database/DatabaseHandler.h \
+	database/TbusDatabaseHandler.h \
 	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
