@@ -10,7 +10,7 @@
 
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
-#include "TbusCellShare.h"
+#include "TbusCellShareTypes.h"
 #include "Coord.h"
 #include "omnetpp.h"
 

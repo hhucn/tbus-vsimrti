@@ -21,6 +21,7 @@
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
 #include "TbusTrivialCellShare.h"
+#include "TbusMobileNode.h"
 
 #ifdef TBUS_QUEUE_TESTING
 #include <sqlite3.h>
@@ -34,7 +35,8 @@ Define_Module(TbusQueueControl);
 TbusQueueControl::TbusQueueControl() :
 		dbHandler(TbusDatabaseHandler::getInstance<TbusSqliteDatabaseHandler>()),
 		cellShare(TbusCellShare::getInstance<TbusTrivialCellShare>()),
-		currentRoadId(NULL) {
+		currentRoadId(NULL),
+		online(false) {
 }
 
 /**
@@ -49,8 +51,15 @@ void TbusQueueControl::initialize() {
 
 	converter = TbusCoordinateConverter::getInstance();
 
-	cellShare->registerHost();
 	currentCellId = TBUS_INVALID_CELLID;
+
+	tbusHost.callback = this;
+	tbusHost.host = this->getParentModule();
+
+	// Find parent TbusMobileNode module
+	while (!dynamic_cast<TbusMobileNode*>(tbusHost.host)) {
+		tbusHost.host = tbusHost.host->getParentModule();
+	}
 
 #ifdef TBUS_QUEUE_TESTING
 	// TESTING with selected timed updates from the database
@@ -83,8 +92,7 @@ void TbusQueueControl::initialize() {
  * Takes node out of the cell model.
  */
 void TbusQueueControl::finish() {
-	cellShare->hostMoved(currentCellId, TBUS_INVALID_CELLID);
-	cellShare->unregisterHost();
+	cellShare->hostMoved(currentCellId, TBUS_INVALID_CELLID, &tbusHost);
 }
 
 /**
@@ -139,6 +147,8 @@ void TbusQueueControl::updateQueues(const char* const roadId, const float lanePo
 	datarateValue = dbHandler->getUploadDatarate(roadId, lanePos);
 	cellShare->adaptValue(currentCellId, datarateValue);
 	crsq->updateValue(datarateValue);
+
+	online = true;
 }
 
 /**
@@ -148,28 +158,18 @@ void TbusQueueControl::updateQueues(const char* const roadId, const float lanePo
  * @param newLanePos New lane position
  */
 void TbusQueueControl::updateCellId(const char* const newRoadId, const float newLanePos) {
-	// Update cell id, compare against old cell id and unregister/register from TbusCellShare
+	// Update cell id, compare against old cell id and move
 	cellid_t newCellId = dbHandler->getCellId(newRoadId, newLanePos);
-
-	// Register Callback at CellShare model
-	cellShare->addCallback(new TbusCallbackTarget::TbusCallback<TbusQueueControl>(this, &TbusQueueControl::cellUpdateCompleteCallback));
 
 	if (newCellId != currentCellId) {
 		// Set new cell id for callback
 		cellid_t tempCellId = currentCellId;
 		currentCellId = newCellId;
 
-		cellShare->hostMoved(tempCellId, newCellId);
+		cellShare->hostMoved(tempCellId, newCellId, &tbusHost);
 	} else {
-		cellShare->hostMoved(TBUS_INVALID_CELLID, TBUS_INVALID_CELLID);
+		cellShare->hostMoved(TBUS_INVALID_CELLID, TBUS_INVALID_CELLID, &tbusHost);
 	}
-}
-
-/**
- * Callback function for queue value retrieval.
- */
-void TbusQueueControl::cellUpdateCompleteCallback() {
-	updateQueues(currentRoadId, currentLanePos);
 }
 
 /**
@@ -185,6 +185,62 @@ void TbusQueueControl::nodeMoved(const char* const newRoadId, const float newLan
 	currentLanePos = newLanePos;
 
 	updateCellId(currentRoadId, currentLanePos);
+}
+
+/**
+ * Update selected queue values if these queues are active
+ * @param selection And-ded Queue types
+ */
+void TbusQueueControl::triggerQueueValueUpdate(TbusQueueSelection selection) {
+	TbusQueueDelayValue* delayValue;
+	TbusQueueDatarateValue* datarateValue;
+
+	if ((selection && CDRQ) && cdrq->isActive()) {
+		delayValue = dbHandler->getDownloadDelay(currentRoadId, currentLanePos);
+		cellShare->adaptValue(currentCellId, delayValue);
+		cdrq->updateValue(delayValue);
+	}
+
+	if ((selection && CRRQ) && crrq->isActive()) {
+		datarateValue = dbHandler->getDownloadDatarate(currentRoadId, currentLanePos);
+		cellShare->adaptValue(currentCellId, datarateValue);
+		crrq->updateValue(datarateValue);
+	}
+
+	if ((selection && CDSQ) && cdsq->isActive()) {
+		delayValue = dbHandler->getUploadDelay(currentRoadId, currentLanePos);
+		cellShare->adaptValue(currentCellId, delayValue);
+		cdsq->updateValue(delayValue);
+	}
+
+	if ((selection && CRSQ) && crsq->isActive()) {
+		datarateValue = dbHandler->getUploadDatarate(currentRoadId, currentLanePos);
+		cellShare->adaptValue(currentCellId, datarateValue);
+		crsq->updateValue(datarateValue);
+	}
+}
+
+/**
+ * Are these queues online, e.g. do they already have queue values?
+ * @return online status of queues
+ */
+bool TbusQueueControl::isOnline() const {
+	return online;
+}
+
+/**
+ * Is any queue active?
+ * @return Active state
+ */
+bool TbusQueueControl::isActive() const {
+	bool active = false;
+
+	active |= cdrq->isActive();
+	active |= crrq->isActive();
+	active |= cdsq->isActive();
+	active |= crsq->isActive();
+
+	return active;
 }
 
 #ifdef TBUS_QUEUE_TESTING

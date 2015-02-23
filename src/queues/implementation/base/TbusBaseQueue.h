@@ -48,6 +48,8 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 
 		virtual void updateValue(T* newValue);
 
+		bool isActive() const;
+
 	protected:
 		TbusPacketQueue queue; ///< The packet queue
 		cMessage selfMessage; ///< Self message for timed events

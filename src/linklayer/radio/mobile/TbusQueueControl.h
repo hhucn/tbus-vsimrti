@@ -26,17 +26,19 @@
 #include "TbusCDSQ.h"
 #include "Coord.h"
 #include "TbusDatabaseHandler.h"
-#include "TbusCellShare.h"
+#include "TbusCellShareTypes.h"
+#include "TbusCellShareCallback.h"
 #include "TbusCoordinateConverter.h"
-#include "TbusCallbackTarget.h"
 
 #define TBUS_QUEUE_TESTING
+
+class TbusCellShare;
 
 /**
  * Queue control class.
  * Distributes network characteristics along the related queues.
  */
-class TbusQueueControl : public cSimpleModule, public TbusCallbackTarget {
+class TbusQueueControl : public cSimpleModule, public TbusCellShareCallback {
 	private:
 		TbusCDRQ* cdrq; ///< Client delay receive queue reference
 		TbusCRRQ* crrq; ///< Client datarate receive queue reference
@@ -47,9 +49,14 @@ class TbusQueueControl : public cSimpleModule, public TbusCallbackTarget {
 		TbusCellShare* cellShare; ///< Cell share calculation model
 		TbusCoordinateConverter* converter; ///< Coordinate converter reference
 
-		cellid_t currentCellId;
-		char* currentRoadId;
-		float currentLanePos;
+		cellid_t currentCellId; ///< Current cell id
+		char* currentRoadId; ///< Current road id
+		float currentLanePos; ///< Current lane position
+
+		TbusHost tbusHost;
+
+		//TODO: deprecated
+		bool online; ///< Current queue value (has value(s) -> online) status
 
 	public:
 		TbusQueueControl();
@@ -58,12 +65,17 @@ class TbusQueueControl : public cSimpleModule, public TbusCallbackTarget {
 		void updateQueues(const char* const roadId, const float lanePos);
 
 		void updateCellId(const char* const newRoadId, const float newLanePos);
-		void cellUpdateCompleteCallback();
 
 		virtual void nodeMoved(const char* const newRoadId, const float newLanePos);
 
+		virtual void triggerQueueValueUpdate(TbusQueueSelection selection);
+
+		virtual bool isActive() const;
+
 		virtual void initialize();
 		virtual void finish();
+
+		bool isOnline() const;
 
 #ifdef TBUS_QUEUE_TESTING
 		void handleMessage(cMessage* msg);

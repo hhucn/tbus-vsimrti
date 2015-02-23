@@ -41,6 +41,10 @@ template<class T> void TbusBaseQueue<T>::initialize() {
 	outGate = findGate("outGate");
 }
 
+template<class T> bool TbusBaseQueue<T>::isActive() const {
+	return !queue.empty();
+}
+
 /**
  * Handles the message accordingly if it is a self message or a packet.
  * @param msg Message to handle
@@ -143,6 +147,10 @@ template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 	}
 }
 
+/**
+ * Templated function used for value deletion in std::for_each
+ * @param value Value to delete
+ */
 template<class T> void deleteValue(T* value) {
 		delete value;
 }

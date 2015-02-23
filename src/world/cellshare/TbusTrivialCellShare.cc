@@ -18,42 +18,18 @@
 
 TbusTrivialCellShare::TbusTrivialCellShare() {}
 
-TbusTrivialCellShare::~TbusTrivialCellShare() {
-	cellToNumHosts.clear();
-}
-
-/**
- * Update a hosts connected cell id
- * @param from Previous cell id (Can be TBUS_INVALID_CELLID)
- * @param to Current cell id (Can be TBUS_INVALID_CELLID)
- * @param host Host to update
- */
-void TbusTrivialCellShare::hostMoved(cellid_t from, cellid_t to, cModule* host) {
-	if (from != TBUS_INVALID_CELLID) {
-		ASSERT2(cellToNumHosts[from] > 0, "Invalid move host: No host registered at from cell!");
-		cellToNumHosts[from]--;
-	}
-
-	if (to != TBUS_INVALID_CELLID) {
-		cellToNumHosts[to]++;
-	}
-
-	// Call parent for callback handling
-	TbusCellShare::hostMoved(from, to, host);
-}
-
 /**
  * Adapt value for cell id. Only adapts TbusQueueDatarateValues.
  * @param cellId Cell id
  * @param value Value to adapt
  * @param host Host
  */
-void TbusTrivialCellShare::adaptValue(cellid_t cellId, TbusQueueValue* value, cModule* host) {
-	ASSERT2(cellToNumHosts[cellId] > 0, "Invalid adaptValue, no hosts registered to this cell!");
+void TbusTrivialCellShare::adaptValue(cellid_t cellId, TbusQueueValue* value, TbusHost* host) {
+	uint64_t activeHosts = getActiveHostsInCell(cellId);
 
 	// We use an equal division plus 10% more bandwidth
-	double_t factor = (cellToNumHosts[cellId] == 1) ? 1.0 : 1.1;
-	factor /= cellToNumHosts[cellId];
+	double_t factor = (activeHosts == 1) ? 1.0 : 1.1;
+	factor /= (double_t) activeHosts;
 
 	// Only adapt DatarateValues
 	TbusQueueDatarateValue* datarateValue = dynamic_cast<TbusQueueDatarateValue*>(value);

@@ -10,37 +10,68 @@
 
 #include "omnetpp.h"
 #include "TbusQueueValue.h"
-#include "TbusCallbackTarget.h"
+#include "TbusCellShareTypes.h"
 
+#include <map>
 #include <set>
+#include <algorithm>
 
-typedef int64_t cellid_t;
-#define TBUS_INVALID_CELLID (cellid_t) -1
+struct CallbackTrigger {
+	void operator() (TbusHost* host) {
+		host->callback->triggerQueueValueUpdate(ALL);
+	}
+};
 
-class TbusQueueControl;
+struct HostsTrigger {
+	void operator() (std::pair<cellid_t, std::set<TbusHost*> > pair) {
+		std::set<TbusHost*>& hosts = pair.second;
+		CallbackTrigger callbackTrigger;
+
+		std::for_each(hosts.begin(), hosts.end(), callbackTrigger);
+	}
+};
 
 /**
  * Representation of a TBUS cell share module.
  */
 class TbusCellShare {
-	private:
-		TbusCellShare(const TbusCellShare&);
-		void operator=(const TbusCellShare&);
-
 	protected:
 		/**
 		 * Protected constructor for inheriting.
 		 */
 		TbusCellShare() {};
 
+		typedef std::set<TbusHost*> hostSet;
+
 		/**
-		 * Callback set.
+		 * Returns the number of active hosts in the given cell.
+		 * @param cellId Cell id of cell
+		 * @return Number of active hosts
 		 */
-		std::set<TbusCallbackTarget::TbusCallback<TbusQueueControl>*> callbacks;
+		uint64_t getActiveHostsInCell(cellid_t cellId) {
+			hostSet::iterator it;
+			uint64_t numActive = 0;
+
+			for (it = cellToHosts[cellId].begin(); it != cellToHosts[cellId].end(); ++it) {
+				if ((*it)->callback->isActive()) {
+					numActive++;
+				}
+			}
+
+			return numActive;
+		}
+
+	private:
+		TbusCellShare(const TbusCellShare&);
+		void operator=(const TbusCellShare&);
+
 		/**
-		 * Number of registered hosts.
+		 * Maps a cell id to the number of connected hosts.
 		 */
-		uint64_t numRegisteredHosts;
+		std::map<cellid_t, hostSet> cellToHosts;
+
+		uint64_t registeredHosts;
+		uint64_t currenUpdatedHosts;
 
 	public:
 		/**
@@ -54,54 +85,43 @@ class TbusCellShare {
 		}
 
 		/**
-		 * Register a host.
-		 * The optional parameter host can be used for additional information.
-		 * IMPORTANT: Call this implementation if you override it first!
-		 * @param host Optional host reference
+		 * Register host at the cellshare model.
 		 */
-		virtual void registerHost(cModule* host = NULL) {
-			numRegisteredHosts++;
+		void registerHost() {
+			registeredHosts++;
 		}
 
 		/**
-		 * Unregister a host.
-		 * The optional parameter host can be used for additional information.
-		 * IMPORTANT: Call this implementation if you override it first!
-		 * @param host Optional host reference
+		 * Unregister host from the cellshare model.
 		 */
-		virtual void unregisterHost(cModule* host = NULL) {
-			ASSERT2(numRegisteredHosts > 0, "Invalid unregister of host - not enough registered hosts!");
+		void unregisterHost() {
+			ASSERT2(registeredHosts > 0, "Invalid unregisterHost: All previously registered hosts have already been unregistered!");
 
-			numRegisteredHosts--;
-		}
-
-		/**
-		 * Adds a callback to the callback set.
-		 * @param cb Callback to add
-		 */
-		template <class T> void addCallback(TbusCallbackTarget::TbusCallback<T>* cb) {
-			callbacks.insert(cb);
+			registeredHosts--;
 		}
 
 		/**
 		 * Update cell model.
 		 * Host host changed cells between from and to.
-		 * IMPORTANT: Call this implementation if you override it last!
 		 * @param from Cell host was in
 		 * @param to Cell host is in
 		 * @param host Optional host reference
 		 */
-		virtual void hostMoved(cellid_t from, cellid_t to, cModule* host = NULL) {
-			if (callbacks.size() == numRegisteredHosts) {
-				std::set<TbusCallbackTarget::TbusCallback<TbusQueueControl>*>::iterator it;
+		void hostMoved(cellid_t from, cellid_t to, TbusHost* host) {
+			currenUpdatedHosts++;
 
-				for (it = callbacks.begin(); it != callbacks.end(); ++it) {
-					(*it)->doCall();
-					delete *it;
-				}
+			if (from != TBUS_INVALID_CELLID) {
+				cellToHosts[from].erase(host);
+			}
 
-				// Clear all entries
-				callbacks.clear();
+			if (to != TBUS_INVALID_CELLID) {
+				cellToHosts[to].insert(host);
+			}
+
+			if (currenUpdatedHosts == registeredHosts) {
+				HostsTrigger hostsTrigger;
+				// One round completed, trigger update Hosts
+				std::for_each(cellToHosts.begin(), cellToHosts.end(), hostsTrigger);
 			}
 		}
 
@@ -112,7 +132,7 @@ class TbusCellShare {
 		 * @param value Given TbusQueueValue
 		 * @param host Optional host reference
 		 */
-		virtual void adaptValue(cellid_t cellId, TbusQueueValue* value, cModule* host = NULL) = 0;
+		virtual void adaptValue(cellid_t cellId, TbusQueueValue* value, TbusHost* host = NULL) = 0;
 };
 
 #endif /* TBUSCELLSHARE_H_ */

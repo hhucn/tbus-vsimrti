@@ -18,25 +18,17 @@
 
 #include "TbusCellShare.h"
 #include <map>
+#include <set>
 
 /**
  * A trivial CellShare model for TBUS.
  * @author Raphael Bialon <raphael.bialon@hhu.de>
  */
 class TbusTrivialCellShare : public TbusCellShare {
-	private:
-		/**
-		 * Maps a cell id to the number of connected hosts.
-		 */
-		std::map<cellid_t, int> cellToNumHosts;
-
 	public:
 		TbusTrivialCellShare();
-		virtual ~TbusTrivialCellShare();
 
-		virtual void hostMoved(cellid_t from, cellid_t to, cModule* host = NULL);
-
-		virtual void adaptValue(cellid_t cellId, TbusQueueValue* value, cModule* host = NULL);
+		virtual void adaptValue(cellid_t cellId, TbusQueueValue* value, TbusHost* host = NULL);
 };
 
 #endif /* TBUSTRIVIALCELLSHARE_H_ */

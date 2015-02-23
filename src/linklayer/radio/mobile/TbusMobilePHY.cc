@@ -77,11 +77,17 @@ void TbusMobilePHY::handleUpperMessage(cMessage* msg) {
 /**
  * Handle message from lower layer.
  * Adds control info and forwards message.
+ * Only works when queue control is online.
  * @param msg Message to handle
  */
 void TbusMobilePHY::handleLowerMessage(cMessage* msg) {
-	msg->setControlInfo(new TbusQueueControlInfo());
-	send(msg, upperLayerOut);
+	if (queueControl->isOnline()) {
+		msg->setControlInfo(new TbusQueueControlInfo());
+		send(msg, upperLayerOut);
+	} else {
+		delete msg;
+		EV << getName() << " received message while queuecontrol was offline, message deleted!" << endl;
+	}
 }
 
 /**
