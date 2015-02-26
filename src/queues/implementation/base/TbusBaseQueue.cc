@@ -31,7 +31,7 @@ template<class T> TbusBaseQueue<T>::TbusBaseQueue(TbusQueueSelection selection) 
 	queueSelection(selection) {}
 
 /**
- * Empty destructor, clean up is done in finish()
+ * Empty destructor, clean up is done in finish().
  * @see TbusBaseQueue<T>::finish()
  */
 template<class T> TbusBaseQueue<T>::~TbusBaseQueue() {}
@@ -44,6 +44,10 @@ template<class T> void TbusBaseQueue<T>::initialize() {
 	outGate = findGate("outGate");
 }
 
+template<class T> void TbusBaseQueue<T>::setQueueControlCallback(TbusQueueControlCallback* qcCallback) {
+	callback = qcCallback;
+}
+
 /**
  * Set the status for value updates.
  * @param status Value updates status
@@ -51,9 +55,19 @@ template<class T> void TbusBaseQueue<T>::initialize() {
 template<class T> void TbusBaseQueue<T>::setQueueStatus(TbusQueueStatus status) {
 	if (status != queueStatus) {
 		// Only update if different
-
 		queueStatus = status;
+
+		// Make queue control aware of change
+		callback->queueStatusChanged(queueSelection);
 	}
+}
+
+/**
+ * Get this queues status.
+ * @return Queue status
+ */
+template<class T> TbusQueueStatus TbusBaseQueue<T>::getQueueStatus() const {
+	return queueStatus;
 }
 
 /**

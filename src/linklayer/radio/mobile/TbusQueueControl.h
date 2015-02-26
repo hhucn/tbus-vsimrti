@@ -69,7 +69,7 @@ class TbusQueueControl : public cSimpleModule, public TbusQueueControlCallback {
 		virtual void updateQueueValuesFromDatabase(TbusQueueSelection selection);
 		virtual void adaptQueueValues(TbusQueueSelection selection);
 
-		virtual void queueStatusChanged();
+		virtual void queueStatusChanged(TbusQueueSelection status);
 		virtual TbusQueueStatus getQueueStatus() const;
 
 		virtual void initialize();

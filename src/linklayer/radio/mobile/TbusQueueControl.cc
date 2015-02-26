@@ -47,6 +47,11 @@ void TbusQueueControl::initialize() {
 	crsq = ModuleAccess<TbusCRSQ>("crsq").get();
 	cdsq = ModuleAccess<TbusCDSQ>("cdsq").get();
 
+	cdrq->setQueueControlCallback(this);
+	crrq->setQueueControlCallback(this);
+	crsq->setQueueControlCallback(this);
+	cdsq->setQueueControlCallback(this);
+
 	cdrqValue = NULL;
 	crrqValue = NULL;
 	crsqValue = NULL;
@@ -181,7 +186,11 @@ void TbusQueueControl::setLanePos(float lanePos) {
  * Callback method for a queue status change.
  * Makes the cellshare model aware of that change.
  */
-void TbusQueueControl::queueStatusChanged() {
+void TbusQueueControl::queueStatusChanged(TbusQueueSelection selection) {
+	// Update the selected queue values from database
+	updateQueueValuesFromDatabase(selection);
+
+	// Make cellshare model aware of that change
 	cellShare->cellActivityChanged(currentCellId);
 }
 

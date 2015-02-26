@@ -28,7 +28,7 @@ class TbusQueueControlCallback {
 		/**
 		 * Make queue control aware of a queue status change.
 		 */
-		virtual void queueStatusChanged() = 0;
+		virtual void queueStatusChanged(TbusQueueSelection selection) = 0;
 
 		/**
 		 * Get the highest status of all queues.
