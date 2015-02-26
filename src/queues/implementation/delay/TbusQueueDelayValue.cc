@@ -24,11 +24,12 @@ TbusQueueDelayValue::TbusQueueDelayValue() : TbusQueueValue() {}
 
 /**
  * Copy constructor.
- * @param other Object to copy values from (including creation time)
+ * Sets delay to other delay and time to current simulation time.
+ * @param other Object to copy values from
  */
 TbusQueueDelayValue::TbusQueueDelayValue(const TbusQueueDelayValue& other) :
 	delay(other.delay) {
-	time = other.time;
+	time = simTime().inUnit(SIMTIME_NS);
 }
 
 /**

@@ -15,14 +15,14 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#include <TbusCDRQ.h>
+#include "TbusCDRQ.h"
 
 Define_Module(TbusCDRQ);
 
 /**
  * Prepare value deque for only storing one (the current) element.
  */
-TbusCDRQ::TbusCDRQ() : TbusDelayQueue() {
+TbusCDRQ::TbusCDRQ() : TbusDelayQueue(CDRQ) {
 	// We only need to store one element
 //	values.resize(1);
 }

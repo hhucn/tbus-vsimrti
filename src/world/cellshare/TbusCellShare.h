@@ -9,27 +9,12 @@
 #define TBUSCELLSHARE_H_
 
 #include "omnetpp.h"
-#include "TbusQueueValue.h"
+#include "TbusQueueDatarateValue.h"
+#include "TbusQueueDelayValue.h"
 #include "TbusCellShareTypes.h"
 
 #include <map>
 #include <set>
-#include <algorithm>
-
-struct CallbackTrigger {
-	void operator() (TbusHost* host) {
-		host->callback->triggerQueueValueUpdate(ALL);
-	}
-};
-
-struct HostsTrigger {
-	void operator() (std::pair<cellid_t, std::set<TbusHost*> > pair) {
-		std::set<TbusHost*>& hosts = pair.second;
-		CallbackTrigger callbackTrigger;
-
-		std::for_each(hosts.begin(), hosts.end(), callbackTrigger);
-	}
-};
 
 /**
  * Representation of a TBUS cell share module.
@@ -41,7 +26,7 @@ class TbusCellShare {
 		 */
 		TbusCellShare() {};
 
-		typedef std::set<TbusHost*> hostSet;
+		typedef std::set<TbusHost*> HostSet; ///< Set of hosts in cell
 
 		/**
 		 * Returns the number of active hosts in the given cell.
@@ -49,16 +34,26 @@ class TbusCellShare {
 		 * @return Number of active hosts
 		 */
 		uint64_t getActiveHostsInCell(cellid_t cellId) {
-			hostSet::iterator it;
+			HostSet::iterator it;
 			uint64_t numActive = 0;
 
 			for (it = cellToHosts[cellId].begin(); it != cellToHosts[cellId].end(); ++it) {
-				if ((*it)->callback->isActive()) {
+				// Only count status higher than ACTIVE, we need CELL_ACTIVE
+				if ((*it)->callback->getQueueStatus() > ACTIVE) {
 					numActive++;
 				}
 			}
 
 			return numActive;
+		}
+
+		/**
+		 * Get a set of all hosts currently connected to a cell with cell id cellId.
+		 * @param cellId Cell id
+		 * @return Host set
+		 */
+		HostSet& getHostsInCell(cellid_t cellId) {
+			return cellToHosts[cellId];
 		}
 
 	private:
@@ -68,10 +63,7 @@ class TbusCellShare {
 		/**
 		 * Maps a cell id to the number of connected hosts.
 		 */
-		std::map<cellid_t, hostSet> cellToHosts;
-
-		uint64_t registeredHosts;
-		uint64_t currenUpdatedHosts;
+		std::map<cellid_t, HostSet> cellToHosts;
 
 	public:
 		/**
@@ -85,22 +77,6 @@ class TbusCellShare {
 		}
 
 		/**
-		 * Register host at the cellshare model.
-		 */
-		void registerHost() {
-			registeredHosts++;
-		}
-
-		/**
-		 * Unregister host from the cellshare model.
-		 */
-		void unregisterHost() {
-			ASSERT2(registeredHosts > 0, "Invalid unregisterHost: All previously registered hosts have already been unregistered!");
-
-			registeredHosts--;
-		}
-
-		/**
 		 * Update cell model.
 		 * Host host changed cells between from and to.
 		 * @param from Cell host was in
@@ -108,8 +84,6 @@ class TbusCellShare {
 		 * @param host Optional host reference
 		 */
 		void hostMoved(cellid_t from, cellid_t to, TbusHost* host) {
-			currenUpdatedHosts++;
-
 			if (from != TBUS_INVALID_CELLID) {
 				cellToHosts[from].erase(host);
 			}
@@ -117,22 +91,40 @@ class TbusCellShare {
 			if (to != TBUS_INVALID_CELLID) {
 				cellToHosts[to].insert(host);
 			}
+		}
 
-			if (currenUpdatedHosts == registeredHosts) {
-				HostsTrigger hostsTrigger;
-				// One round completed, trigger update Hosts
-				std::for_each(cellToHosts.begin(), cellToHosts.end(), hostsTrigger);
+		/**
+		 * Makes every host in cell cellId adapt its queue values.
+		 * @param cellId Cell id
+		 */
+		void cellActivityChanged(cellid_t cellId) {
+			HostSet hosts = cellToHosts[cellId];
+			HostSet::iterator it;
+
+			for (it = hosts.begin(); it != hosts.end(); ++it) {
+				(*it)->callback->adaptQueueValues(ALL);
 			}
 		}
 
 		/**
-		 * Adapt the given value to the current cell model.
+		 * Adapt the given value in a new returned value to the current cell model.
 		 * The optional parameter host can be used for additional information.
 		 * @param cellId Cell to adapt on
-		 * @param value Given TbusQueueValue
+		 * @param value Given TbusQueueDatarateValue
 		 * @param host Optional host reference
+		 * @return Adapted queue datarate value
 		 */
-		virtual void adaptValue(cellid_t cellId, TbusQueueValue* value, TbusHost* host = NULL) = 0;
+		virtual TbusQueueDatarateValue* adaptDatarateValue(cellid_t cellId, TbusQueueDatarateValue* value, TbusHost* host = NULL) = 0;
+
+		/**
+		 * Adapt the given value in a new returned value to the current cell model.
+		 * The optional parameter host can be used for additional information.
+		 * @param cellId Cell to adapt on
+		 * @param value Given TbusQueueDelayValue
+		 * @param host Optional host reference
+		 * @return Adapted queue delay value
+		 */
+		virtual TbusQueueDelayValue* adaptDelayValue(cellid_t cellId, TbusQueueDelayValue* value, TbusHost* host = NULL) = 0;
 };
 
 #endif /* TBUSCELLSHARE_H_ */

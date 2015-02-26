@@ -28,7 +28,8 @@ class TbusTrivialCellShare : public TbusCellShare {
 	public:
 		TbusTrivialCellShare();
 
-		virtual void adaptValue(cellid_t cellId, TbusQueueValue* value, TbusHost* host = NULL);
+		virtual TbusQueueDatarateValue* adaptDatarateValue(cellid_t cellId, TbusQueueDatarateValue* value, TbusHost* host = NULL);
+		virtual TbusQueueDelayValue* adaptDelayValue(cellid_t cellId, TbusQueueDelayValue* value, TbusHost* host = NULL);
 };
 
 #endif /* TBUSTRIVIALCELLSHARE_H_ */

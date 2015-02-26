@@ -8,7 +8,7 @@
 #ifndef TBUSCELLSHARETYPES_H_
 #define TBUSCELLSHARETYPES_H_
 
-#include "TbusCellShareCallback.h"
+#include "TbusQueueControlCallback.h"
 
 typedef int64_t cellid_t;
 #define TBUS_INVALID_CELLID ((cellid_t) -1)
@@ -20,7 +20,7 @@ class cModule;
  */
 struct TbusHost {
 	cModule* host; ///< Host reference
-	TbusCellShareCallback* callback; ///< Callback object reference
+	TbusQueueControlCallback* callback; ///< Callback object reference
 	bool isActive;
 };
 

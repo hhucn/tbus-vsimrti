@@ -51,7 +51,7 @@ class TbusDatabaseHandler {
 		 * Destructor.
 		 * Database cleanup, query finalization and database closing should be handled here by derived classes.
 		 */
-		virtual ~TbusDatabaseHandler() = 0;
+		virtual ~TbusDatabaseHandler() {};
 
 		/**
 		 * Return the cellid at position roadId and lanePos

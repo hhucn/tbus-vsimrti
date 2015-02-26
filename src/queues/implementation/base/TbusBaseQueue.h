@@ -23,6 +23,10 @@
 #include "TbusPacketQueue.h"
 #include "TbusQueueControlInfo.h"
 #include "TbusQueueValue.h"
+#include "TbusQueueSelection.h"
+#include "TbusQueueStatus.h"
+#include "TbusQueueControlCallback.h"
+
 #include <deque>
 
 /**
@@ -39,7 +43,7 @@ enum TbusClearMethod {
  */
 template <class T> class TbusBaseQueue : public cSimpleModule {
 	public:
-		TbusBaseQueue();
+		TbusBaseQueue(TbusQueueSelection selection);
 		virtual ~TbusBaseQueue();
 
 		virtual void initialize();
@@ -48,11 +52,16 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 
 		virtual void updateValue(T* newValue);
 
-		bool isActive() const;
+		void setQueueControlCallback(TbusQueueControlCallback* qcCallback);
+
+		virtual TbusQueueStatus getQueueStatus() const;
 
 	protected:
 		TbusPacketQueue queue; ///< The packet queue
 		cMessage selfMessage; ///< Self message for timed events
+		TbusQueueControlCallback* callback; ///< Callback object to Queue Control
+		TbusQueueSelection queueSelection; ///< Queue selection
+		TbusQueueStatus queueStatus; ///< Queue status
 
 		int inGate; ///< Input gate id
 		int outGate; ///< output gate id
@@ -64,6 +73,8 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 
 		virtual void handleSelfMessage(cMessage* msg);
 		virtual void addPacketToQueue(cPacket* packet);
+
+		virtual void setQueueStatus(TbusQueueStatus status);
 
 		void adaptSelfMessage();
 		virtual void calculateEarliestDeliveries() = 0;

@@ -25,10 +25,14 @@ TbusMobileNode::~TbusMobileNode() {}
 void TbusMobileNode::initialize(int stage) {
 	if (stage == 0) {
 		qc = ModuleAccess<TbusQueueControl>("queueControl").get();
+		wv = TbusWorldView::getInstance();
+
+		wv->registerQueueControl(qc);
 	}
 }
 
 void TbusMobileNode::extendedMobilityUpdated() {
-//	qc->nodeMoved(getRoadId(), getLanePos());
-	qc->nodeMoved("roadId", 0.0);
+	// TODO: Use real values
+//	wv->nodeMoved(qc, getRoadId(), getLanePos()));
+	wv->nodeMoved(qc, "roadId", 0.0);
 }

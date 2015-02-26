@@ -13,26 +13,34 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#ifndef TBUSMOBILENODE_H_
-#define TBUSMOBILENODE_H_
+#ifndef TBUSWORLDVIEW_H_
+#define TBUSWORLDVIEW_H_
 
-#include "VSimRTIExtendedMobilityNode.h"
 #include "TbusQueueControl.h"
-#include "TbusWorldView.h"
 
-class TbusMobileNode : public VSimRTIExtendedMobilityNode {
+#include <set>
+
+class TbusWorldView {
 	private:
-		TbusQueueControl* qc;
-		TbusWorldView* wv;
+		TbusWorldView();
+		TbusWorldView(const TbusWorldView&);
+		void operator=(const TbusWorldView&);
+
+		typedef std::set<TbusQueueControl*> QueueControlSet;
+		QueueControlSet queueControls; ///< Set of queue controls
+		uint64_t currentUpdated; ///< Number of currently updated queue controls
+
+		void performUpdateRound();
 
 	public:
-		TbusMobileNode();
-		virtual ~TbusMobileNode();
+		static TbusWorldView* getInstance();
 
-		virtual void initialize(int stage);
-		virtual int numInitStages() const { return 1; }
+		void registerQueueControl(TbusQueueControl* qc);
+		void unregisterQueueControl(TbusQueueControl* qc);
 
-		virtual void extendedMobilityUpdated();
+		void nodeMoved(TbusQueueControl* qc, const char* const roadId, const float lanePos);
+
+		virtual ~TbusWorldView();
 };
 
-#endif /* TBUSMOBILENODE_H_ */
+#endif /* TBUSWORLDVIEW_H_ */

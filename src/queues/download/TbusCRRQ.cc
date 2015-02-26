@@ -22,4 +22,5 @@ Define_Module(TbusCRRQ);
 /**
  * Empty constructor.
  */
-TbusCRRQ::TbusCRRQ() : TbusDatarateQueue() {}
+TbusCRRQ::TbusCRRQ() : TbusDatarateQueue(CRRQ) {}
+

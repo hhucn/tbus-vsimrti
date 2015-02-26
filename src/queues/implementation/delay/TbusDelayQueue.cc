@@ -17,12 +17,13 @@
 
 #include "TbusDelayQueue.h"
 
-Define_Module(TbusDelayQueue);
+//Define_Module(TbusDelayQueue);
 
 /**
  * Empty constructor.
  */
-TbusDelayQueue::TbusDelayQueue() : TbusBaseQueue<TbusQueueDelayValue>() {}
+TbusDelayQueue::TbusDelayQueue(TbusQueueSelection selection) :
+	TbusBaseQueue(selection) {}
 
 /**
  * Calculates earliest delivery times for all packets enqueued.

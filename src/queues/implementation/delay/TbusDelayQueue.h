@@ -27,7 +27,7 @@
  */
 class TbusDelayQueue : public TbusBaseQueue<TbusQueueDelayValue> {
 	public:
-		TbusDelayQueue();
+		TbusDelayQueue(TbusQueueSelection selection);
 
 	protected:
 		virtual void calculateEarliestDeliveries();

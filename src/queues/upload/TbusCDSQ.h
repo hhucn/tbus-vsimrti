@@ -40,7 +40,6 @@ enum TbusCDSQSignals {
  */
 class TbusCDSQ : public TbusDelayQueue {
 	private:
-		bool saveValues; ///< Store incoming values?
 		int64_t saveTime; ///< Starttime of stored values
 
 	public:

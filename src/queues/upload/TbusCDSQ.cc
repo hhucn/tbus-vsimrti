@@ -15,14 +15,14 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#include <TbusCDSQ.h>
+#include "TbusCDSQ.h"
 
 Define_Module(TbusCDSQ);
 
 /**
  * Start without saving values
  */
-TbusCDSQ::TbusCDSQ() : TbusDelayQueue(), saveValues(false) {
+TbusCDSQ::TbusCDSQ() : TbusDelayQueue(CDSQ) {
 	// Resize to one for direct assignment
 	values.resize(1);
 }
@@ -35,17 +35,15 @@ TbusCDSQ::TbusCDSQ() : TbusDelayQueue(), saveValues(false) {
  * @param newValue New value to use.
  */
 void TbusCDSQ::updateValue(TbusQueueDelayValue* newValue) {
-	Enter_Method("updateValue()");
-
 	EV << "New CDSQ delay value "<< newValue->delay << endl;
-	if (saveValues && (values.empty() || values.front() != newValue)) {
+	if (queueStatus && (values.empty() || values.front() != newValue)) {
 		// Store new value
 		values.push_front(newValue);
 
 		if (!queue.isEmpty()) {
 			calculateEarliestDeliveries();
 		}
-	} else if (!saveValues) {
+	} else if (!queueStatus) {
 		// Replace existing value
 		delete values[0];
 		values[0] = newValue;
@@ -90,13 +88,13 @@ void TbusCDSQ::handleMessage(cMessage* msg) {
 		EV << this->getName() << ": Start saving values at " << simTime() << std::endl;
 		delete msg;
 
-		saveValues = true;
+		setQueueStatus(ACTIVE);
 		saveTime = simTime().inUnit(SIMTIME_NS);
 	} else if (msg->getKind() == STOP_RECORDING) {
 		EV << this->getName() << ": Stop saving values at " << simTime() << std::endl;
 		delete msg;
 
-		saveValues = false;
+		setQueueStatus(INACTIVE);
 	} else {
 		TbusDelayQueue::handleMessage(msg);
 	}

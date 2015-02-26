@@ -19,13 +19,16 @@
 #include "TbusQueueDatarateValue.h"
 #include "TbusQueueDelayValue.h"
 #include "omnetpp.h"
+
 #include <algorithm>
 
 /**
  * Set up.
  * Instantiates selfMessage
  */
-template<class T> TbusBaseQueue<T>::TbusBaseQueue() : selfMessage(NULL, 0) {}
+template<class T> TbusBaseQueue<T>::TbusBaseQueue(TbusQueueSelection selection) :
+	selfMessage(NULL, 0),
+	queueSelection(selection) {}
 
 /**
  * Empty destructor, clean up is done in finish()
@@ -41,8 +44,16 @@ template<class T> void TbusBaseQueue<T>::initialize() {
 	outGate = findGate("outGate");
 }
 
-template<class T> bool TbusBaseQueue<T>::isActive() const {
-	return !queue.empty();
+/**
+ * Set the status for value updates.
+ * @param status Value updates status
+ */
+template<class T> void TbusBaseQueue<T>::setQueueStatus(TbusQueueStatus status) {
+	if (status != queueStatus) {
+		// Only update if different
+
+		queueStatus = status;
+	}
 }
 
 /**
@@ -82,6 +93,12 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
  */
 template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
 	queue.insert(packet);
+
+	if (queue.length() == 1) {
+		// First packet in queue, set this queue as active
+		setQueueStatus(ACTIVE);
+	}
+
 	calculateEarliestDeliveryForPacket(packet);
 
 	if (!selfMessage.isScheduled()) {
@@ -113,6 +130,11 @@ template<class T> void TbusBaseQueue<T>::adaptSelfMessage() {
  */
 template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
 	cPacket* packet = queue.pop();
+
+	if (queue.empty()) {
+		// Last packet in queue, set queue inactive
+		setQueueStatus(INACTIVE);
+	}
 
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");

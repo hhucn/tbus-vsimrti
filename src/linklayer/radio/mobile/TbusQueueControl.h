@@ -27,7 +27,7 @@
 #include "Coord.h"
 #include "TbusDatabaseHandler.h"
 #include "TbusCellShareTypes.h"
-#include "TbusCellShareCallback.h"
+#include "TbusQueueControlCallback.h"
 #include "TbusCoordinateConverter.h"
 
 #define TBUS_QUEUE_TESTING
@@ -38,16 +38,20 @@ class TbusCellShare;
  * Queue control class.
  * Distributes network characteristics along the related queues.
  */
-class TbusQueueControl : public cSimpleModule, public TbusCellShareCallback {
+class TbusQueueControl : public cSimpleModule, public TbusQueueControlCallback {
 	private:
 		TbusCDRQ* cdrq; ///< Client delay receive queue reference
 		TbusCRRQ* crrq; ///< Client datarate receive queue reference
 		TbusCRSQ* crsq; ///< Client datarate send queue reference
 		TbusCDSQ* cdsq; ///< Client delay send queue reference
 
+		TbusQueueDelayValue* 	cdrqValue;	///< Current CDRQ value from database
+		TbusQueueDatarateValue*	crrqValue;	///< Current CRRQ value from database
+		TbusQueueDatarateValue*	crsqValue;	///< Current CRSQ value from database
+		TbusQueueDelayValue*	cdsqValue;	///< Current CDSQ value from database
+
 		TbusDatabaseHandler* dbHandler; ///< Database handler reference
 		TbusCellShare* cellShare; ///< Cell share calculation model
-		TbusCoordinateConverter* converter; ///< Coordinate converter reference
 
 		cellid_t currentCellId; ///< Current cell id
 		char* currentRoadId; ///< Current road id
@@ -55,27 +59,21 @@ class TbusQueueControl : public cSimpleModule, public TbusCellShareCallback {
 
 		TbusHost tbusHost;
 
-		//TODO: deprecated
-		bool online; ///< Current queue value (has value(s) -> online) status
-
 	public:
 		TbusQueueControl();
 
-		void updateQueues(const Coord& newCoords);
-		void updateQueues(const char* const roadId, const float lanePos);
+		void setRoadId(const char* roadId);
+		void setLanePos(float lanePos);
 
-		void updateCellId(const char* const newRoadId, const float newLanePos);
+		void updateCellIdFromDatabase();
+		virtual void updateQueueValuesFromDatabase(TbusQueueSelection selection);
+		virtual void adaptQueueValues(TbusQueueSelection selection);
 
-		virtual void nodeMoved(const char* const newRoadId, const float newLanePos);
-
-		virtual void triggerQueueValueUpdate(TbusQueueSelection selection);
-
-		virtual bool isActive() const;
+		virtual void queueStatusChanged();
+		virtual TbusQueueStatus getQueueStatus() const;
 
 		virtual void initialize();
 		virtual void finish();
-
-		bool isOnline() const;
 
 #ifdef TBUS_QUEUE_TESTING
 		void handleMessage(cMessage* msg);

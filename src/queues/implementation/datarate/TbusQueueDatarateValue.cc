@@ -15,7 +15,7 @@
 // along with this program.  If not, see http://www.gnu.org/licenses/.
 //
 
-#include <datarate/TbusQueueDatarateValue.h>
+#include "TbusQueueDatarateValue.h"
 
 /**
  * Empty constructor.
@@ -24,12 +24,13 @@ TbusQueueDatarateValue::TbusQueueDatarateValue() : TbusQueueValue() {}
 
 /**
  * Copy constructor.
- * @param other Object to copy values from (including creation time)
+ * Set data- and droprate to other's values and time to current simulation time
+ * @param other Object to copy values from
  */
 TbusQueueDatarateValue::TbusQueueDatarateValue(const TbusQueueDatarateValue& other) :
 	droprate(other.droprate),
 	datarate(other.datarate) {
-	time = other.time;
+	time = simTime().inUnit(SIMTIME_NS);
 }
 
 /**

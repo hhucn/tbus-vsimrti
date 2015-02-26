@@ -19,9 +19,7 @@
 #define TBUSMOBILEPHY_H_
 
 #include "ChannelAccess.h"
-#include "Coord.h"
 #include "omnetpp.h"
-#include "TbusQueueControl.h"
 
 /**
  * PHY layer of TBUS NIC.
@@ -33,7 +31,6 @@ private:
 	int radioIn; ///< Input from link layer
 
 	TbusChannelControl* tbusCC; ///< Channel control reference
-	TbusQueueControl* queueControl; ///< Queue control reference
 
 protected:
 	void handleUpperMessage(cMessage* msg);
@@ -53,8 +50,6 @@ public:
      */
     virtual int numInitStages() const { return 4; }
     virtual void handleMessage(cMessage* msg);
-
-    virtual void receiveChangeNotification(int category, const cObject *details);
 };
 
 #endif /* TBUSMOBILEPHY_H_ */

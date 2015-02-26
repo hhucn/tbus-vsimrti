@@ -35,9 +35,7 @@ Define_Module(TbusQueueControl);
 TbusQueueControl::TbusQueueControl() :
 		dbHandler(TbusDatabaseHandler::getInstance<TbusSqliteDatabaseHandler>()),
 		cellShare(TbusCellShare::getInstance<TbusTrivialCellShare>()),
-		currentRoadId(NULL),
-		online(false) {
-}
+		currentRoadId(NULL) {}
 
 /**
  * Get references to the modules' queues and the global database handler and coordinate converter.
@@ -49,7 +47,10 @@ void TbusQueueControl::initialize() {
 	crsq = ModuleAccess<TbusCRSQ>("crsq").get();
 	cdsq = ModuleAccess<TbusCDSQ>("cdsq").get();
 
-	converter = TbusCoordinateConverter::getInstance();
+	cdrqValue = NULL;
+	crrqValue = NULL;
+	crsqValue = NULL;
+	cdsqValue = NULL;
 
 	currentCellId = TBUS_INVALID_CELLID;
 
@@ -92,162 +93,110 @@ void TbusQueueControl::initialize() {
  * Takes node out of the cell model.
  */
 void TbusQueueControl::finish() {
+	// Move host out of cellshare model
 	cellShare->hostMoved(currentCellId, TBUS_INVALID_CELLID, &tbusHost);
 }
 
 /**
- * Translates the given coordinates into latitute/longitude.
- * Then retrieves the belonging datarate, droprate and delay values from the database Handler.
- * Then the new values are updated on the belonging queue.
- * @param newCoords The new node position
- * @deprecated Use edge and position instead
+ * Update cell id from database.
  */
-void TbusQueueControl::updateQueues(const Coord& newCoords) {
-	// Act like this is part of our PHY layer
-	Enter_Method_Silent();
-
-	Coord translated = converter->translate(&newCoords);
-
-	EV << "TbusQueueControl updating queues for coordinates " << newCoords << " (" << translated << ")\n";
-
-	cdrq->updateValue(dbHandler->getDownloadDelay(translated));
-	crrq->updateValue(dbHandler->getDownloadDatarate(translated));
-	cdsq->updateValue(dbHandler->getUploadDelay(translated));
-	crsq->updateValue(dbHandler->getUploadDatarate(translated));
-}
-
-/**
- * Retrieves delay, data- and droprate from the database handler for the place given by roadId and lanePos.
- * The new values are updated on the belonging queue.
- * @param roadId The new edge to look at
- * @param lanePos The new position on the edge to look at
- */
-void TbusQueueControl::updateQueues(const char* const roadId, const float lanePos) {
-	// Act like this is part of out PHY layer
-	Enter_Method_Silent();
-
-	EV << "TbusQueueControl updating queues for road id " << roadId  << " and lane position " << lanePos << "\n";
-	std::cout << "TbusQueueControl updating queues for road id " << roadId  << " and lane position " << lanePos << "\n";
-
-	TbusQueueDelayValue* delayValue;
-	TbusQueueDatarateValue* datarateValue;
-
-	delayValue = dbHandler->getDownloadDelay(roadId, lanePos);
-	cellShare->adaptValue(currentCellId, delayValue);
-	cdrq->updateValue(delayValue);
-
-	datarateValue = dbHandler->getDownloadDatarate(roadId, lanePos);
-	cellShare->adaptValue(currentCellId, datarateValue);
-	crrq->updateValue(datarateValue);
-
-	delayValue = dbHandler->getUploadDelay(roadId, lanePos);
-	cellShare->adaptValue(currentCellId, delayValue);
-	cdsq->updateValue(delayValue);
-
-	datarateValue = dbHandler->getUploadDatarate(roadId, lanePos);
-	cellShare->adaptValue(currentCellId, datarateValue);
-	crsq->updateValue(datarateValue);
-
-	online = true;
-}
-
-/**
- * Update cell id and inform the cell share model if it has changed.
- * Also enters a callback hook into the cellshare model to be called if every node has updated its cell id.
- * @param newRoadId New road id
- * @param newLanePos New lane position
- */
-void TbusQueueControl::updateCellId(const char* const newRoadId, const float newLanePos) {
+void TbusQueueControl::updateCellIdFromDatabase() {
 	// Update cell id, compare against old cell id and move
-	cellid_t newCellId = dbHandler->getCellId(newRoadId, newLanePos);
+	cellid_t newCellId = dbHandler->getCellId(currentRoadId, currentLanePos);
 
 	if (newCellId != currentCellId) {
-		// Set new cell id for callback
-		cellid_t tempCellId = currentCellId;
+		cellShare->hostMoved(currentCellId, newCellId, &tbusHost);
+
 		currentCellId = newCellId;
-
-		cellShare->hostMoved(tempCellId, newCellId, &tbusHost);
-	} else {
-		cellShare->hostMoved(TBUS_INVALID_CELLID, TBUS_INVALID_CELLID, &tbusHost);
 	}
 }
 
 /**
- * Node position update notification method.
- * @param newRoadId New road id
- * @param newLanePos New lane position
+ * Update queue values for active queues in a given queue selection.
+ * This does NOT update the active queues with adapted values!
+ * @param selection Queue selection
  */
-void TbusQueueControl::nodeMoved(const char* const newRoadId, const float newLanePos) {
-	delete currentRoadId;
-	currentRoadId = new char[strlen(newRoadId) + 1];
-	strcpy(currentRoadId, newRoadId);
-
-	currentLanePos = newLanePos;
-
-	updateCellId(currentRoadId, currentLanePos);
-}
-
-/**
- * Update selected queue values if these queues are active
- * @param selection And-ded Queue types
- */
-void TbusQueueControl::triggerQueueValueUpdate(TbusQueueSelection selection) {
-	TbusQueueDelayValue* delayValue;
-	TbusQueueDatarateValue* datarateValue;
-
-	if ((selection && CDRQ) && cdrq->isActive()) {
-		delayValue = dbHandler->getDownloadDelay(currentRoadId, currentLanePos);
-		cellShare->adaptValue(currentCellId, delayValue);
-		cdrq->updateValue(delayValue);
+void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selection) {
+	if ((selection & CDRQ) && cdrq->getQueueStatus()) {
+		cdrqValue = dbHandler->getDownloadDelay(currentRoadId, currentLanePos);
 	}
 
-	if ((selection && CRRQ) && crrq->isActive()) {
-		datarateValue = dbHandler->getDownloadDatarate(currentRoadId, currentLanePos);
-		cellShare->adaptValue(currentCellId, datarateValue);
-		crrq->updateValue(datarateValue);
+	if ((selection & CRRQ) && crrq->getQueueStatus()) {
+		crrqValue = dbHandler->getDownloadDatarate(currentRoadId, currentLanePos);
 	}
 
-	if ((selection && CDSQ) && cdsq->isActive()) {
-		delayValue = dbHandler->getUploadDelay(currentRoadId, currentLanePos);
-		cellShare->adaptValue(currentCellId, delayValue);
-		cdsq->updateValue(delayValue);
+	if ((selection & CDSQ) && cdsq->getQueueStatus()) {
+		cdsqValue = dbHandler->getUploadDelay(currentRoadId, currentLanePos);
 	}
 
-	if ((selection && CRSQ) && crsq->isActive()) {
-		datarateValue = dbHandler->getUploadDatarate(currentRoadId, currentLanePos);
-		cellShare->adaptValue(currentCellId, datarateValue);
-		crsq->updateValue(datarateValue);
+	if ((selection & CRSQ) && crsq->getQueueStatus()) {
+		crsqValue = dbHandler->getUploadDatarate(currentRoadId, currentLanePos);
 	}
 }
 
 /**
- * Are these queues online, e.g. do they already have queue values?
- * @return online status of queues
+ * Set adapted queue values for active queues in a given queue selection.
+ * @param selection Queue selection
  */
-bool TbusQueueControl::isOnline() const {
-	return online;
+void TbusQueueControl::adaptQueueValues(TbusQueueSelection selection) {
+	if ((selection & CDRQ) && cdrq->getQueueStatus()) {
+		cdrq->updateValue(cellShare->adaptDelayValue(currentCellId, cdrqValue, &tbusHost));
+	}
+
+	if ((selection & CRRQ) && crrq->getQueueStatus()) {
+		crrq->updateValue(cellShare->adaptDatarateValue(currentCellId, crrqValue, &tbusHost));
+	}
+
+	if ((selection & CDSQ) && cdsq->getQueueStatus()) {
+		cdsq->updateValue(cellShare->adaptDelayValue(currentCellId, cdsqValue, &tbusHost));
+	}
+
+	if ((selection & CRSQ) && crsq->getQueueStatus()) {
+		crsq->updateValue(cellShare->adaptDatarateValue(currentCellId, crsqValue, &tbusHost));
+	}
 }
 
 /**
- * Is any queue active?
- * @return Active state
+ * Updates currentRoadId and stores a copy.
+ * @param roadId New road id
  */
-bool TbusQueueControl::isActive() const {
-	bool active = false;
+void TbusQueueControl::setRoadId(const char* roadId) {
+	if (currentRoadId != NULL) {
+		delete[] currentRoadId;
+	}
 
-	active |= cdrq->isActive();
-	active |= crrq->isActive();
-	active |= cdsq->isActive();
-	active |= crsq->isActive();
+	currentRoadId = new char[strlen(roadId) + 1];
+	strcpy(currentRoadId, roadId);
+}
 
-	return active;
+/**
+ * Updates lanePos.
+ * @param lanePos New lane position
+ */
+void TbusQueueControl::setLanePos(float lanePos) {
+	currentLanePos = lanePos;
+}
+
+/**
+ * Callback method for a queue status change.
+ * Makes the cellshare model aware of that change.
+ */
+void TbusQueueControl::queueStatusChanged() {
+	cellShare->cellActivityChanged(currentCellId);
+}
+
+/**
+ * Get the highest queue status.
+ * @return Highest queue status
+ */
+TbusQueueStatus TbusQueueControl::getQueueStatus() const {
+	return (TbusQueueStatus) (cdrq->getQueueStatus() | crrq->getQueueStatus() | cdsq->getQueueStatus() | crsq->getQueueStatus());
 }
 
 #ifdef TBUS_QUEUE_TESTING
 void TbusQueueControl::handleMessage(cMessage* msg) {
 	if (msg->isSelfMessage()) {
-//		updateQueues("", 0.0);
-		nodeMoved("roadId", 0.0);
+//		nodeMoved("roadId", 0.0);
 	}
 
 	delete msg;

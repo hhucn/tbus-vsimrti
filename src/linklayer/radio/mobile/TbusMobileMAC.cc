@@ -49,9 +49,6 @@ TbusMobileMAC::~TbusMobileMAC() {}
  */
 void TbusMobileMAC::initialize(int stage) {
 	if (stage == 0) {
-		// Get queue control reference
-		queueControl = ModuleAccess<TbusQueueControl>("queueControl").get();
-
 		// Init interface
 		interfaceEntry = new InterfaceEntry();
 		macAddress = MACAddress::generateAutoAddress();
@@ -100,13 +97,8 @@ void TbusMobileMAC::initialize(int stage) {
 void TbusMobileMAC::handleMessage(cMessage* msg) {
 	if (msg->arrivedOn(upperLayerIn)) {
 		// Add control info
-		if (queueControl->isOnline()) {
-			msg->setControlInfo(new TbusQueueControlInfo());
-			send(msg, lowerLayerOut);
-		} else {
-			delete msg;
-			EV << getName() << " received message while queuecontrol was offline, message deleted!" << endl;
-		}
+		msg->setControlInfo(new TbusQueueControlInfo());
+		send(msg, lowerLayerOut);
 	} else if (msg->arrivedOn(lowerLayerIn)) {
 		// Remove control info
 		TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(msg->removeControlInfo());

@@ -51,10 +51,7 @@ void TbusMobilePHY::initialize(int stage) {
 		upperLayerOut 	= findGate("upperLayerOut");
 		radioIn 		= findGate("radioIn");
 
-		nb->subscribe(this, NF_HOSTPOSITION_UPDATED);
-
 		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
-		queueControl = ModuleAccess<TbusQueueControl>("queueControl").get();
 	} else if (stage == 3) {
 		// Register ip address at channel control
 		tbusCC->registerIP(myHostRef);
@@ -81,13 +78,8 @@ void TbusMobilePHY::handleUpperMessage(cMessage* msg) {
  * @param msg Message to handle
  */
 void TbusMobilePHY::handleLowerMessage(cMessage* msg) {
-	if (queueControl->isOnline()) {
-		msg->setControlInfo(new TbusQueueControlInfo());
-		send(msg, upperLayerOut);
-	} else {
-		delete msg;
-		EV << getName() << " received message while queuecontrol was offline, message deleted!" << endl;
-	}
+	msg->setControlInfo(new TbusQueueControlInfo());
+	send(msg, upperLayerOut);
 }
 
 /**
@@ -114,19 +106,4 @@ void TbusMobilePHY::handleMessage(cMessage* msg) {
  */
 void TbusMobilePHY::sendToChannel(cMessage* msg) {
 	tbusCC->sendToChannel(msg, myHostRef);
-}
-
-/**
- * Receives host position changes and informs queue control to update network characteristics.
- * @param category ChangeNotification category
- * @param details ChangeNotification details
- * @deprecated VSimRTI's extended mobility information is used instead!
- */
-void TbusMobilePHY::receiveChangeNotification(int category, const cObject *details) {
-	// We use VSimRTI's extended mobility information
-//	if (category == NF_HOSTPOSITION_UPDATED) {
-//		if (myHostRef) {
-//			queueControl->updateQueues(myHostRef->pos);
-//		}
-//	}
 }

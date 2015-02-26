@@ -21,23 +21,17 @@
 #include "InterfaceEntry.h"
 #include "MACAddress.h"
 #include "omnetpp.h"
-#include "INotifiable.h"
-#include "NotificationBoard.h"
-#include "TbusQueueControl.h"
 
 /**
  * MAC layer of TBUS NIC.
  */
 class TbusMobileMAC : public cSimpleModule {
 	private:
-		NotificationBoard* nb; ///< Notification board reference
 		InterfaceEntry* interfaceEntry; ///< Interface entry of NIC
 		MACAddress macAddress; ///< MAC address
 
 		int upperLayerIn, upperLayerOut; ///< Upper layer gate ids
 		int lowerLayerIn, lowerLayerOut; ///< Lower layer gate ids
-
-		TbusQueueControl* queueControl;
 
 	public:
 		TbusMobileMAC();

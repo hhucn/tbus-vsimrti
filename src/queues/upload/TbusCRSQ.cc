@@ -23,7 +23,7 @@ Define_Module(TbusCRSQ);
 /**
  * Empty constructor.
  */
-TbusCRSQ::TbusCRSQ() : TbusDatarateQueue() {}
+TbusCRSQ::TbusCRSQ() : TbusDatarateQueue(CRSQ) {}
 
 /**
  * If the queue is empty, inform CDSQ (the next queue in line) to start saving values.
