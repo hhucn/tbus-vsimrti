@@ -153,3 +153,15 @@ simtime_t TbusDatarateQueue::currentDatarateDelay(int64_t bitLength) {
 
 	return (((double) bitLength) / values.front()->datarate);
 }
+
+/**
+ * Set ACTIVE status as CELL_ACTIVE and any other status as status.
+ * @param status Queue status
+ */
+void TbusDatarateQueue::setQueueStatus(TbusQueueStatus status) {
+	if (status == ACTIVE) {
+		TbusBaseQueue::setQueueStatus(CELL_ACTIVE);
+	} else {
+		TbusBaseQueue::setQueueStatus(status);
+	}
+}
