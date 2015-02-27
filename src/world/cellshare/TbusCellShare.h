@@ -27,6 +27,10 @@ class TbusCellShare {
 		TbusCellShare() {};
 
 		typedef std::set<TbusHost*> HostSet; ///< Set of hosts in cell
+		typedef struct TbusCell {
+			uint64_t numActiveHosts;
+			HostSet hosts;
+		};
 
 		/**
 		 * Returns the number of active hosts in the given cell.
@@ -34,17 +38,7 @@ class TbusCellShare {
 		 * @return Number of active hosts
 		 */
 		uint64_t getActiveHostsInCell(cellid_t cellId) {
-			HostSet::iterator it;
-			uint64_t numActive = 0;
-
-			for (it = cellToHosts[cellId].begin(); it != cellToHosts[cellId].end(); ++it) {
-				// Only count status higher than ACTIVE, we need CELL_ACTIVE
-				if ((*it)->callback->getQueueStatus() > ACTIVE) {
-					numActive++;
-				}
-			}
-
-			return numActive;
+			return idToCell[cellId].numActiveHosts;
 		}
 
 		/**
@@ -53,7 +47,7 @@ class TbusCellShare {
 		 * @return Host set
 		 */
 		HostSet& getHostsInCell(cellid_t cellId) {
-			return cellToHosts[cellId];
+			return idToCell[cellId].hosts;
 		}
 
 	private:
@@ -63,7 +57,25 @@ class TbusCellShare {
 		/**
 		 * Maps a cell id to the number of connected hosts.
 		 */
-		std::map<cellid_t, HostSet> cellToHosts;
+		std::map<cellid_t, TbusCell> idToCell;
+
+		/**
+		 * Update the number of cell active hosts.
+		 * @param cellId
+		 */
+		void updateNumActiveHostsInCell(cellid_t cellId) {
+			uint64_t numActiveHosts = 0;
+			HostSet::iterator it;
+			HostSet& hosts = idToCell[cellId].hosts;
+
+			for (it = hosts.begin(); it != hosts.end(); ++it) {
+				if ((*it)->callback->getQueueStatus() == CELL_ACTIVE) {
+					numActiveHosts++;
+				}
+			}
+
+			idToCell[cellId].numActiveHosts = numActiveHosts;
+		}
 
 	public:
 		/**
@@ -85,11 +97,11 @@ class TbusCellShare {
 		 */
 		void hostMoved(cellid_t from, cellid_t to, TbusHost* host) {
 			if (from != TBUS_INVALID_CELLID) {
-				cellToHosts[from].erase(host);
+				idToCell[from].hosts.erase(host);
 			}
 
 			if (to != TBUS_INVALID_CELLID) {
-				cellToHosts[to].insert(host);
+				idToCell[to].hosts.insert(host);
 			}
 		}
 
@@ -98,9 +110,13 @@ class TbusCellShare {
 		 * @param cellId Cell id
 		 */
 		void cellActivityChanged(cellid_t cellId) {
-			HostSet hosts = cellToHosts[cellId];
+			HostSet& hosts = idToCell[cellId].hosts;
 			HostSet::iterator it;
 
+			// First, update the number of cell active hosts
+			updateNumActiveHostsInCell(cellId);
+
+			// Second, let all hosts adapt active queue's value
 			for (it = hosts.begin(); it != hosts.end(); ++it) {
 				(*it)->callback->adaptQueueValues(ALL);
 			}
