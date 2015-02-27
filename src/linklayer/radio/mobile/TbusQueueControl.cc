@@ -23,10 +23,6 @@
 #include "TbusTrivialCellShare.h"
 #include "TbusMobileNode.h"
 
-#ifdef TBUS_QUEUE_TESTING
-#include <sqlite3.h>
-#endif
-
 Define_Module(TbusQueueControl);
 
 /**
@@ -66,32 +62,6 @@ void TbusQueueControl::initialize() {
 	while (!dynamic_cast<TbusMobileNode*>(tbusHost.host)) {
 		tbusHost.host = tbusHost.host->getParentModule();
 	}
-
-#ifdef TBUS_QUEUE_TESTING
-	// TESTING with selected timed updates from the database
-	sqlite3* database;
-	sqlite3_open_v2("test_edge.sqlite", &database, SQLITE_OPEN_READONLY, NULL);
-
-	sqlite3_stmt* timestampSelect;
-	sqlite3_prepare_v2(database, "select timestamp from upload_delay union select timestamp from upload_datarate union select timestamp from download_delay union select timestamp from download_datarate;", -1, &timestampSelect, NULL);
-
-	cMessage* selfMessage;
-	SimTime time;
-	SimTime now = simTime();
-
-	while (sqlite3_step(timestampSelect) == SQLITE_ROW) {
-		// Add self messages
-		selfMessage = new cMessage("timestampmessage", 0);
-		time = SimTime(sqlite3_column_int64(timestampSelect, 0), SIMTIME_NS);
-
-		if (time >= now) {
-			scheduleAt(time, selfMessage);
-		}
-	}
-
-	sqlite3_finalize(timestampSelect);
-	sqlite3_close(database);
-#endif
 }
 
 /**
@@ -104,6 +74,7 @@ void TbusQueueControl::finish() {
 
 /**
  * Update cell id from database.
+ * Informs cellShare of cell movement.
  */
 void TbusQueueControl::updateCellIdFromDatabase() {
 	// Update cell id, compare against old cell id and move
@@ -123,19 +94,27 @@ void TbusQueueControl::updateCellIdFromDatabase() {
  */
 void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selection) {
 	if ((selection & CDRQ) && cdrq->getQueueStatus()) {
+		delete cdrqValue;
 		cdrqValue = dbHandler->getDownloadDelay(currentRoadId, currentLanePos);
+		std::cout << simTime() << ": Updated CDRQ value from database\n";
 	}
 
 	if ((selection & CRRQ) && crrq->getQueueStatus()) {
+		delete crrqValue;
 		crrqValue = dbHandler->getDownloadDatarate(currentRoadId, currentLanePos);
+		std::cout << simTime() << ": Updated CRRQ value from database\n";
 	}
 
 	if ((selection & CDSQ) && cdsq->getQueueStatus()) {
+		delete cdsqValue;
 		cdsqValue = dbHandler->getUploadDelay(currentRoadId, currentLanePos);
+		std::cout << simTime() << ": Updated CDSQ value from database\n";
 	}
 
 	if ((selection & CRSQ) && crsq->getQueueStatus()) {
+		delete crsqValue;
 		crsqValue = dbHandler->getUploadDatarate(currentRoadId, currentLanePos);
+		std::cout << simTime() << ": Updated CRSQ value from database\n";
 	}
 }
 
@@ -166,10 +145,7 @@ void TbusQueueControl::adaptQueueValues(TbusQueueSelection selection) {
  * @param roadId New road id
  */
 void TbusQueueControl::setRoadId(const char* roadId) {
-	if (currentRoadId != NULL) {
-		delete[] currentRoadId;
-	}
-
+	delete[] currentRoadId;
 	currentRoadId = new char[strlen(roadId) + 1];
 	strcpy(currentRoadId, roadId);
 }
@@ -201,13 +177,3 @@ void TbusQueueControl::queueStatusChanged(TbusQueueSelection selection) {
 TbusQueueStatus TbusQueueControl::getQueueStatus() const {
 	return (TbusQueueStatus) (cdrq->getQueueStatus() | crrq->getQueueStatus() | cdsq->getQueueStatus() | crsq->getQueueStatus());
 }
-
-#ifdef TBUS_QUEUE_TESTING
-void TbusQueueControl::handleMessage(cMessage* msg) {
-	if (msg->isSelfMessage()) {
-//		nodeMoved("roadId", 0.0);
-	}
-
-	delete msg;
-}
-#endif

@@ -30,8 +30,6 @@
 #include "TbusQueueControlCallback.h"
 #include "TbusCoordinateConverter.h"
 
-#define TBUS_QUEUE_TESTING
-
 class TbusCellShare;
 
 /**
@@ -74,10 +72,6 @@ class TbusQueueControl : public cSimpleModule, public TbusQueueControlCallback {
 
 		virtual void initialize();
 		virtual void finish();
-
-#ifdef TBUS_QUEUE_TESTING
-		void handleMessage(cMessage* msg);
-#endif
 };
 
 #endif /* TBUSQUEUECONTROL_H_ */
