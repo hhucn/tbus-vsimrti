@@ -28,7 +28,8 @@
  */
 template<class T> TbusBaseQueue<T>::TbusBaseQueue(TbusQueueSelection selection) :
 	selfMessage(NULL, 0),
-	queueSelection(selection) {}
+	queueSelection(selection),
+	queueStatus(INACTIVE) {}
 
 /**
  * Empty destructor, clean up is done in finish().
@@ -95,7 +96,7 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 	clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
 
 	// Then check the next one and/or reschedule
-	if (queue.length() > 0) {
+	if (!queue.empty()) {
 		// Re-calculate earliest deliveries
 		calculateEarliestDeliveries();
 	}

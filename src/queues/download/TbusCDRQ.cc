@@ -20,20 +20,15 @@
 Define_Module(TbusCDRQ);
 
 /**
- * Prepare value deque for only storing one (the current) element.
+ * Empty constructor.
  */
-TbusCDRQ::TbusCDRQ() : TbusDelayQueue(CDRQ) {
-	// We only need to store one element
-//	values.resize(1);
-}
+TbusCDRQ::TbusCDRQ() : TbusDelayQueue(CDRQ) {}
 
 /**
- * Replaces the current value with the new value (if different)
+ * Replaces the current value with the new value (if different).
  * @param newValue Value to replace current value with
  */
 void TbusCDRQ::updateValue(TbusQueueDelayValue* newValue) {
-	Enter_Method("updateValue()");
-	std::cout << "update value (delay): " << newValue->delay << endl;
 	if (values.empty()) {
 		values.push_back(newValue);
 	} else if (values.front() != newValue) {
@@ -44,8 +39,6 @@ void TbusCDRQ::updateValue(TbusQueueDelayValue* newValue) {
 		if (!queue.isEmpty()) {
 			calculateEarliestDeliveries();
 		}
-
-		// No update on ongoing transmissions, because we simply use the value as the packet arrives
 	} else {
 		delete newValue;
 	}
