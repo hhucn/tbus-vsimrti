@@ -29,6 +29,7 @@ TbusCDRQ::TbusCDRQ() : TbusDelayQueue(CDRQ) {}
  * @param newValue Value to replace current value with
  */
 void TbusCDRQ::updateValue(TbusQueueDelayValue* newValue) {
+	Enter_Method("updateValue()");
 	if (values.empty()) {
 		values.push_back(newValue);
 	} else if (values.front() != newValue) {
