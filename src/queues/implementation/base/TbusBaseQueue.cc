@@ -96,7 +96,7 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
 	clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
 
 	// Then check the next one and/or reschedule
-	if (!queue.empty()) {
+	if (!queue.isEmpty()) {
 		// Re-calculate earliest deliveries
 		calculateEarliestDeliveries();
 	}
@@ -128,15 +128,13 @@ template<class T> void TbusBaseQueue<T>::adaptSelfMessage() {
 	ASSERT2(queue.length() > 0, "Queue has to have length > 0!");
 	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(queue.front()->getControlInfo());
 
-	if (selfMessage.getArrivalTime() != controlInfo->getEarliestDelivery()) {
-		if (selfMessage.isScheduled()) {
-			cancelEvent(&selfMessage);
-		}
-
-		// Take now or a future time as next schedule
-		simtime_t nextSchedule = SimTime(std::max(simTime().inUnit(SIMTIME_NS), controlInfo->getEarliestDelivery().inUnit(SIMTIME_NS)), SIMTIME_NS);
-		scheduleAt(nextSchedule, &selfMessage);
+	if (selfMessage.isScheduled()) {
+		cancelEvent(&selfMessage);
 	}
+
+	// Take now or a future time as next schedule
+	simtime_t nextSchedule = SimTime(std::max(simTime().inUnit(SIMTIME_NS), controlInfo->getEarliestDelivery().inUnit(SIMTIME_NS)), SIMTIME_NS);
+	scheduleAt(nextSchedule, &selfMessage);
 }
 
 /**
