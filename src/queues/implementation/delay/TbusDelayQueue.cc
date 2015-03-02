@@ -17,8 +17,6 @@
 
 #include "TbusDelayQueue.h"
 
-//Define_Module(TbusDelayQueue);
-
 /**
  * Empty constructor.
  */
@@ -29,11 +27,9 @@ TbusDelayQueue::TbusDelayQueue(TbusQueueSelection selection) :
  * Calculates earliest delivery times for all packets enqueued.
  */
 void TbusDelayQueue::calculateEarliestDeliveries() {
-	simtime_t delay = currentDelay();
-
-	// No iterators because OMNeTs iterators are weird
-	for (int i = 0; i < queue.length(); i++) {
-		calculateEarliestDeliveryForPacket(queue.get(i), delay);
+	// Only check first packet, other packets are sent back-to-back
+	if (!queue.isEmpty()) {
+		calculateEarliestDeliveryForPacket(queue.front());
 	}
 }
 
