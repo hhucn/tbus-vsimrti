@@ -18,22 +18,12 @@
 #include "TbusDatarateQueue.h"
 #include "TbusQueueControlInfo.h"
 
-//Define_Module(TbusDatarateQueue);
-
 /**
  * Start with zero bits sent.
  */
 TbusDatarateQueue::TbusDatarateQueue(TbusQueueSelection selection) :
 		TbusBaseQueue(selection),
 		bitsSent(0) {}
-
-/**
- * Get the cell active status, e.g. is this queue currently active sending in the cell.
- * @return Cell active status
- */
-bool TbusDatarateQueue::isCellActive() const {
-	return !queue.empty();
-}
 
 /**
  * Only calculates the earliest delivery for head of queue (if there is one).

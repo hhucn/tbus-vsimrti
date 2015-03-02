@@ -29,8 +29,6 @@ class TbusDatarateQueue : public TbusBaseQueue<TbusQueueDatarateValue> {
 	public:
 		TbusDatarateQueue(TbusQueueSelection selection);
 
-		bool isCellActive() const;
-
 	protected:
 		double bitsSent; ///< Bits already sent for head of queue (Needed for multiple data- and droprate value per packet)
 
