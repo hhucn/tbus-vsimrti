@@ -32,6 +32,8 @@ class TbusMobileNode : public VSimRTIExtendedMobilityNode {
 		virtual void initialize(int stage);
 		virtual int numInitStages() const { return 1; }
 
+		virtual void finish();
+
 		virtual void extendedMobilityUpdated();
 };
 
