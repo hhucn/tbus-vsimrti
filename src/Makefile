@@ -2,7 +2,7 @@
 # OMNeT++/OMNEST Makefile for libtbus-vsimrti
 #
 # This file was generated with the command:
-#  opp_makemake -f --deep --make-so -O out -I/home/bialon/workspace/omnetpp-federate/src/mob -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/transport/contract -I../../inetmanet/src/applications/udpapp -I../../inetmanet/src/util -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/mobility -I../../inetmanet/src/world -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/applications/tcpapp -I../../inetmanet/src -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/networklayer/manetrouting/base -I../../omnetpp-federate/src/msg -I../../inetmanet/src/linklayer/contract -L../../inetmanet/out/$$\(CONFIGNAME\)/src -lproj -lsqlite3 -linet -KINETMANET_PROJ=../../inetmanet -KOMNETPP_FEDERATE_PROJ=../../omnetpp-federate
+#  opp_makemake -f --deep --make-so -O out -I/home/bialon/workspace/omnetpp-federate/src/mob -I../../inetmanet/src/networklayer/arp -I../../inetmanet/src/mobility -I../../inetmanet/src/transport/sctp -I../../inetmanet/src/world -I../../inetmanet/src/transport/contract -I../../inetmanet/src/linklayer/mfcore -I../../inetmanet/src/applications/udpapp -I../../inetmanet/src/linklayer/ethernet -I../../inetmanet/src/networklayer/ted -I../../inetmanet/src/util -I../../inetmanet/src/linklayer/ieee80211/mac -I../../inetmanet/src/networklayer/queue -I../../inetmanet/src/networklayer/ipv6 -I../../inetmanet/src/networklayer/common -I../../inetmanet/src/applications/pingapp -I../../inetmanet/src/networklayer/ldp -I../../inetmanet/src/linklayer/radio/errormodel -I../../inetmanet/src/transport/tcp -I../../inetmanet/src/util/headerserializers -I../../inetmanet/src/applications/tcpapp -I../../inetmanet/src -I../../inetmanet/src/networklayer/rsvp_te -I../../inetmanet/src/transport/udp -I../../inetmanet/src/networklayer/ipv4 -I../../inetmanet/src/networklayer/icmpv6 -I../../inetmanet/src/base -I../../inetmanet/src/networklayer/contract -I../../inetmanet/src/linklayer/ieee80211/mgmt -I../../inetmanet/src/networklayer/manetrouting/base -I../../inetmanet/src/networklayer/mpls -I../../inetmanet/src/linklayer/contract -I../../omnetpp-federate/src/msg -L../../inetmanet/out/$$\(CONFIGNAME\)/src -lproj -lsqlite3 -linet -KINETMANET_PROJ=../../inetmanet -KOMNETPP_FEDERATE_PROJ=../../omnetpp-federate
 #
 
 # Name of target to be created (-o option)
@@ -11,42 +11,41 @@ TARGET = libtbus-vsimrti$(SHARED_LIB_SUFFIX)
 # C++ include paths (with -I)
 INCLUDE_PATH = \
     -I$(OMNETPP_FEDERATE_PROJ)/src/mob \
+    -I../../inetmanet/src/networklayer/arp \
+    -I../../inetmanet/src/mobility \
     -I../../inetmanet/src/transport/sctp \
+    -I../../inetmanet/src/world \
     -I../../inetmanet/src/transport/contract \
+    -I../../inetmanet/src/linklayer/mfcore \
     -I../../inetmanet/src/applications/udpapp \
-    -I../../inetmanet/src/util \
+    -I../../inetmanet/src/linklayer/ethernet \
     -I../../inetmanet/src/networklayer/ted \
+    -I../../inetmanet/src/util \
+    -I../../inetmanet/src/linklayer/ieee80211/mac \
+    -I../../inetmanet/src/networklayer/queue \
     -I../../inetmanet/src/networklayer/ipv6 \
+    -I../../inetmanet/src/networklayer/common \
+    -I../../inetmanet/src/applications/pingapp \
     -I../../inetmanet/src/networklayer/ldp \
+    -I../../inetmanet/src/linklayer/radio/errormodel \
+    -I../../inetmanet/src/transport/tcp \
     -I../../inetmanet/src/util/headerserializers \
+    -I../../inetmanet/src/applications/tcpapp \
+    -I../../inetmanet/src \
+    -I../../inetmanet/src/networklayer/rsvp_te \
+    -I../../inetmanet/src/transport/udp \
     -I../../inetmanet/src/networklayer/ipv4 \
+    -I../../inetmanet/src/networklayer/icmpv6 \
     -I../../inetmanet/src/base \
     -I../../inetmanet/src/networklayer/contract \
     -I../../inetmanet/src/linklayer/ieee80211/mgmt \
-    -I../../inetmanet/src/networklayer/mpls \
-    -I../../inetmanet/src/networklayer/arp \
-    -I../../inetmanet/src/mobility \
-    -I../../inetmanet/src/world \
-    -I../../inetmanet/src/linklayer/mfcore \
-    -I../../inetmanet/src/linklayer/ethernet \
-    -I../../inetmanet/src/linklayer/ieee80211/mac \
-    -I../../inetmanet/src/networklayer/common \
-    -I../../inetmanet/src/networklayer/queue \
-    -I../../inetmanet/src/applications/pingapp \
-    -I../../inetmanet/src/transport/tcp \
-    -I../../inetmanet/src/linklayer/radio/errormodel \
-    -I../../inetmanet/src/applications/tcpapp \
-    -I../../inetmanet/src \
-    -I../../inetmanet/src/transport/udp \
-    -I../../inetmanet/src/networklayer/rsvp_te \
-    -I../../inetmanet/src/networklayer/icmpv6 \
     -I../../inetmanet/src/networklayer/manetrouting/base \
-    -I../../omnetpp-federate/src/msg \
+    -I../../inetmanet/src/networklayer/mpls \
     -I../../inetmanet/src/linklayer/contract \
+    -I../../omnetpp-federate/src/msg \
     -I. \
     -Icallback \
     -Idatabase \
-    -Idatabase/converter \
     -Ilinklayer \
     -Ilinklayer/helper \
     -Ilinklayer/radio \
@@ -72,7 +71,8 @@ INCLUDE_PATH = \
     -Iqueues/upload \
     -Iworld \
     -Iworld/cellshare \
-    -Iworld/worldview
+    -Iworld/worldview \
+    -Iworld/worldview/helper
 
 # Additional object and library files to link with
 EXTRA_OBJS =
@@ -89,7 +89,6 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 # Object files for local .cc and .msg files
 OBJS = \
     $O/database/TbusSqliteDatabaseHandler.o \
-    $O/database/converter/TbusCoordinateConverter.o \
     $O/linklayer/helper/IpAddressHelper.o \
     $O/linklayer/radio/inet/TbusInetPHY.o \
     $O/linklayer/radio/inet/TbusInetMAC.o \
@@ -200,7 +199,6 @@ clean:
 	$(Q)-rm -f ./*_m.cc ./*_m.h
 	$(Q)-rm -f callback/*_m.cc callback/*_m.h
 	$(Q)-rm -f database/*_m.cc database/*_m.h
-	$(Q)-rm -f database/converter/*_m.cc database/converter/*_m.h
 	$(Q)-rm -f linklayer/*_m.cc linklayer/*_m.h
 	$(Q)-rm -f linklayer/helper/*_m.cc linklayer/helper/*_m.h
 	$(Q)-rm -f linklayer/radio/*_m.cc linklayer/radio/*_m.h
@@ -227,19 +225,17 @@ clean:
 	$(Q)-rm -f world/*_m.cc world/*_m.h
 	$(Q)-rm -f world/cellshare/*_m.cc world/cellshare/*_m.h
 	$(Q)-rm -f world/worldview/*_m.cc world/worldview/*_m.h
+	$(Q)-rm -f world/worldview/helper/*_m.cc world/worldview/helper/*_m.h
 
 cleanall: clean
 	$(Q)-rm -rf $(PROJECT_OUTPUT_DIR)
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc callback/*.cc database/*.cc database/converter/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc world/worldview/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc callback/*.cc database/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc world/worldview/*.cc world/worldview/helper/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/database/TbusSqliteDatabaseHandler.o: database/TbusSqliteDatabaseHandler.cc \
-	$(INETMANET_PROJ)/src/base/Coord.h \
-	$(INETMANET_PROJ)/src/base/INETDefs.h \
-	$(INETMANET_PROJ)/src/util/FWMath.h \
 	database/TbusDatabaseHandler.h \
 	database/TbusSqliteDatabaseHandler.h \
 	linklayer/radio/mobile/TbusQueueControlCallback.h \
@@ -249,11 +245,6 @@ $O/database/TbusSqliteDatabaseHandler.o: database/TbusSqliteDatabaseHandler.cc \
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	world/cellshare/TbusCellShareTypes.h
-$O/database/converter/TbusCoordinateConverter.o: database/converter/TbusCoordinateConverter.cc \
-	$(INETMANET_PROJ)/src/base/Coord.h \
-	$(INETMANET_PROJ)/src/base/INETDefs.h \
-	$(INETMANET_PROJ)/src/util/FWMath.h \
-	database/converter/TbusCoordinateConverter.h
 $O/linklayer/helper/IpAddressHelper.o: linklayer/helper/IpAddressHelper.cc \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/NotifierConsts.h \
@@ -335,7 +326,6 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	database/TbusDatabaseHandler.h \
-	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
 	linklayer/radio/mobile/TbusQueueControlCallback.h \
@@ -356,14 +346,11 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	world/TbusChannelControl.h \
 	world/cellshare/TbusCellShareTypes.h
 $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueControl.cc \
-	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
-	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/mob/VSimRTIExtendedMobilityNode.h \
 	database/TbusDatabaseHandler.h \
 	database/TbusSqliteDatabaseHandler.h \
-	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
 	linklayer/radio/mobile/TbusQueueControlCallback.h \
 	nodes/mobile/TbusMobileNode.h \
@@ -388,13 +375,10 @@ $O/linklayer/radio/mobile/TbusQueueControl.o: linklayer/radio/mobile/TbusQueueCo
 $O/nodes/inet/TbusInetNode.o: nodes/inet/TbusInetNode.cc \
 	nodes/inet/TbusInetNode.h
 $O/nodes/mobile/TbusMobileNode.o: nodes/mobile/TbusMobileNode.cc \
-	$(INETMANET_PROJ)/src/base/Coord.h \
 	$(INETMANET_PROJ)/src/base/INETDefs.h \
 	$(INETMANET_PROJ)/src/base/ModuleAccess.h \
-	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/mob/VSimRTIExtendedMobilityNode.h \
 	database/TbusDatabaseHandler.h \
-	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
 	linklayer/radio/mobile/TbusQueueControlCallback.h \
 	nodes/mobile/TbusMobileNode.h \
@@ -574,8 +558,27 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/msg/VSimRTIAppPacket_m.h \
+	database/TbusDatabaseHandler.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \
-	world/TbusChannelControl.h
+	linklayer/radio/mobile/TbusQueueControl.h \
+	linklayer/radio/mobile/TbusQueueControlCallback.h \
+	queues/download/TbusCDRQ.h \
+	queues/download/TbusCRRQ.h \
+	queues/implementation/base/TbusBaseQueue.h \
+	queues/implementation/base/TbusQueueSelection.h \
+	queues/implementation/base/TbusQueueStatus.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/control_info/TbusQueueControlInfo.h \
+	queues/implementation/datarate/TbusDatarateQueue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusDelayQueue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	queues/implementation/packetqueue/TbusPacketQueue.h \
+	queues/upload/TbusCDSQ.h \
+	queues/upload/TbusCRSQ.h \
+	world/TbusChannelControl.h \
+	world/cellshare/TbusCellShareTypes.h \
+	world/worldview/TbusWorldView.h
 $O/world/cellshare/TbusTrivialCellShare.o: world/cellshare/TbusTrivialCellShare.cc \
 	linklayer/radio/mobile/TbusQueueControlCallback.h \
 	queues/implementation/base/TbusQueueSelection.h \
@@ -587,11 +590,7 @@ $O/world/cellshare/TbusTrivialCellShare.o: world/cellshare/TbusTrivialCellShare.
 	world/cellshare/TbusCellShareTypes.h \
 	world/cellshare/TbusTrivialCellShare.h
 $O/world/worldview/TbusWorldView.o: world/worldview/TbusWorldView.cc \
-	$(INETMANET_PROJ)/src/base/Coord.h \
-	$(INETMANET_PROJ)/src/base/INETDefs.h \
-	$(INETMANET_PROJ)/src/util/FWMath.h \
 	database/TbusDatabaseHandler.h \
-	database/converter/TbusCoordinateConverter.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
 	linklayer/radio/mobile/TbusQueueControlCallback.h \
 	queues/download/TbusCDRQ.h \

@@ -83,7 +83,6 @@ void TbusCDSQ::calculateEarliestDeliveries() {
  * @param msg Message to handle.
  */
 void TbusCDSQ::handleMessage(cMessage* msg) {
-	std::cout << simTime() << " - " <<  this->getName() << ": Received message of kind " << msg->getKind() << endl;
 	if (msg->getKind() == START_RECORDING) {
 		EV << this->getName() << ": Start saving values at " << simTime() << std::endl;
 		delete msg;

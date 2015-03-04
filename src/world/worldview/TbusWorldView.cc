@@ -25,6 +25,7 @@ TbusWorldView::~TbusWorldView() {}
  */
 TbusWorldView* TbusWorldView::getInstance() {
 	static TbusWorldView* instance = new TbusWorldView();
+
 	return instance;
 }
 
@@ -71,8 +72,6 @@ void TbusWorldView::nodeMoved(TbusQueueControl* qc, const char* const roadId, co
 void TbusWorldView::performUpdateRound() {
 	QueueControlSet::iterator it;
 
-	std::cout << simTime() << ": TbusWorldView starting update round\n";
-
 	// Begin cell id and queue value update round
 	for (it = queueControls.begin(); it != queueControls.end(); ++it) {
 		(*it)->updateCellIdFromDatabase();
@@ -83,6 +82,4 @@ void TbusWorldView::performUpdateRound() {
 	for (it = queueControls.begin(); it != queueControls.end(); ++it) {
 		(*it)->adaptQueueValues(ALL);
 	}
-
-	std::cout << simTime() << ": TbusWorldView finished update round" << endl;
 }

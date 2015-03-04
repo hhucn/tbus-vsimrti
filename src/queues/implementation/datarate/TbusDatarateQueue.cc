@@ -85,18 +85,22 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 	if (uniform(0, 1) >= currentLoss) {
 		// No drop
 		send(packet, outGate);
+#ifdef TBUS_DEBUG
 		std::cout << simTime() << " - " << this->getName() << ": " << packet << " sent after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << " current loss " << currentLoss << endl;
+#endif /* TBUS_DEBUG */
 	} else {
 		// Drop
 		EV << "Packet " << packet << " dropped!" << std::endl;
+#ifdef TBUS_DEBUG
 		std::cout << simTime() << " - " << this->getName() << ": " << packet << " dropped after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << " current loss " << currentLoss << endl;
+#endif /* TBUS_DEBUG */
 		delete packet;
 	}
 
 	// Remove all but the first values
 	clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
 
-	// Reset the bytes sent
+	// Reset the bits sent
 	bitsSent = 0;
 }
 

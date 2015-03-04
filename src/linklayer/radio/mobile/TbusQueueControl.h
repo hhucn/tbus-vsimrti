@@ -24,11 +24,9 @@
 #include "TbusCRRQ.h"
 #include "TbusCRSQ.h"
 #include "TbusCDSQ.h"
-#include "Coord.h"
 #include "TbusDatabaseHandler.h"
 #include "TbusCellShareTypes.h"
 #include "TbusQueueControlCallback.h"
-#include "TbusCoordinateConverter.h"
 
 class TbusCellShare;
 

@@ -153,8 +153,9 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
 	ASSERT2(controlInfo->getEarliestDelivery() <= simTime(), "Sending packet earlier than expected!");
 
 	EV << this->getName() << ": dispatching packet " << packet << " at " << simTime() << std::endl;
+#ifdef TBUS_DEBUG
 	std::cout << simTime() << " - " << this->getName() << ": " << packet << " sent after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << endl;
-
+#endif /* TBUS_DEBUG */
 	send(packet, outGate);
 }
 

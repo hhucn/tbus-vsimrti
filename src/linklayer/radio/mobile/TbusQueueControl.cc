@@ -96,25 +96,21 @@ void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selectio
 	if ((selection & CDRQ) && cdrq->getQueueStatus()) {
 		delete cdrqValue;
 		cdrqValue = dbHandler->getDownloadDelay(currentRoadId, currentLanePos);
-		std::cout << simTime() << ": Updated CDRQ value from database\n";
 	}
 
 	if ((selection & CRRQ) && crrq->getQueueStatus()) {
 		delete crrqValue;
 		crrqValue = dbHandler->getDownloadDatarate(currentRoadId, currentLanePos);
-		std::cout << simTime() << ": Updated CRRQ value from database\n";
 	}
 
 	if ((selection & CDSQ) && cdsq->getQueueStatus()) {
 		delete cdsqValue;
 		cdsqValue = dbHandler->getUploadDelay(currentRoadId, currentLanePos);
-		std::cout << simTime() << ": Updated CDSQ value from database\n";
 	}
 
 	if ((selection & CRSQ) && crsq->getQueueStatus()) {
 		delete crsqValue;
 		crsqValue = dbHandler->getUploadDatarate(currentRoadId, currentLanePos);
-		std::cout << simTime() << ": Updated CRSQ value from database\n";
 	}
 }
 

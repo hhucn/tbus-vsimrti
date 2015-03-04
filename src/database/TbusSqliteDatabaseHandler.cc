@@ -37,26 +37,10 @@ TbusSqliteDatabaseHandler::TbusSqliteDatabaseHandler() {
 		throw cRuntimeError("Expected database version %d but found version %d!", TBUS_SQLITE_USER_VERSION, version);
 	}
 
-	// Prepare statements
-	uploadDatarateStatement = NULL;
-	uploadDelayStatement = NULL;
-	downloadDatarateStatement = NULL;
-	downloadDelayStatement = NULL;
-
 	uploadDatarateStatementEdge = NULL;
 	uploadDelayStatementEdge = NULL;
 	downloadDatarateStatementEdge = NULL;
 	downloadDelayStatementEdge = NULL;
-
-	// Coord based
-	// Upload datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from upload_datarate;", -1 , &uploadDatarateStatement, NULL);
-	// Upload delay
-	sqlite3_prepare_v2(database, "select delay, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from upload_delay;", -1 , &uploadDelayStatement, NULL);
-	// Download datarate
-	sqlite3_prepare_v2(database, "select datarate, droprate, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from download_datarate;", -1 , &downloadDatarateStatement, NULL);
-	// Download delay
-	sqlite3_prepare_v2(database, "select delay, min((latitude - ?1)*(latitude - ?1) + (longitude - ?2)*(longitude - ?2)), max(timestamp <= ?3) from download_delay;", -1 , &downloadDelayStatement, NULL);
 
 	// Edge based
 	// Upload datarate
@@ -73,12 +57,6 @@ TbusSqliteDatabaseHandler::TbusSqliteDatabaseHandler() {
  * Finalizes prepared statements and closes database connection.
  */
 TbusSqliteDatabaseHandler::~TbusSqliteDatabaseHandler() {
-	// Coord based
-	sqlite3_finalize(uploadDatarateStatement);
-	sqlite3_finalize(uploadDelayStatement);
-	sqlite3_finalize(downloadDatarateStatement);
-	sqlite3_finalize(downloadDelayStatement);
-
 	// Edge based
 	sqlite3_finalize(uploadDatarateStatementEdge);
 	sqlite3_finalize(uploadDelayStatementEdge);
@@ -126,126 +104,6 @@ void TbusSqliteDatabaseHandler::abort() {
 cellid_t TbusSqliteDatabaseHandler::getCellId(const char* const roadId, const float lanePos, simtime_t time) {
 	// TODO: Get correct value
 	return 1;
-}
-
-/**
- * Retrieves upload data- and droprate for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
- * on the two-dimensional position plane and one-dimensional timeline.
- * The returned object has to be destroyed by the caller.
- * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
- * @param pos The position to look at
- * @param time The time to look at
- * @return Data- and droprate as a TbusQueueDatarateValue object
- */
-TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getUploadDatarate(const Coord& pos, simtime_t time) {
-	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
-
-	sqlite3_reset(uploadDatarateStatement);
-	sqlite3_bind_double(uploadDatarateStatement, 1, pos.x);
-	sqlite3_bind_double(uploadDatarateStatement, 2, pos.y);
-	sqlite3_bind_int64(uploadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
-
-	if (sqlite3_step(uploadDatarateStatement) != SQLITE_ROW) {
-		TBUS_NOTAROW(__FILE__, __LINE__)
-		// Set dummy values
-		result->datarate = TBUS_DATARATE_DEFAULT;
-		result->droprate = TBUS_DROPRATE_DEFAULT;
-	} else {
-		// Retrieve values from database
-		result->datarate = sqlite3_column_double(uploadDatarateStatement, 0) * TBUS_KBIT_TO_BIT;
-		result->droprate = sqlite3_column_double(uploadDatarateStatement, 1);
-	}
-
-	return result;
-}
-
-/**
- * Retrieves upload delay for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
- * on the two-dimensional position plane and one-dimensional timeline.
- * The returned object has to be destroyed by the caller.
- * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
- * @param pos The position to look at
- * @param time The time to look at
- * @return Delay as a TbusQueueDelayValue object
- */
-TbusQueueDelayValue* TbusSqliteDatabaseHandler::getUploadDelay(const Coord& pos, simtime_t time) {
-	TbusQueueDelayValue* result = new TbusQueueDelayValue();
-
-	sqlite3_reset(uploadDelayStatement);
-	sqlite3_bind_double(uploadDelayStatement, 1, pos.x);
-	sqlite3_bind_double(uploadDelayStatement, 2, pos.y);
-	sqlite3_bind_int64(uploadDelayStatement, 3, time.inUnit(SIMTIME_NS));
-
-	if (sqlite3_step(uploadDelayStatement) != SQLITE_ROW) {
-		TBUS_NOTAROW(__FILE__, __LINE__)
-		// Set dummy values
-		result->delay = TBUS_DELAY_DEFAULT;
-	} else {
-		// Retrieve values from database
-		result->delay = sqlite3_column_int64(uploadDelayStatement, 0);
-	}
-
-	return result;
-}
-
-/**
- * Retrieves download data- and droprate for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
- * on the two-dimensional position plane and one-dimensional timeline.
- * The returned object has to be destroyed by the caller.
- * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
- * @param pos The position to look at
- * @param time The time to look at
- * @return Data- and droprate as a TbusQueueDatarateValue object
- */
-TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getDownloadDatarate(const Coord& pos, simtime_t time) {
-	TbusQueueDatarateValue* result = new TbusQueueDatarateValue();
-
-	sqlite3_reset(downloadDatarateStatement);
-	sqlite3_bind_double(downloadDatarateStatement, 1, pos.x);
-	sqlite3_bind_double(downloadDatarateStatement, 2, pos.y);
-	sqlite3_bind_int64(downloadDatarateStatement, 3, time.inUnit(SIMTIME_NS));
-
-	if (sqlite3_step(downloadDatarateStatement) != SQLITE_ROW) {
-		TBUS_NOTAROW(__FILE__, __LINE__)
-		// Set dummy values
-		result->datarate = TBUS_DATARATE_DEFAULT;
-		result->droprate = TBUS_DROPRATE_DEFAULT;
-	} else {
-		// Retrieve values from database
-		result->datarate = sqlite3_column_double(downloadDatarateStatement, 0) * TBUS_KBIT_TO_BIT;
-		result->droprate = sqlite3_column_double(downloadDatarateStatement, 1);
-	}
-
-	return result;
-}
-
-/**
- * Retrieves download delay for position pos and at time time. Both values are chosen from the database by looking at the smallest distance
- * on the two-dimensional position plane and one-dimensional timeline.
- * The returned object has to be destroyed by the caller.
- * @deprecated Use edge based lookup. Coord-based lookup is discontinued.
- * @param pos The position to look at
- * @param time The time to look at
- * @return Delay as a TbusQueueDelayValue object
- */
-TbusQueueDelayValue* TbusSqliteDatabaseHandler::getDownloadDelay(const Coord& pos, simtime_t time) {
-	TbusQueueDelayValue* result = new TbusQueueDelayValue();
-
-	sqlite3_reset(downloadDelayStatement);
-	sqlite3_bind_double(downloadDelayStatement, 1, pos.x);
-	sqlite3_bind_double(downloadDelayStatement, 2, pos.y);
-	sqlite3_bind_int64(downloadDelayStatement, 3, time.inUnit(SIMTIME_NS));
-
-	if (sqlite3_step(downloadDelayStatement) != SQLITE_ROW) {
-		TBUS_NOTAROW(__FILE__, __LINE__)
-		// Set dummy values
-		result->delay = TBUS_DELAY_DEFAULT;
-	} else {
-		// Retrieve values from database
-		result->delay = sqlite3_column_int64(downloadDelayStatement, 0);
-	}
-
-	return result;
 }
 
 /**
