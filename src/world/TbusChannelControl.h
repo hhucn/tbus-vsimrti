@@ -22,6 +22,12 @@
 #include "ChannelAccess.h"
 #include "IPAddress.h"
 
+#define TBUS_DEBUG
+
+#ifdef TBUS_DEBUG
+#include <sqlite3.h>
+#endif /* TBUS_DEBUG */
+
 class TbusMobilePHY;
 
 /**
@@ -40,14 +46,12 @@ public:
     TbusChannelControl();
     virtual ~TbusChannelControl();
 
-    void initialize();
-    void handleMessage(cMessage* msg);
+    virtual void initialize();
+    virtual void handleMessage(cMessage* msg);
 
     void registerIP(ChannelControl::HostRef hostRef);
 
     void sendToChannel(cMessage* msg, HostRef h);
-
-    void updateHostPosition(HostRef h, const Coord& pos);
 };
 
 #endif /* TBUSCHANNELCONTROL_H_ */

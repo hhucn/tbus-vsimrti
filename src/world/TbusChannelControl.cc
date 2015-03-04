@@ -24,7 +24,12 @@
 #include "IPDatagram_m.h"
 #include "TbusMobilePHY.h"
 #include "VSimRTIAppPacket_m.h"
+#include "TbusWorldView.h"
 #include <map>
+
+#ifdef TBUS_DEBUG
+Register_GlobalConfigOption(CFGID_TBUS_DATABASE_FILE_DEBUG, "tbus-database", CFG_FILENAME, "", "Filename of TBUS database")
+#endif /* TBUS_DEBUG */
 
 Define_Module(TbusChannelControl);
 
@@ -47,6 +52,29 @@ void TbusChannelControl::initialize() {
 
 	routerInGate  = findGate("routerInGate");
 	routerOutGate = findGate("routerOutGate");
+
+#ifdef TBUS_DEBUG
+	sqlite3* database;
+	sqlite3_open_v2(ev.getConfig()->getAsFilename(CFGID_TBUS_DATABASE_FILE_DEBUG).c_str(), &database, SQLITE_OPEN_READONLY, NULL);
+
+	sqlite3_stmt* statement;
+	sqlite3_prepare_v2(database, "select timestamp from download_datarate order by timestamp asc;", -1, &statement, NULL);
+
+	uint64_t time;
+	uint64_t now = simTime().inUnit(SIMTIME_NS);
+
+	while (sqlite3_step(statement) == SQLITE_ROW) {
+		time = sqlite3_column_int64(statement, 0);
+
+		if (time >= now) {
+			scheduleAt(SimTime(time, SIMTIME_NS), new cMessage(NULL, 0));
+		}
+	}
+
+	sqlite3_finalize(statement);
+
+	sqlite3_close(database);
+#endif /* TBUS_DEBUG */
 }
 
 /**
@@ -82,6 +110,11 @@ void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
  */
 void TbusChannelControl::handleMessage(cMessage* msg) {
 	// TODO: Handle router messages
+#ifdef TBUS_DEBUG
+	if (msg->isSelfMessage()) {
+		TbusWorldView::getInstance()->performUpdateRound();
+	}
+#endif /* TBUS_DEBUG */
 }
 
 /**
@@ -126,13 +159,4 @@ void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
 
 	drop(msg);
 	delete msg;
-}
-
-/**
- * Hook for updating host positions.
- * @param h Host to update
- * @param pos New position
- */
-void TbusChannelControl::updateHostPosition(HostRef h, const Coord& pos) {
-    ChannelControl::updateHostPosition(h, pos);
 }

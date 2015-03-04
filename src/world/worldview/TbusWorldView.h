@@ -21,8 +21,11 @@
 #include <set>
 
 class TbusWorldView {
-	private:
+	friend class TbusChannelControl;
+	protected:
 		TbusWorldView();
+
+	private:
 		TbusWorldView(const TbusWorldView&);
 		void operator=(const TbusWorldView&);
 
