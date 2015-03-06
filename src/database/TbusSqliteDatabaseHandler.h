@@ -84,6 +84,7 @@
  * @endcode
  */
 class TbusSqliteDatabaseHandler : public TbusDatabaseHandler {
+	friend class TbusDatabaseHandler;
 	private:
 		sqlite3* database; ///< Database connection
 
@@ -96,8 +97,10 @@ class TbusSqliteDatabaseHandler : public TbusDatabaseHandler {
 
 		inline void abort();
 
-	public:
+	protected:
 		TbusSqliteDatabaseHandler();
+
+	public:
 		virtual ~TbusSqliteDatabaseHandler();
 
 		virtual cellid_t getCellId(const char* const roadId, const float lanePos, simtime_t time = simTime());
