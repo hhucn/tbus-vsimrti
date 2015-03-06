@@ -54,7 +54,8 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 			simtime_t starttime = SimTime(std::max(values[1]->time, controlInfo->getHeadOfQueue().inUnit(SIMTIME_NS)), SIMTIME_NS);
 			simtime_t runtime = simTime() - starttime;
 
-			bitsSent += (int64) floor(runtime.dbl() * values[1]->datarate);
+			// TODO: Round statt floor?
+			bitsSent += (int64) round(runtime.dbl() * values[1]->datarate);
 		}
 
 		ASSERT2(bitsSent <= packet->getBitLength(), "Invalid amount of bits sent!");
