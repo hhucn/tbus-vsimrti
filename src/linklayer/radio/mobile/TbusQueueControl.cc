@@ -65,6 +65,18 @@ void TbusQueueControl::initialize() {
 }
 
 /**
+ * Delete previously assigned values.
+ */
+TbusQueueControl::~TbusQueueControl() {
+	delete cdrqValue;
+	delete crrqValue;
+	delete crsqValue;
+	delete cdsqValue;
+
+	delete[] currentRoadId;
+}
+
+/**
  * Takes node out of the cell model.
  */
 void TbusQueueControl::finish() {

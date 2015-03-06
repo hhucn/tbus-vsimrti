@@ -44,7 +44,6 @@ INCLUDE_PATH = \
     -I../../inetmanet/src/linklayer/contract \
     -I../../omnetpp-federate/src/msg \
     -I. \
-    -Icallback \
     -Idatabase \
     -Ilinklayer \
     -Ilinklayer/helper \
@@ -197,7 +196,6 @@ clean:
 	$(Q)-rm -rf $O
 	$(Q)-rm -f tbus-vsimrti tbus-vsimrti.exe libtbus-vsimrti.so libtbus-vsimrti.a libtbus-vsimrti.dll libtbus-vsimrti.dylib
 	$(Q)-rm -f ./*_m.cc ./*_m.h
-	$(Q)-rm -f callback/*_m.cc callback/*_m.h
 	$(Q)-rm -f database/*_m.cc database/*_m.h
 	$(Q)-rm -f linklayer/*_m.cc linklayer/*_m.h
 	$(Q)-rm -f linklayer/helper/*_m.cc linklayer/helper/*_m.h
@@ -232,7 +230,7 @@ cleanall: clean
 
 depend:
 	$(qecho) Creating dependencies...
-	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc callback/*.cc database/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc world/worldview/*.cc world/worldview/helper/*.cc
+	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc world/worldview/*.cc world/worldview/helper/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 $O/database/TbusSqliteDatabaseHandler.o: database/TbusSqliteDatabaseHandler.cc \

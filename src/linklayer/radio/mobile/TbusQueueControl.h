@@ -57,6 +57,7 @@ class TbusQueueControl : public cSimpleModule, public TbusQueueControlCallback {
 
 	public:
 		TbusQueueControl();
+		~TbusQueueControl();
 
 		void setRoadId(const char* roadId);
 		void setLanePos(float lanePos);
