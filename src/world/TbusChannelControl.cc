@@ -114,6 +114,7 @@ void TbusChannelControl::handleMessage(cMessage* msg) {
 	if (msg->isSelfMessage()) {
 		TbusWorldView::getInstance()->performUpdateRound();
 	}
+	delete msg;
 #endif /* TBUS_DEBUG */
 }
 
