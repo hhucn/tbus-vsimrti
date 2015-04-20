@@ -19,6 +19,7 @@ package tbus.ned;
 
 simple TbusCRRQ {
     parameters:
+        int queueLength = default(-1); // TBUS queue length, -1 disables queue buffer and makes it infinite
 	
 	gates:
 	    input inGate;

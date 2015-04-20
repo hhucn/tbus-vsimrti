@@ -28,6 +28,7 @@
 class TbusCRRQ : public TbusDatarateQueue {
 	public:
 		TbusCRRQ();
+		virtual void initialize();
 };
 
 #endif /* TBUSCRRQ_H_ */

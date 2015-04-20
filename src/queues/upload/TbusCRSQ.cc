@@ -25,18 +25,26 @@ Define_Module(TbusCRSQ);
  */
 TbusCRSQ::TbusCRSQ() : TbusDatarateQueue(CRSQ) {}
 
+void TbusCRSQ::initialize() {
+	setQueueLength(par("queueLength").longValue());
+
+	TbusDatarateQueue::initialize();
+}
+
 /**
  * If the queue is empty, inform CDSQ (the next queue in line) to start saving values.
  * @see TbusDatarateQueue::addPacketToQueue(cPacket*)
  * @param packet Packet to add
  */
-void TbusCRSQ::addPacketToQueue(cPacket* packet) {
-	// If queue is empty, start collecting values in the next delay queue
-	if (queue.empty()) {
+bool TbusCRSQ::addPacketToQueue(cPacket* packet) {
+	bool result = TbusDatarateQueue::addPacketToQueue(packet);
+
+	// If packet was added and queue is empty, start collecting values in the next delay queue
+	if (result && (queue.length() == 1)) {
 		send(new cMessage(NULL, START_RECORDING), outGate);
 	}
 
-	TbusDatarateQueue::addPacketToQueue(packet);
+	return result;
 }
 
 /**

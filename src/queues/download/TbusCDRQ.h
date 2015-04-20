@@ -28,6 +28,7 @@
 class TbusCDRQ : public TbusDelayQueue {
 	public:
 		TbusCDRQ();
+		virtual void initialize();
 
 		virtual void updateValue(TbusQueueDelayValue* newValue);
 };

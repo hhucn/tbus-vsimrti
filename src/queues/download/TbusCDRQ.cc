@@ -24,6 +24,12 @@ Define_Module(TbusCDRQ);
  */
 TbusCDRQ::TbusCDRQ() : TbusDelayQueue(CDRQ) {}
 
+void TbusCDRQ::initialize() {
+	setQueueLength(par("queueLength").longValue());
+
+	TbusDelayQueue::initialize();
+}
+
 /**
  * Replaces the current value with the new value (if different).
  * @param newValue Value to replace current value with

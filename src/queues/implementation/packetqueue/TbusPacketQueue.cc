@@ -19,7 +19,7 @@
 /**
  * Empty constructor
  */
-TbusPacketQueue::TbusPacketQueue() {}
+TbusPacketQueue::TbusPacketQueue(): queueLength(-1) {}
 
 /**
  * Empty destructor
@@ -32,18 +32,26 @@ TbusPacketQueue::~TbusPacketQueue() {}
  * @see cPacketQueue::insert(cPacket*)
  * @param packet Packet to insert
  */
-void TbusPacketQueue::insert(cPacket* packet) {
-	TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
+bool TbusPacketQueue::insertTbusPacket(cPacket* packet) {
+	if ((queueLength == -1) || (length() < queueLength)) {
+		TbusQueueControlInfo* controlInfo = check_and_cast<TbusQueueControlInfo*>(packet->getControlInfo());
 
-	// Set queue arrival time
-	controlInfo->setQueueArrival(simTime());
+		// Set queue arrival time
+		controlInfo->setQueueArrival(simTime());
 
-	// Also set head of queue time if the queue is currently empty
-	if (empty()) {
-		controlInfo->setHeadOfQueue(simTime());
+		// Also set head of queue time if the queue is currently empty
+		if (empty()) {
+			controlInfo->setHeadOfQueue(simTime());
+		}
+
+		cPacketQueue::insert(packet);
+		return true;
+	} else {
+		// Delete the packet
+		delete packet;
 	}
 
-	cPacketQueue::insert(packet);
+	return false;
 }
 
 /**
@@ -61,4 +69,8 @@ cPacket* TbusPacketQueue::pop() {
 	}
 
 	return packet;
+}
+
+void TbusPacketQueue::setQueueLength(int64_t queueLength) {
+	this->queueLength = queueLength;
 }

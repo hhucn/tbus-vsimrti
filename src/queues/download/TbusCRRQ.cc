@@ -24,3 +24,8 @@ Define_Module(TbusCRRQ);
  */
 TbusCRRQ::TbusCRRQ() : TbusDatarateQueue(CRRQ) {}
 
+void TbusCRRQ::initialize() {
+	setQueueLength(par("queueLength").longValue());
+
+	TbusDatarateQueue::initialize();
+}

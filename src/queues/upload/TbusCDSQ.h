@@ -44,12 +44,13 @@ class TbusCDSQ : public TbusDelayQueue {
 
 	public:
 		TbusCDSQ();
+		virtual void initialize();
 
 		virtual void updateValue(TbusQueueDelayValue* newValue);
 		virtual void handleMessage(cMessage* msg);
 
 	protected:
-		virtual void addPacketToQueue(cPacket* packet);
+		virtual bool addPacketToQueue(cPacket* packet);
 
 		virtual void handleSelfMessage(cMessage* msg);
 		virtual void calculateEarliestDeliveries();

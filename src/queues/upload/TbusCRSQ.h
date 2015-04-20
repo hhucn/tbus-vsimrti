@@ -27,9 +27,10 @@
 class TbusCRSQ : public TbusDatarateQueue {
 	public:
 		TbusCRSQ();
+		virtual void initialize();
 
 	protected:
-		virtual void addPacketToQueue(cPacket* packet);
+		virtual bool addPacketToQueue(cPacket* packet);
 		virtual void sendFrontOfQueue();
 };
 

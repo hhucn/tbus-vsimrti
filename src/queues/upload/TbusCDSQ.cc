@@ -27,6 +27,12 @@ TbusCDSQ::TbusCDSQ() : TbusDelayQueue(CDSQ) {
 	values.resize(1);
 }
 
+void TbusCDSQ::initialize() {
+	setQueueLength(par("queueLength").longValue());
+
+	TbusDelayQueue::initialize();
+}
+
 /**
  * Update/store the new value according to the saveValues flag.
  * If it is true, add the value to the store, if it is false, replace the only current value with the new value.
@@ -60,13 +66,18 @@ void TbusCDSQ::updateValue(TbusQueueDelayValue* newValue) {
  * Calls the base queues add method and clears all values except the current
  * @param packet Packet to send
  */
-void TbusCDSQ::addPacketToQueue(cPacket* packet) {
-	TbusDelayQueue::addPacketToQueue(packet);
+bool TbusCDSQ::addPacketToQueue(cPacket* packet) {
+	bool result = TbusDelayQueue::addPacketToQueue(packet);
 
-	// Clear and delete all values but the front
-	clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
-	// Set a new saveTime
-	saveTime = simTime().inUnit(SIMTIME_NS);
+	if (result) {
+		// Onyl act if the packet was inserted successfully
+		// Clear and delete all values but the front
+		clearAndDeleteValues(TBUS_CLEAR_ALL_EXCEPT_FRONT);
+		// Set a new saveTime
+		saveTime = simTime().inUnit(SIMTIME_NS);
+	}
+
+	return result;
 }
 
 /**

@@ -69,10 +69,12 @@ template <class T> class TbusBaseQueue : public cSimpleModule {
 		std::deque<T*> values; ///< Value deque
 		typedef typename std::deque<T*>::iterator valueIterator; ///< Value deque iterator
 
+		void setQueueLength(int64_t queueLength);
+
 		inline void clearAndDeleteValues(const TbusClearMethod method = TBUS_CLEAR_ALL);
 
 		virtual void handleSelfMessage(cMessage* msg);
-		virtual void addPacketToQueue(cPacket* packet);
+		virtual bool addPacketToQueue(cPacket* packet);
 
 		virtual void setQueueStatus(TbusQueueStatus status);
 

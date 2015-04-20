@@ -27,8 +27,13 @@ class TbusPacketQueue : public cPacketQueue {
 		TbusPacketQueue();
 		virtual ~TbusPacketQueue();
 
-		virtual void insert(cPacket* packet);
+		virtual bool insertTbusPacket(cPacket* packet);
 		virtual cPacket* pop();
+
+		void setQueueLength(int64_t queueLength);
+
+	private:
+		int64_t queueLength;
 };
 
 #endif /* TBUSPACKETQUEUE_H_ */

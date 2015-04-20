@@ -50,6 +50,14 @@ template<class T> void TbusBaseQueue<T>::setQueueControlCallback(TbusQueueContro
 }
 
 /**
+ * Sets the TBUS packet queue's queue length
+ * @param queueLength Queue length
+ */
+template<class T> void TbusBaseQueue<T>::setQueueLength(int64_t queueLength) {
+	queue.setQueueLength(queueLength);
+}
+
+/**
  * Set the status for value updates.
  * @param status Value updates status
  */
@@ -106,19 +114,25 @@ template<class T> void TbusBaseQueue<T>::handleSelfMessage(cMessage* msg) {
  * Adds a packet to the queue, then starts the sending process (if there is none).
  * @param packet packet to add
  */
-template <class T> void TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
-	queue.insert(packet);
+template <class T> bool TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
+	bool result = queue.insertTbusPacket(packet);
 
-	if (queue.length() == 1) {
-		// First packet in queue, set this queue as active
-		setQueueStatus(ACTIVE);
+	if (result) {
+		// Only act if packet could be inserted
+		if (queue.length() == 1) {
+
+			// First packet in queue, set this queue as active
+			setQueueStatus(ACTIVE);
+		}
+
+		calculateEarliestDeliveryForPacket(packet);
+
+		if (!selfMessage.isScheduled()) {
+			adaptSelfMessage();
+		}
 	}
 
-	calculateEarliestDeliveryForPacket(packet);
-
-	if (!selfMessage.isScheduled()) {
-		adaptSelfMessage();
-	}
+	return result;
 }
 
 /**
