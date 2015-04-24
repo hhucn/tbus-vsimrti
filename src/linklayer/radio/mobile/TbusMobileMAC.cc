@@ -96,6 +96,11 @@ void TbusMobileMAC::initialize(int stage) {
  */
 void TbusMobileMAC::handleMessage(cMessage* msg) {
 	if (msg->arrivedOn(upperLayerIn)) {
+		if (msg->getControlInfo() != NULL) {
+			cObject* controlInfo = msg->removeControlInfo();
+			delete controlInfo;
+		}
+
 		// Add control info
 		msg->setControlInfo(new TbusQueueControlInfo());
 		send(msg, lowerLayerOut);
