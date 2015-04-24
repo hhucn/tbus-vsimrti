@@ -22,10 +22,7 @@ Define_Module(TbusCDSQ);
 /**
  * Start without saving values
  */
-TbusCDSQ::TbusCDSQ() : TbusDelayQueue(CDSQ) {
-	// Resize to one for direct assignment
-	values.resize(1);
-}
+TbusCDSQ::TbusCDSQ() : TbusDelayQueue(CDSQ) {}
 
 void TbusCDSQ::initialize() {
 	setQueueLength(par("queueLength").longValue());
@@ -42,17 +39,22 @@ void TbusCDSQ::initialize() {
  */
 void TbusCDSQ::updateValue(TbusQueueDelayValue* newValue) {
 	EV << "New CDSQ delay value "<< newValue->delay << endl;
-	if (queueStatus && (values.empty() || values.front() != newValue)) {
+	if ((queueStatus != INACTIVE) && (values.empty() || values.front() != newValue)) {
 		// Store new value
 		values.push_front(newValue);
 
 		if (!queue.isEmpty()) {
 			calculateEarliestDeliveries();
 		}
-	} else if (!queueStatus) {
-		// Replace existing value
-		delete values[0];
-		values[0] = newValue;
+	} else if (queueStatus == INACTIVE) {
+		if (values.empty()) {
+			// Push new value
+			values.push_front(newValue);
+		} else {
+			// Replace existing value
+			delete values[0];
+			values[0] = newValue;
+		}
 
 		if (!queue.isEmpty()) {
 			calculateEarliestDeliveries();
