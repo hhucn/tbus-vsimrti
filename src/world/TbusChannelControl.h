@@ -22,7 +22,7 @@
 #include "ChannelAccess.h"
 #include "IPAddress.h"
 
-#define TBUS_DEBUG
+//#define TBUS_DEBUG
 
 #ifdef TBUS_DEBUG
 #include <sqlite3.h>
