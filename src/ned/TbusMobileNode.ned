@@ -53,6 +53,10 @@ module TbusMobileNode {
         }
         networkLayer: NetworkLayer {
             parameters:
+                // Enable proxyARP and globalARP
+                // because TBUS includes ARP delay in its delay values
+                // and the connection: mobile device <-> base station
+                // is merely a point-to-point-connection without the need for ARP
                 proxyARP = true;
                 arp.globalARP = true;
                 ip.forceBroadcast = false;
