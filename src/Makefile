@@ -287,6 +287,7 @@ $O/linklayer/radio/inet/TbusInetPHY.o: linklayer/radio/inet/TbusInetPHY.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	$(INETMANET_PROJ)/src/world/ChannelControlExtended.h \
 	linklayer/radio/inet/TbusInetPHY.h \
 	world/TbusChannelControl.h
 $O/linklayer/radio/mobile/TbusMobileMAC.o: linklayer/radio/mobile/TbusMobileMAC.cc \
@@ -323,6 +324,7 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	$(INETMANET_PROJ)/src/world/ChannelControlExtended.h \
 	database/TbusDatabaseHandler.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \
 	linklayer/radio/mobile/TbusQueueControl.h \
@@ -555,6 +557,7 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
+	$(INETMANET_PROJ)/src/world/ChannelControlExtended.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/msg/VSimRTIAppPacket_m.h \
 	database/TbusDatabaseHandler.h \
 	linklayer/radio/mobile/TbusMobilePHY.h \

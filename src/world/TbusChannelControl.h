@@ -18,7 +18,7 @@
 #ifndef TBUSCHANNELCONTROL_H_
 #define TBUSCHANNELCONTROL_H_
 
-#include "ChannelControl.h"
+#include "ChannelControlExtended.h"
 #include "ChannelAccess.h"
 #include "IPAddress.h"
 
@@ -33,7 +33,7 @@ class TbusMobilePHY;
 /**
  * Provides a Control layer for NICs attached to the air interface
  */
-class TbusChannelControl : public ChannelControl {
+class TbusChannelControl : public ChannelControlExtended {
 private:
 	int routerInGate; ///< Router input gate
 	int routerOutGate; ///< Router output gate
