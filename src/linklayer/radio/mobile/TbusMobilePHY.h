@@ -18,13 +18,13 @@
 #ifndef TBUSMOBILEPHY_H_
 #define TBUSMOBILEPHY_H_
 
-#include "ChannelAccess.h"
+#include "ChannelAccessExtended.h"
 #include "omnetpp.h"
 
 /**
  * PHY layer of TBUS NIC.
  */
-class TbusMobilePHY : public ChannelAccess {
+class TbusMobilePHY : public ChannelAccessExtended {
 private:
 	int upperLayerIn; ///< Upper layer input gate id
 	int upperLayerOut; ///< Upper layer output gate id

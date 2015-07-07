@@ -323,6 +323,7 @@ $O/linklayer/radio/mobile/TbusMobilePHY.o: linklayer/radio/mobile/TbusMobilePHY.
 	$(INETMANET_PROJ)/src/networklayer/contract/IPAddress.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
+	$(INETMANET_PROJ)/src/world/ChannelAccessExtended.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	$(INETMANET_PROJ)/src/world/ChannelControlExtended.h \
 	database/TbusDatabaseHandler.h \
@@ -556,6 +557,7 @@ $O/world/TbusChannelControl.o: world/TbusChannelControl.cc \
 	$(INETMANET_PROJ)/src/networklayer/ipv4/IPv4InterfaceData.h \
 	$(INETMANET_PROJ)/src/util/FWMath.h \
 	$(INETMANET_PROJ)/src/world/ChannelAccess.h \
+	$(INETMANET_PROJ)/src/world/ChannelAccessExtended.h \
 	$(INETMANET_PROJ)/src/world/ChannelControl.h \
 	$(INETMANET_PROJ)/src/world/ChannelControlExtended.h \
 	$(OMNETPP_FEDERATE_PROJ)/src/msg/VSimRTIAppPacket_m.h \

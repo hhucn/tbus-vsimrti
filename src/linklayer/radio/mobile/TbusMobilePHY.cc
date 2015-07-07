@@ -44,14 +44,14 @@ TbusMobilePHY::~TbusMobilePHY() {}
  * @param stage Init stage level
  */
 void TbusMobilePHY::initialize(int stage) {
-	ChannelAccess::initialize(stage);
+	ChannelAccessExtended::initialize(stage);
 
 	if (stage == 0) {
 		upperLayerIn 	= findGate("upperLayerIn");
 		upperLayerOut 	= findGate("upperLayerOut");
 		radioIn 		= findGate("radioIn");
 
-		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControl::get());
+		tbusCC = check_and_cast<TbusChannelControl*>(ChannelControlExtended::get());
 	} else if (stage == 3) {
 		// Register ip address at channel control
 		tbusCC->registerIP(myHostRef);
