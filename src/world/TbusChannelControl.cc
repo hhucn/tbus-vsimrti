@@ -124,7 +124,7 @@ void TbusChannelControl::handleMessage(cMessage* msg) {
  * @param msg Message to send
  * @param h Host reference from sender
  */
-void TbusChannelControl::sendToChannel(cMessage* msg, HostRef h) {
+void TbusChannelControl::sendToChannel(cMessage* msg, ChannelControl::HostRef h) {
 	Enter_Method_Silent();
 	take(msg);
 
