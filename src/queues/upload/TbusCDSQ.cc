@@ -38,7 +38,6 @@ void TbusCDSQ::initialize() {
  * @param newValue New value to use.
  */
 void TbusCDSQ::updateValue(TbusQueueDelayValue* newValue) {
-	EV << "New CDSQ delay value "<< newValue->delay << endl;
 	if ((queueStatus != INACTIVE) && (values.empty() || values.front() != newValue)) {
 		// Store new value
 		values.push_front(newValue);
