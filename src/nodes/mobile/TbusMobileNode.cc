@@ -49,6 +49,5 @@ void TbusMobileNode::finish() {
  */
 void TbusMobileNode::extendedMobilityUpdated() {
 	// TODO: Use real values
-//	wv->nodeMoved(qc, getRoadId(), getLanePos()));
-	wv->nodeMoved(qc, "roadId", 0.0);
+	wv->nodeMoved(qc, getRoadId(), getLanePos());
 }
