@@ -21,9 +21,9 @@
  */
 #define TBUS_SQLITE_USER_VERSION	0x00000001
 /**
- * KBit to Bit conversion, used by multiplication
+ * KB to Bit conversion, used by multiplication
  */
-#define TBUS_KBIT_TO_BIT			(1024.0 * 8.0)
+#define TBUS_KBYTE_TO_BIT			(1024.0 * 8.0)
 /**
  * Error macro if query returns anything but a row
  */
@@ -94,6 +94,8 @@ class TbusSqliteDatabaseHandler : public TbusDatabaseHandler {
 		sqlite3_stmt* downloadDelayStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 
 		int32_t getDatabaseVersion();
+
+		char* getRoadIdSubstring(const char* const roadId);
 
 		inline void abort();
 

@@ -87,6 +87,7 @@ O = $(PROJECT_OUTPUT_DIR)/$(CONFIGNAME)/$(PROJECTRELATIVE_PATH)
 
 # Object files for local .cc and .msg files
 OBJS = \
+    $O/database/TbusDatabaseHandler.o \
     $O/database/TbusSqliteDatabaseHandler.o \
     $O/linklayer/helper/IpAddressHelper.o \
     $O/linklayer/radio/inet/TbusInetPHY.o \
@@ -233,6 +234,15 @@ depend:
 	$(Q)$(MAKEDEPEND) $(INCLUDE_PATH) -f Makefile -P\$$O/ -- $(MSG_CC_FILES)  ./*.cc database/*.cc linklayer/*.cc linklayer/helper/*.cc linklayer/radio/*.cc linklayer/radio/inet/*.cc linklayer/radio/mobile/*.cc ned/*.cc nodes/*.cc nodes/inet/*.cc nodes/mobile/*.cc queues/*.cc queues/download/*.cc queues/implementation/*.cc queues/implementation/base/*.cc queues/implementation/control_info/*.cc queues/implementation/datarate/*.cc queues/implementation/delay/*.cc queues/implementation/packetqueue/*.cc queues/implementation/test/*.cc queues/implementation/test/base/*.cc queues/implementation/test/datarate/*.cc queues/implementation/test/delay/*.cc queues/implementation/test/ned/*.cc queues/upload/*.cc world/*.cc world/cellshare/*.cc world/worldview/*.cc world/worldview/helper/*.cc
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
+$O/database/TbusDatabaseHandler.o: database/TbusDatabaseHandler.cc \
+	database/TbusDatabaseHandler.h \
+	linklayer/radio/mobile/TbusQueueControlCallback.h \
+	queues/implementation/base/TbusQueueSelection.h \
+	queues/implementation/base/TbusQueueStatus.h \
+	queues/implementation/base/TbusQueueValue.h \
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	world/cellshare/TbusCellShareTypes.h
 $O/database/TbusSqliteDatabaseHandler.o: database/TbusSqliteDatabaseHandler.cc \
 	database/TbusDatabaseHandler.h \
 	database/TbusSqliteDatabaseHandler.h \

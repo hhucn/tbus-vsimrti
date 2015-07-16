@@ -13,7 +13,6 @@
 #include "TbusCellShareTypes.h"
 #include "omnetpp.h"
 
-
 /**
  * Abstract base class for all database handlers to be used in TBUS.
  * Provides an interface for accessing data-/droprate and delay from data source.
@@ -27,19 +26,23 @@ class TbusDatabaseHandler {
 		TbusDatabaseHandler(const TbusDatabaseHandler&);
 		void operator=(const TbusDatabaseHandler&);
 
+		simtime_t offset;
+
 	protected:
 		/**
 		 * Protected Constructor.
 		 * Only inheriting is possible.
 		 */
-		TbusDatabaseHandler() {};
+		TbusDatabaseHandler();
+
+		simtime_t getSimulationTimeWithOffset(simtime_t time = simTime());
 
 	public:
 		/**
-		 * Inline template function for instantiation of a singleton with given type T.
+		 * Template function for instantiation of a singleton with given type T.
 		 * This is used for an easy interface throughout the using classes and easy instantiation and maintenance of the belonging data source.
 		 * @return Singleton instance of type T
-		 */
+		*/
 		template<class T> static TbusDatabaseHandler* getInstance() {
 			static TbusDatabaseHandler* instance = new T(); ///< static local variable used for singleton cleanup
 
