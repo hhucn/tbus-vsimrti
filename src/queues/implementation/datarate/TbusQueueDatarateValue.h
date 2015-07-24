@@ -29,10 +29,12 @@ class TbusQueueDatarateValue : public TbusQueueValue {
 		TbusQueueDatarateValue();
 		TbusQueueDatarateValue(const TbusQueueDatarateValue& other);
 
-		virtual bool operator!=(TbusQueueValue& other);
+		bool operator!=(TbusQueueValue& other);
+
+		bool isValid();
 
 		double droprate; ///< Droprate in percent
-		double datarate; ///< Datarate in Bit/s
+		int64_t datarate; ///< Datarate in Bit/s
 };
 
 #endif /* TBUSQUEUEDATARATEVALUE_H_ */

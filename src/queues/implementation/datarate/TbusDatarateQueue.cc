@@ -55,10 +55,11 @@ void TbusDatarateQueue::calculateEarliestDeliveryForPacket(cPacket* packet) {
 			simtime_t runtime = simTime() - starttime;
 
 			// TODO: Round statt floor?
-			bitsSent += (int64) round(runtime.dbl() * values[1]->datarate);
+			bitsSent += ((int64_t) round((runtime.inUnit(SIMTIME_NS) * values[1]->datarate) / 1000000000.0));
 		}
 
 		ASSERT2(bitsSent <= packet->getBitLength(), "Invalid amount of bits sent!");
+		ASSERT2(bitsSent >= 0, "Negative amount of bits sent!");
 		delay = currentDatarateDelay(packet->getBitLength() - bitsSent);
 
 		// Add current time to delay

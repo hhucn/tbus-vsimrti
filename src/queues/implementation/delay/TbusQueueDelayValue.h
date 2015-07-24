@@ -31,7 +31,9 @@ class TbusQueueDelayValue : public TbusQueueValue {
 		TbusQueueDelayValue();
 		TbusQueueDelayValue(const TbusQueueDelayValue& other);
 
-		virtual bool operator!=(TbusQueueValue& other);
+		bool operator!=(TbusQueueValue& other);
+
+		bool isValid();
 };
 
 #endif /* TBUSQUEUEDELAYVALUE_H_ */

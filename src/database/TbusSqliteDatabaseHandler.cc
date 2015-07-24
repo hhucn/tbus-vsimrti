@@ -44,6 +44,9 @@ TbusSqliteDatabaseHandler::TbusSqliteDatabaseHandler() {
 	downloadDatarateStatementEdge = NULL;
 	downloadDelayStatementEdge = NULL;
 
+	uploadCellIdStatementEdge = NULL;
+	downloadCellIdStatementEdge = NULL;
+
 	// Edge based
 //	// Upload datarate
 //	sqlite3_prepare_v2(database, "select datarate, droprate, max(lanePos), max(timestamp) from upload_datarate where roadId = ?2 and lanePos <= ?1 and timestamp <= ?3 limit 1;", -1 , &uploadDatarateStatementEdge, NULL);
@@ -62,6 +65,11 @@ TbusSqliteDatabaseHandler::TbusSqliteDatabaseHandler() {
 	sqlite3_prepare_v2(database, "select datarate, droprate, abs(lanePos - ?1) as dist from download_datarate where roadId = ?2 and timestamp <= ?3 order by dist asc limit 1;", -1 , &downloadDatarateStatementEdge, NULL);
 	// Download delay
 	sqlite3_prepare_v2(database, "select delay, abs(lanePos - ?1) as dist from download_delay where roadId = ?2 and timestamp <= ?3 order by dist asc limit 1;", -1 , &downloadDelayStatementEdge, NULL);
+
+	// Upload cell id
+	sqlite3_prepare_v2(database, "select cellId, abs(lanePos - ?1) as dist from upload_datarate where roadId = ?2 and timestamp <= ?3 order by dist asc limit 1;", -1 , &uploadCellIdStatementEdge, NULL);
+	// Download cell id
+	sqlite3_prepare_v2(database, "select cellId, abs(lanePos - ?1) as dist from download_datarate where roadId = ?2 and timestamp <= ?3 order by dist asc limit 1;", -1 , &downloadCellIdStatementEdge, NULL);
 }
 
 /**
@@ -73,6 +81,9 @@ TbusSqliteDatabaseHandler::~TbusSqliteDatabaseHandler() {
 	sqlite3_finalize(uploadDelayStatementEdge);
 	sqlite3_finalize(downloadDatarateStatementEdge);
 	sqlite3_finalize(downloadDelayStatementEdge);
+
+	sqlite3_finalize(uploadCellIdStatementEdge);
+	sqlite3_finalize(downloadCellIdStatementEdge);
 
 	sqlite3_close(database);
 }
@@ -131,8 +142,37 @@ char* TbusSqliteDatabaseHandler::getRoadIdSubstring(const char* roadId) {
  * @return Cell id
  */
 cellid_t TbusSqliteDatabaseHandler::getCellId(const char* const roadId, const float lanePos, simtime_t time) {
-	// TODO: Get correct value
-	return 1;
+	// Currently we're using the upload cell id value
+	cellid_t result = TBUS_CELLID_DEFAULT;
+
+	char* newRoadId = getRoadIdSubstring(roadId);
+
+	sqlite3_reset(uploadCellIdStatementEdge);
+	sqlite3_bind_double(uploadCellIdStatementEdge, 1, lanePos);
+	sqlite3_bind_text(uploadCellIdStatementEdge, 2, newRoadId, -1, SQLITE_TRANSIENT);
+	sqlite3_bind_int64(uploadCellIdStatementEdge, 3, getSimulationTimeWithOffset(time).inUnit(SIMTIME_NS));
+
+	int sqlResult = sqlite3_step(uploadCellIdStatementEdge);
+
+	if (sqlResult != SQLITE_ROW && sqlResult != SQLITE_DONE) {
+		TBUS_NOTAROW(__FILE__, __LINE__)
+	} else {
+		if (sqlite3_column_type(uploadCellIdStatementEdge, 0) == SQLITE_NULL) {
+			// Aggregation functions returns at least one row, even if it's empty
+			EV << "WARNING: Using default upload delay value!" << endl;
+		} else {
+			// Retrieve values from database
+			result = sqlite3_column_int64(uploadCellIdStatementEdge, 0);
+		}
+	}
+
+	#ifdef TBUS_VERBOSE
+		EV << "Retrieved cell id " << result << " for roadId " << newRoadId << " and lanePos " << lanePos << " at " << time << std::endl;
+	#endif
+
+	delete[] newRoadId;
+
+	return result;
 }
 
 /**
@@ -171,13 +211,13 @@ TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getUploadDatarate(const char*
 			EV << "WARNING: Using default upload delay value!" << endl;
 		} else {
 			// Retrieve values from database
-			result->datarate = sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_KBYTE_TO_BIT;
+			result->datarate = round(sqlite3_column_double(uploadDatarateStatementEdge, 0) * TBUS_KBYTE_TO_BIT);
 			result->droprate = sqlite3_column_double(uploadDatarateStatementEdge, 1);
 		}
 	}
 
 #ifdef TBUS_VERBOSE
-	EV << "Retrieved upload datarate " << result->datarate << " and droprate " << result->droprate << " for roadId " << newRoadId << " and lanePos " << lanePos << std::endl;
+	EV << "Retrieved upload datarate " << result->datarate << " and droprate " << result->droprate << " for roadId " << newRoadId << " and lanePos " << lanePos << " at " << time << std::endl;
 #endif
 
 	delete[] newRoadId;
@@ -224,7 +264,7 @@ TbusQueueDelayValue* TbusSqliteDatabaseHandler::getUploadDelay(const char* const
 	}
 
 #ifdef TBUS_VERBOSE
-	EV << "Retrieved upload delay " << result->delay << " for roadId " << newRoadId << " and lanePos " << lanePos << std::endl;
+	EV << "Retrieved upload delay " << result->delay << " for roadId " << newRoadId << " and lanePos " << lanePos << " at " << time << std::endl;
 #endif
 
 	delete[] newRoadId;
@@ -268,13 +308,13 @@ TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getDownloadDatarate(const cha
 			EV << "WARNING: Using default download datarate value!" << endl;
 		} else {
 			// Retrieve values from database
-			result->datarate = sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_KBYTE_TO_BIT;
+			result->datarate = round(sqlite3_column_double(downloadDatarateStatementEdge, 0) * TBUS_KBYTE_TO_BIT);
 			result->droprate = sqlite3_column_double(downloadDatarateStatementEdge, 1);
 		}
 	}
 
 #ifdef TBUS_VERBOSE
-	EV << "Retrieved download datarate " << result->datarate << " and droprate " << result->droprate << " for roadId " << newRoadId << " and lanePos " << lanePos << std::endl;
+	EV << "Retrieved download datarate " << result->datarate << " and droprate " << result->droprate << " for roadId " << newRoadId << " and lanePos " << lanePos << " at " << time << std::endl;
 #endif
 
 	delete[] newRoadId;
@@ -322,7 +362,7 @@ TbusQueueDelayValue* TbusSqliteDatabaseHandler::getDownloadDelay(const char* con
 	}
 
 #ifdef TBUS_VERBOSE
-	EV << "Retrieved upload delay " << result->delay << " for roadId " << newRoadId << " and lanePos " << lanePos << std::endl;
+	EV << "Retrieved upload delay " << result->delay << " for roadId " << newRoadId << " and lanePos " << lanePos << " at " << time << std::endl;
 #endif
 
 	delete[] newRoadId;

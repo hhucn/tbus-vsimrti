@@ -30,7 +30,7 @@ class TbusDatarateQueue : public TbusBaseQueue<TbusQueueDatarateValue> {
 		TbusDatarateQueue(TbusQueueSelection selection);
 
 	protected:
-		double bitsSent; ///< Bits already sent for head of queue (Needed for multiple data- and droprate value per packet)
+		int64_t bitsSent; ///< Bits already sent for head of queue (Needed for multiple data- and droprate value per packet)
 
 		virtual void calculateEarliestDeliveries();
 		virtual void calculateEarliestDeliveryForPacket(cPacket* packet);

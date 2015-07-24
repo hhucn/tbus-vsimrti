@@ -53,6 +53,7 @@ void TbusQueueControl::initialize() {
 	crsqValue = NULL;
 	cdsqValue = NULL;
 
+	// Set to invalid because this node hasn't moved into a cell yet
 	currentCellId = TBUS_INVALID_CELLID;
 
 	tbusHost.callback = this;
@@ -105,24 +106,49 @@ void TbusQueueControl::updateCellIdFromDatabase() {
  * @param selection Queue selection
  */
 void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selection) {
+	// Only update selected and active queues with valid values
 	if ((selection & CDRQ) && cdrq->getQueueStatus()) {
-		delete cdrqValue;
-		cdrqValue = dbHandler->getDownloadDelay(currentRoadId, currentLanePos);
+		TbusQueueDelayValue* temp = dbHandler->getDownloadDelay(currentRoadId, currentLanePos);
+
+		if (temp->isValid()) {
+			delete cdrqValue;
+			cdrqValue = temp;
+		} else {
+			delete temp;
+		}
 	}
 
 	if ((selection & CRRQ) && crrq->getQueueStatus()) {
-		delete crrqValue;
-		crrqValue = dbHandler->getDownloadDatarate(currentRoadId, currentLanePos);
+		TbusQueueDatarateValue* temp = dbHandler->getDownloadDatarate(currentRoadId, currentLanePos);
+
+		if (temp->isValid()) {
+			delete crrqValue;
+			crrqValue = temp;
+		} else {
+			delete temp;
+		}
 	}
 
 	if ((selection & CDSQ) && cdsq->getQueueStatus()) {
-		delete cdsqValue;
-		cdsqValue = dbHandler->getUploadDelay(currentRoadId, currentLanePos);
+		TbusQueueDelayValue* temp = dbHandler->getUploadDelay(currentRoadId, currentLanePos);
+
+		if (temp->isValid()) {
+			delete cdsqValue;
+			cdsqValue = temp;
+		} else {
+			delete temp;
+		}
 	}
 
 	if ((selection & CRSQ) && crsq->getQueueStatus()) {
-		delete crsqValue;
-		crsqValue = dbHandler->getUploadDatarate(currentRoadId, currentLanePos);
+		TbusQueueDatarateValue* temp = dbHandler->getUploadDatarate(currentRoadId, currentLanePos);
+
+		if (temp->isValid()) {
+			delete crsqValue;
+			crsqValue = temp;
+		} else {
+			delete temp;
+		}
 	}
 }
 

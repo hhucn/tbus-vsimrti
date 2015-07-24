@@ -16,6 +16,7 @@
 //
 
 #include "TbusQueueDatarateValue.h"
+#include "TbusSqliteDatabaseHandler.h"
 
 /**
  * Empty constructor.
@@ -48,4 +49,8 @@ bool TbusQueueDatarateValue::operator!=(TbusQueueValue& other) {
 	} else {
 		return true;
 	}
+}
+
+bool TbusQueueDatarateValue::isValid() {
+	return (droprate != TBUS_DROPRATE_DEFAULT) && (datarate != TBUS_DATARATE_DEFAULT);
 }

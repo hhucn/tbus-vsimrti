@@ -16,6 +16,7 @@
 //
 
 #include "TbusQueueDelayValue.h"
+#include "TbusSqliteDatabaseHandler.h"
 
 /**
  * Empty constructor.
@@ -47,4 +48,12 @@ bool TbusQueueDelayValue::operator!=(TbusQueueValue& other) {
 	} else {
 		return true;
 	}
+}
+
+/**
+ * Value state
+ * @return Value state
+ */
+bool TbusQueueDelayValue::isValid() {
+	return (delay != TBUS_DELAY_DEFAULT);
 }

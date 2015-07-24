@@ -42,6 +42,13 @@ class TbusQueueValue : public cObject {
 		 * @return Comparison value
 		 */
 		virtual inline bool operator!=(TbusQueueValue& other) = 0;
+
+		/**
+		 * Returns true if values differ from default values
+		 * Default values are only set if none could be retrieved from the database
+		 * @return Value state
+		 */
+		virtual bool isValid() = 0;
 };
 
 #endif /* TBUSQUEUEVALUE_H_ */

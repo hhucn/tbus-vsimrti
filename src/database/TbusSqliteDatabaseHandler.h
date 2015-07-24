@@ -41,6 +41,10 @@
  * Default delay value if no value could be retrieved (in ns)
  */
 #define TBUS_DELAY_DEFAULT			1
+/**
+ * Default cell id value if no value could be retrieved
+ */
+#define TBUS_CELLID_DEFAULT			0
 
 /**
  * @class TbusSqliteDatabaseHandler
@@ -53,6 +57,7 @@
  *		timestamp INTEGER NOT NULL,
  *		roadId TEXT,
  *		lanePos REAL,
+ *		cellId INTEGER,
  *		datarate REAL,
  *		droprate REAL
  * );
@@ -62,6 +67,7 @@
  *		timestamp INTEGER NOT NULL,
  *		roadId TEXT,
  *		lanePos REAL,
+ *		cellId INTEGER,
  *		datarate REAL,
  *		droprate REAL
  * );
@@ -92,6 +98,9 @@ class TbusSqliteDatabaseHandler : public TbusDatabaseHandler {
 		sqlite3_stmt* uploadDelayStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 		sqlite3_stmt* downloadDatarateStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 		sqlite3_stmt* downloadDelayStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+
+		sqlite3_stmt* uploadCellIdStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+		sqlite3_stmt* downloadCellIdStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 
 		int32_t getDatabaseVersion();
 

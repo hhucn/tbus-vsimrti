@@ -454,8 +454,15 @@ $O/queues/implementation/datarate/TbusDatarateQueue.o: queues/implementation/dat
 	queues/implementation/datarate/TbusQueueDatarateValue.h \
 	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/implementation/datarate/TbusQueueDatarateValue.o: queues/implementation/datarate/TbusQueueDatarateValue.cc \
+	database/TbusDatabaseHandler.h \
+	database/TbusSqliteDatabaseHandler.h \
+	linklayer/radio/mobile/TbusQueueControlCallback.h \
+	queues/implementation/base/TbusQueueSelection.h \
+	queues/implementation/base/TbusQueueStatus.h \
 	queues/implementation/base/TbusQueueValue.h \
-	queues/implementation/datarate/TbusQueueDatarateValue.h
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	world/cellshare/TbusCellShareTypes.h
 $O/queues/implementation/delay/TbusDelayQueue.o: queues/implementation/delay/TbusDelayQueue.cc \
 	linklayer/radio/mobile/TbusQueueControlCallback.h \
 	queues/implementation/base/TbusBaseQueue.h \
@@ -467,8 +474,15 @@ $O/queues/implementation/delay/TbusDelayQueue.o: queues/implementation/delay/Tbu
 	queues/implementation/delay/TbusQueueDelayValue.h \
 	queues/implementation/packetqueue/TbusPacketQueue.h
 $O/queues/implementation/delay/TbusQueueDelayValue.o: queues/implementation/delay/TbusQueueDelayValue.cc \
+	database/TbusDatabaseHandler.h \
+	database/TbusSqliteDatabaseHandler.h \
+	linklayer/radio/mobile/TbusQueueControlCallback.h \
+	queues/implementation/base/TbusQueueSelection.h \
+	queues/implementation/base/TbusQueueStatus.h \
 	queues/implementation/base/TbusQueueValue.h \
-	queues/implementation/delay/TbusQueueDelayValue.h
+	queues/implementation/datarate/TbusQueueDatarateValue.h \
+	queues/implementation/delay/TbusQueueDelayValue.h \
+	world/cellshare/TbusCellShareTypes.h
 $O/queues/implementation/packetqueue/TbusPacketQueue.o: queues/implementation/packetqueue/TbusPacketQueue.cc \
 	queues/implementation/control_info/TbusQueueControlInfo.h \
 	queues/implementation/packetqueue/TbusPacketQueue.h
