@@ -58,7 +58,7 @@ void TbusChannelControl::initialize() {
 	sqlite3_open_v2(ev.getConfig()->getAsFilename(CFGID_TBUS_DATABASE_FILE_DEBUG).c_str(), &database, SQLITE_OPEN_READONLY, NULL);
 
 	sqlite3_stmt* statement;
-	sqlite3_prepare_v2(database, "select timestamp from download_datarate order by timestamp asc;", -1, &statement, NULL);
+	sqlite3_prepare_v2(database, "select timestamp from download order by timestamp asc;", -1, &statement, NULL);
 
 	uint64_t time;
 	uint64_t now = simTime().inUnit(SIMTIME_NS);
@@ -109,7 +109,6 @@ void TbusChannelControl::registerIP(ChannelControl::HostRef hostRef) {
  * @param msg Message to send
  */
 void TbusChannelControl::handleMessage(cMessage* msg) {
-	// TODO: Handle router messages
 #ifdef TBUS_DEBUG
 	if (msg->isSelfMessage()) {
 		TbusWorldView::getInstance()->performUpdateRound();

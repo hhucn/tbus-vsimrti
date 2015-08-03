@@ -63,6 +63,9 @@ class TbusDatabaseHandler {
 		 */
 		virtual cellid_t getCellId(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;
 
+		virtual uint64_t getUploadGroupId(const char* const roadId, simtime_t time = simTime()) = 0;
+		virtual uint64_t getDownloadGroupId(const char* const roadId, simtime_t time = simTime()) = 0;
+
 		virtual TbusQueueDatarateValue* getUploadDatarate(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;
 		virtual TbusQueueDelayValue* getUploadDelay(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;
 		virtual TbusQueueDatarateValue* getDownloadDatarate(const char* const roadId, const float lanePos, simtime_t time = simTime()) = 0;

@@ -28,28 +28,29 @@ import inet.nodes.inet.NetworkLayer;
 import federate.mob.VSimRTIMobility;
 import federate.msg.VSimRTIUnreliableApp;
 
-module TbusMobileNode {
+module TbusMobileNode
+{
     parameters:
         @class(TbusMobileNode);
         @node();
-        @display("bgb=351,348");
+        @display("bgb=351,209");
 
     gates:
         input radioIn @directIn;
 
     submodules:
         notificationBoard: NotificationBoard {
-            @display("p=58,220");
+            @display("p=268,32");
         }
         urapp: VSimRTIUnreliableApp {
-            @display("p=295,291");
+            @display("p=47,164");
             maxProcDelay = 0.0;
         }
         udp: UDP {
-            @display("p=295,209");
+            @display("p=133,164");
         }
         interfaceTable: InterfaceTable {
-            @display("p=58,150");
+            @display("p=86,32");
         }
         networkLayer: NetworkLayer {
             parameters:
@@ -61,19 +62,19 @@ module TbusMobileNode {
                 arp.globalARP = true;
                 ip.forceBroadcast = false;
                 ip.procDelay = 0s;
-                @display("p=295,136");
+                @display("p=219,164");
             gates:
                 ifIn[1];
                 ifOut[1];
         }
         routingTable: RoutingTable {
-                @display("p=58,89");
+            @display("p=86,90");
         }
         radio: TbusMobileRadio {
-            @display("p=295,65");
+            @display("p=307,164");
         }
         mobility: VSimRTIMobility {
-            @display("p=58,32");
+            @display("p=268,90");
         }
     connections allowunconnected:
         // App <-> Transport

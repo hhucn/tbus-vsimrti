@@ -45,6 +45,10 @@
  * Default cell id value if no value could be retrieved
  */
 #define TBUS_CELLID_DEFAULT			0
+/**
+ * Default group id value if no value could be retrieved
+ */
+#define TBUS_GROUPID_DEFAULT		1
 
 /**
  * @class TbusSqliteDatabaseHandler
@@ -102,9 +106,20 @@ class TbusSqliteDatabaseHandler : public TbusDatabaseHandler {
 		sqlite3_stmt* uploadCellIdStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 		sqlite3_stmt* downloadCellIdStatementEdge; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
 
+		sqlite3_stmt* uploadGroupIdRestricted; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+		sqlite3_stmt* uploadGroupIdUnrestricted; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+
+		sqlite3_stmt* downloadGroupIdRestricted; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+		sqlite3_stmt* downloadGroupIdUnrestricted; ///< Prepared SQL statement for memory efficiency. Values are re-binded before evaluation.
+
 		int32_t getDatabaseVersion();
 
 		char* getRoadIdSubstring(const char* const roadId);
+
+		bool executeGroupIdQuery(sqlite3_stmt* query, const char* const roadId, simtime_t time);
+
+		TbusQueueDatarateValue* getDatarateValue(sqlite3_stmt* query, const char* const roadId, const float lanePos, uint64_t groupId);
+		TbusQueueDelayValue* getDelayValue(sqlite3_stmt* query, const char* const roadId, const float lanePos, uint64_t groupId);
 
 		inline void abort();
 
@@ -115,6 +130,9 @@ class TbusSqliteDatabaseHandler : public TbusDatabaseHandler {
 		virtual ~TbusSqliteDatabaseHandler();
 
 		virtual cellid_t getCellId(const char* const roadId, const float lanePos, simtime_t time = simTime());
+
+		virtual uint64_t getUploadGroupId(const char* const roadId, simtime_t time = simTime());
+		virtual uint64_t getDownloadGroupId(const char* const roadId, simtime_t time = simTime());
 
 	    // Edge based
 	    virtual TbusQueueDatarateValue* getUploadDatarate(const char* const roadId, const float lanePos, simtime_t time = simTime());

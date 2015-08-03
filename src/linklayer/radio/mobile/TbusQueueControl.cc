@@ -31,7 +31,9 @@ Define_Module(TbusQueueControl);
 TbusQueueControl::TbusQueueControl() :
 		dbHandler(TbusDatabaseHandler::getInstance<TbusSqliteDatabaseHandler>()),
 		cellShare(TbusCellShare::getInstance<TbusTrivialCellShare>()),
-		currentRoadId(NULL) {}
+		currentRoadId(NULL),
+		roadIdValid(false) {
+}
 
 /**
  * Get references to the modules' queues and the global database handler and coordinate converter.
@@ -179,9 +181,20 @@ void TbusQueueControl::adaptQueueValues(TbusQueueSelection selection) {
  * @param roadId New road id
  */
 void TbusQueueControl::setRoadId(const char* roadId) {
-	delete[] currentRoadId;
-	currentRoadId = new char[strlen(roadId) + 1];
-	strcpy(currentRoadId, roadId);
+	if (currentRoadId == NULL) {
+		// The first road id we get is always accepted and seen as valid
+		currentRoadId = new char[strlen(roadId) + 1];
+		strcpy(currentRoadId, roadId);
+		roadIdValid = true;
+	} else {
+		roadIdValid = (strcmp(roadId, "") != 0);
+	}
+
+	if (roadIdValid && strcmp(roadId, currentRoadId) != 0) {
+		delete[] currentRoadId;
+		currentRoadId = new char[strlen(roadId) + 1];
+		strcpy(currentRoadId, roadId);
+	}
 }
 
 /**
@@ -189,7 +202,9 @@ void TbusQueueControl::setRoadId(const char* roadId) {
  * @param lanePos New lane position
  */
 void TbusQueueControl::setLanePos(float lanePos) {
-	currentLanePos = lanePos;
+	if (roadIdValid) {
+		currentLanePos = lanePos;
+	}
 }
 
 /**

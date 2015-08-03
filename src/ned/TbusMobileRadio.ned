@@ -29,34 +29,35 @@ module TbusMobileRadio
 {
     parameters:
         @display("i=block/ifcard");
-        
+
     gates:
         input upperLayerIn;
         output upperLayerOut;
         input radioIn @directIn;
-        
+
     submodules:
         phy: TbusMobilePHY {
-            @display("p=278,248");
+            @display("p=285,155;t=phy,,black");
         }
         mac: TbusMobileMAC {
-            @display("p=278,63");
+            @display("p=284,64");
         }
         queueControl: TbusQueueControl {
+            @display("p=506,64");
         }
         cdrq: TbusCDRQ {
-            @display("p=172,209");
+            @display("p=173,155");
         }
         cdsq: TbusCDSQ {
-            @display("p=389,209");
+            @display("p=390,155");
         }
         crrq: TbusCRRQ {
-            @display("p=172,102");
+            @display("p=75,155");
         }
         crsq: TbusCRSQ {
-            @display("p=389,102");
+            @display("p=506,155");
         }
-        
+
     connections:
         upperLayerIn --> mac.upperLayerIn;
         upperLayerOut <-- mac.upperLayerOut;

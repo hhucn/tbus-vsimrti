@@ -53,6 +53,8 @@ class TbusQueueControl : public cSimpleModule, public TbusQueueControlCallback {
 		char* currentRoadId; ///< Current road id
 		float currentLanePos; ///< Current lane position
 
+		bool roadIdValid;
+
 		TbusHost tbusHost;
 
 	public:
