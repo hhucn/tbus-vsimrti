@@ -125,10 +125,13 @@ template <class T> bool TbusBaseQueue<T>::addPacketToQueue(cPacket* packet) {
 			setQueueStatus(ACTIVE);
 		}
 
-		calculateEarliestDeliveryForPacket(packet);
+		// Only calculate now when we have network characteristics
+		if (!values.empty()) {
+			calculateEarliestDeliveryForPacket(packet);
 
-		if (!selfMessage.isScheduled()) {
-			adaptSelfMessage();
+			if (!selfMessage.isScheduled()) {
+				adaptSelfMessage();
+			}
 		}
 	}
 

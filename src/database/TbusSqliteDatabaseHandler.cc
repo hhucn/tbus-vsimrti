@@ -248,6 +248,14 @@ TbusQueueDatarateValue* TbusSqliteDatabaseHandler::getDatarateValue(sqlite3_stmt
 			// Retrieve values from database
 			result->datarate = round(sqlite3_column_double(query, 0) * TBUS_KBYTE_TO_BIT);
 			result->droprate = sqlite3_column_double(query, 1);
+
+			if (result->datarate <= 0) {
+				result->datarate = TBUS_DATARATE_DEFAULT;
+			}
+
+			if (result->droprate < 0.0 || result->droprate > 1.0) {
+				result->droprate = TBUS_DROPRATE_DEFAULT;
+			}
 		}
 	}
 
@@ -281,6 +289,10 @@ TbusQueueDelayValue* TbusSqliteDatabaseHandler::getDelayValue(sqlite3_stmt* quer
 		} else {
 			// Retrieve value from database
 			result->delay = sqlite3_column_int64(query, 0);
+
+			if (result->delay < 0) {
+				result->delay = TBUS_DELAY_DEFAULT;
+			}
 		}
 	}
 

@@ -159,19 +159,19 @@ void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selectio
  * @param selection Queue selection
  */
 void TbusQueueControl::adaptQueueValues(TbusQueueSelection selection) {
-	if ((selection & CDRQ) && cdrq->getQueueStatus()) {
+	if ((cdrqValue != NULL) && (selection & CDRQ) && cdrq->getQueueStatus()) {
 		cdrq->updateValue(cellShare->adaptDelayValue(currentCellId, cdrqValue, &tbusHost));
 	}
 
-	if ((selection & CRRQ) && crrq->getQueueStatus()) {
+	if ((crrqValue != NULL) && (selection & CRRQ) && crrq->getQueueStatus()) {
 		crrq->updateValue(cellShare->adaptDatarateValue(currentCellId, crrqValue, &tbusHost));
 	}
 
-	if ((selection & CDSQ) && cdsq->getQueueStatus()) {
+	if ((cdsqValue != NULL) && (selection & CDSQ) && cdsq->getQueueStatus()) {
 		cdsq->updateValue(cellShare->adaptDelayValue(currentCellId, cdsqValue, &tbusHost));
 	}
 
-	if ((selection & CRSQ) && crsq->getQueueStatus()) {
+	if ((crsqValue != NULL) && (selection & CRSQ) && crsq->getQueueStatus()) {
 		crsq->updateValue(cellShare->adaptDatarateValue(currentCellId, crsqValue, &tbusHost));
 	}
 }
