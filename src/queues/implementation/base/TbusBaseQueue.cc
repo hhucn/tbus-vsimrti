@@ -182,6 +182,7 @@ template<class T> void TbusBaseQueue<T>::sendFrontOfQueue() {
  */
 template<class T> void TbusBaseQueue<T>::updateValue(T* newValue) {
 	Enter_Method("updateValue()");
+
 	if (values.empty() || values.front() != newValue) {
 		// Clear old values
 		if (queue.isEmpty()) {
