@@ -18,6 +18,14 @@
 #include "TbusDatarateQueue.h"
 #include "TbusQueueControlInfo.h"
 
+void TbusDatarateQueue::updateValue(TbusQueueDatarateValue* newValue) {
+	if (newValue->datarate <= 0) {
+		std::cout << "Received datarate " << newValue->datarate << " at " << simTime() << " node id " << getId() << std::endl;
+	}
+
+	TbusBaseQueue<TbusQueueDatarateValue>::updateValue(newValue);
+}
+
 /**
  * Start with zero bits sent.
  */
@@ -93,6 +101,35 @@ void TbusDatarateQueue::sendFrontOfQueue() {
 	} else {
 		// Drop
 		EV << "Packet " << packet << " dropped!" << std::endl;
+		std::cout << "Packet " << packet << " id " << packet->getId() << " dropped with currentLoss " << currentLoss << " and last loss probability " << values.back()->droprate << " and last datarate " << values.back()->datarate << " !" << std::endl;
+
+		double loss = 0.0;
+		int64_t now = simTime().inUnit(SIMTIME_NS);
+		int64_t queueArrival = controlInfo->getQueueArrival().inUnit(SIMTIME_NS);
+		int64_t start;
+		int64_t end = now;
+
+		valueIterator endIterator = values.end();
+		--endIterator;
+
+		for (valueIterator it = values.begin(); it != endIterator; ++it) {
+			start = (*it)->time;
+			loss += (*it)->droprate * ((double) (end - start));
+
+			std::cout << "(" << (*it)->droprate << ", " << ((double) end - start) << ") ";
+			end = start;
+		}
+
+		start = queueArrival;
+		loss += values.back()->droprate * ((double) (end - start));
+		std::cout << "(" << values.back()->droprate << ", " << ((double) end - start) << ") " << std::endl;
+
+		std::cout << loss << " normalize by " << ((double)  now - queueArrival);
+		// Normalize droprate
+		loss /= (double) (now - queueArrival);
+
+		std::cout << " calculated " << loss << std::endl;
+
 #ifdef TBUS_DEBUG
 		std::cout << simTime() << " - " << this->getName() << ": " << packet << " dropped after " << (simTime() - controlInfo->getQueueArrival()) << ", added at " << controlInfo->getQueueArrival() << " current loss " << currentLoss << endl;
 #endif /* TBUS_DEBUG */

@@ -46,6 +46,13 @@ class TbusQueueControl : public cSimpleModule, public TbusQueueControlCallback {
 		TbusQueueDatarateValue*	crsqValue;	///< Current CRSQ value from database
 		TbusQueueDelayValue*	cdsqValue;	///< Current CDSQ value from database
 
+		uint64_t cdrq_defaultDelay;
+		uint64_t cdsq_defaultDelay;
+		uint64_t crrq_defaultDatarate;
+		double crrq_defaultLossProbability;
+		uint64_t crsq_defaultDatarate;
+		double crsq_defaultLossProbability;
+
 		TbusDatabaseHandler* dbHandler; ///< Database handler reference
 		TbusCellShare* cellShare; ///< Cell share calculation model
 

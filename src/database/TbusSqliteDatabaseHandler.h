@@ -32,7 +32,7 @@
 /**
  * Default datarate value if no value could be retrieved (In Bit/s)
  */
-#define TBUS_DATARATE_DEFAULT		1.0
+#define TBUS_DATARATE_DEFAULT		1ll
 /**
  * Default droprate value if no value could be retrieved (In percent)
  */
@@ -40,7 +40,7 @@
 /**
  * Default delay value if no value could be retrieved (in ns)
  */
-#define TBUS_DELAY_DEFAULT			1
+#define TBUS_DELAY_DEFAULT			1ll
 /**
  * Default cell id value if no value could be retrieved
  */

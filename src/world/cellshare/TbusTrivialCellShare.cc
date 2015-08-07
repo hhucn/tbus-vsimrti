@@ -34,6 +34,10 @@ TbusQueueDatarateValue* TbusTrivialCellShare::adaptDatarateValue(cellid_t cellId
 
 	newValue->datarate *= factor;
 
+	if (newValue->datarate <= 0) {
+		std::cout << simTime() << " datarate " << newValue->datarate << " drop " << newValue->droprate << " cell " << cellId << " factor " << factor << " active " << activeHosts << std::endl;
+	}
+
 	return newValue;
 }
 

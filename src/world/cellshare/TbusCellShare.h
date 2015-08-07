@@ -98,10 +98,14 @@ class TbusCellShare {
 		void hostMoved(cellid_t from, cellid_t to, TbusHost* host) {
 			if (from != TBUS_INVALID_CELLID) {
 				idToCell[from].hosts.erase(host);
+
+				updateNumActiveHostsInCell(from);
 			}
 
 			if (to != TBUS_INVALID_CELLID) {
 				idToCell[to].hosts.insert(host);
+
+				updateNumActiveHostsInCell(to);
 			}
 		}
 

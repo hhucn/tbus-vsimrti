@@ -55,6 +55,13 @@ void TbusQueueControl::initialize() {
 	crsqValue = NULL;
 	cdsqValue = NULL;
 
+	cdrq_defaultDelay = par("cdrq_defaultDelay").longValue();
+	cdsq_defaultDelay = par("cdsq_defaultDelay").longValue();
+	crrq_defaultDatarate = par("crrq_defaultDatarate").longValue();
+	crrq_defaultLossProbability = par("crrq_defaultLossProbability").doubleValue();
+	crsq_defaultDatarate = par("crsq_defaultDatarate").longValue();
+	crsq_defaultLossProbability = par("crsq_defaultLossProbability").doubleValue();
+
 	// Set to invalid because this node hasn't moved into a cell yet
 	currentCellId = TBUS_INVALID_CELLID;
 
@@ -116,7 +123,12 @@ void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selectio
 			delete cdrqValue;
 			cdrqValue = temp;
 		} else {
-			delete temp;
+			if (cdrqValue == NULL) {
+				temp->delay = cdrq_defaultDelay;
+				cdrqValue = temp;
+			} else {
+				delete temp;
+			}
 		}
 	}
 
@@ -127,7 +139,13 @@ void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selectio
 			delete crrqValue;
 			crrqValue = temp;
 		} else {
-			delete temp;
+			if (crrqValue == NULL) {
+				temp->datarate = crrq_defaultDatarate;
+				temp->droprate = crrq_defaultLossProbability;
+				crrqValue = temp;
+			} else {
+				delete temp;
+			}
 		}
 	}
 
@@ -138,7 +156,12 @@ void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selectio
 			delete cdsqValue;
 			cdsqValue = temp;
 		} else {
-			delete temp;
+			if (cdsqValue == NULL) {
+				temp->delay = cdsq_defaultDelay;
+				cdsqValue = temp;
+			} else {
+				delete temp;
+			}
 		}
 	}
 
@@ -149,7 +172,13 @@ void TbusQueueControl::updateQueueValuesFromDatabase(TbusQueueSelection selectio
 			delete crsqValue;
 			crsqValue = temp;
 		} else {
-			delete temp;
+			if (crsqValue == NULL) {
+				temp->datarate = crsq_defaultDatarate;
+				temp->droprate = crsq_defaultLossProbability;
+				crsqValue = temp;
+			} else {
+				delete temp;
+			}
 		}
 	}
 }

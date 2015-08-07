@@ -52,5 +52,5 @@ bool TbusQueueDatarateValue::operator!=(TbusQueueValue& other) {
 }
 
 bool TbusQueueDatarateValue::isValid() {
-	return (droprate != TBUS_DROPRATE_DEFAULT) && (datarate != TBUS_DATARATE_DEFAULT);
+	return (datarate != TBUS_DATARATE_DEFAULT);
 }

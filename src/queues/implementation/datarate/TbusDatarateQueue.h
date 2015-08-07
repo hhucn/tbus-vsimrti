@@ -29,6 +29,8 @@ class TbusDatarateQueue : public TbusBaseQueue<TbusQueueDatarateValue> {
 	public:
 		TbusDatarateQueue(TbusQueueSelection selection);
 
+		virtual void updateValue(TbusQueueDatarateValue* newValue);
+
 	protected:
 		int64_t bitsSent; ///< Bits already sent for head of queue (Needed for multiple data- and droprate value per packet)
 
