@@ -52,7 +52,7 @@ void TbusInetMAC::initialize(int stage) {
 		lowerLayerOut = findGate("lowerLayerOut");
 	} else if (stage == 2) {
 		// Set IP Address
-		interfaceEntry->ipv4Data()->setIPAddress(IpAddressHelper::getNextRsuIpAddress());
+		interfaceEntry->ipv4Data()->setIPAddress(IpAddressHelper::getRsuIpAddress(this->getParentModule()->getParentModule()->getIndex()));
 		interfaceEntry->ipv4Data()->setNetmask(IPAddress::ALLONES_ADDRESS);
 
 		// Add default route
@@ -61,7 +61,7 @@ void TbusInetMAC::initialize(int stage) {
 			routingTable->addRoute(IpAddressHelper::getDefaultRoute(interfaceEntry));
 		}
 
-		EV << "Interface "<< this->getParentModule()->getFullName() << " now has IP address " << interfaceEntry->ipv4Data()->getIPAddress() << endl;
+		EV << "Interface "<< this->getParentModule()->getParentModule()->getFullName() << " now has IP address " << interfaceEntry->ipv4Data()->getIPAddress() << endl;
 	}
 }
 

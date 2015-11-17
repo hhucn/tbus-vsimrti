@@ -6,13 +6,14 @@
  */
 
 #include "IpAddressHelper.h"
-#include <string>
-#include <sstream>
+
+uint32_t IpAddressHelper::vehiclesJoined = 0;
+uint32_t IpAddressHelper::rsusJoined = 0;
 
 /**
  * Empty constructor
  */
-IpAddressHelper::IpAddressHelper() {}
+IpAddressHelper::IpAddressHelper(){}
 
 /**
  * Empty destructor
@@ -35,45 +36,19 @@ IPRoute* IpAddressHelper::getDefaultRoute(InterfaceEntry* ie) {
 }
 
 /**
- * Get the next unassigned vehicle ip address (That is, the next unassigned ip from range 0.0.0.0/8).
- * @return An unassigned ip address
- */
-IPAddress IpAddressHelper::getNextVehicleIpAddress() {
-	#define TBUS_VEH_SUBNET ((uint32_t) 0x00 << 24)
-
-	static uint32_t ip = 0;
-
-	return IPAddress(TBUS_CLEAR_FIRST_BYTE(ip++) | TBUS_VEH_SUBNET);
-}
-
-/**
- * Get the next unassigned RSU ip address (That is, the next unassigned ip from range 1.0.0.0/8).
- * @return An unassigned ip address
- */
-IPAddress IpAddressHelper::getNextRsuIpAddress() {
-	#define TBUS_RSU_SUBNET ((uint32_t) 0x01 << 24)
-
-	static uint32_t ip = 0;
-
-	return IPAddress(TBUS_CLEAR_FIRST_BYTE(ip++) | TBUS_RSU_SUBNET);
-}
-
-/**
  * Returns the next free vehicle ip address, starting from TBUS_IP_STARTBYTE.
  * According to VSimRTI, vehicles have IP addresses in range 0.0.0.0/8.
  * The last bytes are chosen from the vehicle id in the vehicle name "veh_X".
  * @param name Vehicle name
  * @return Next unassigned ip address in range
- * @deprecated VSimRTI has no correct mapping in OMNeT++ to its internal names used for ip address assignment.
+
  */
-IPAddress IpAddressHelper::getNextVehicleIpAddress(const char* const name) {
+IPAddress IpAddressHelper::getVehicleIpAddress(const uint32_t nodeid) {
 	#define TBUS_VEH_SUBNET ((uint32_t) 0x00 << 24)
-	std::string sName(name);
-	std::size_t pos = sName.find(TBUS_VEH_PREFIX) + strlen(TBUS_VEH_PREFIX);
 	uint32_t ip;
 
-	std::istringstream(sName.substr(pos)) >> ip;
-
+	ip = nodeid - rsusJoined;
+	vehiclesJoined++;
 	return IPAddress(TBUS_CLEAR_FIRST_BYTE(ip) | TBUS_VEH_SUBNET);
 }
 
@@ -83,15 +58,12 @@ IPAddress IpAddressHelper::getNextVehicleIpAddress(const char* const name) {
  * The last bytes are chosen from the rsu id in the rsu name "rsu_X".
  * @param name RSU name
  * @return Next unassigned ip address in range
- * @deprecated VSimRTI has no correct mapping in OMNeT++ to its internal names used for ip address assignment.
  */
-IPAddress IpAddressHelper::getNextRsuIpAddress(const char* const name) {
+IPAddress IpAddressHelper::getRsuIpAddress(const uint32_t nodeid) {
 	#define TBUS_RSU_SUBNET ((uint32_t) 0x01 << 24)
-	std::string sName(name);
-	std::size_t pos = sName.find(TBUS_RSU_PREFIX) + strlen(TBUS_RSU_PREFIX);
 	uint32_t ip;
 
-	std::istringstream(sName.substr(pos)) >> ip;
-
+	ip = nodeid - vehiclesJoined;
+	rsusJoined++;
 	return IPAddress(TBUS_CLEAR_FIRST_BYTE(ip) | TBUS_RSU_SUBNET);
 }

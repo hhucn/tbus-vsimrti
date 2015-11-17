@@ -25,14 +25,15 @@
  */
 class IpAddressHelper {
 	public:
-		static IPAddress getNextVehicleIpAddress(const char* const name);
-		static IPAddress getNextRsuIpAddress(const char* const name);
-		static IPAddress getNextVehicleIpAddress();
-		static IPAddress getNextRsuIpAddress();
+		static IPAddress getVehicleIpAddress(const uint32_t nodeid);
+		static IPAddress getRsuIpAddress(const uint32_t nodeid);
 		static IPRoute* getDefaultRoute(InterfaceEntry* interfaceEntry);
+
 	private:
 		IpAddressHelper();
 		virtual ~IpAddressHelper();
+        static uint32_t vehiclesJoined;
+        static uint32_t rsusJoined;
 };
 
 #endif /* IPADDRESSHELPER_H_ */

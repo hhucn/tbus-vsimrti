@@ -135,7 +135,7 @@ void TbusChannelControl::sendToChannel(cMessage* msg, ChannelControl::HostRef h)
 			if (dest == hostMap.end()) {
 				EV << "ERROR: Cannot find host with IP address " << ip << ", discarding packet" << endl;
 			} else {
-				EV << "Unicasting message " << msg->getFullName() << " to " << ip << endl;
+				EV << "Unicasting message " << msg->getFullName() << " to " << ip << " node ID " << dest->second->host->getFullName() << endl;
 				sendDirect(msg->dup(), dest->second->radioInGate);
 			}
 		}
